@@ -1,0 +1,16 @@
+{
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+            "outputs": ["dist/**", "build/**/*.css"]
+        },
+        "dev": {
+            "dependsOn": ["^build"],
+            "persistent": true
+        },
+        "lint": {
+            "dependsOn": ["^build"]
+        }
+    }
+}

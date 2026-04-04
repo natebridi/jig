@@ -1,0 +1,56 @@
+.style-debug {
+    position: absolute;
+    inset: 5px 5px auto auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 99;
+
+    @media (prefers-color-scheme: light) {
+        color: oklch(0 0 0);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        color: oklch(1 0 0);
+    }
+
+    > div {
+        background: oklch(0 0 0 / 0.35);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        display: inline-block;
+    }
+}
+
+#debug-mode {
+    &::before {
+        text-align: center;
+
+        @media (prefers-color-scheme: light) {
+            content: 'Light mode';
+        }
+
+        @media (prefers-color-scheme: dark) {
+            content: 'Dark mode';
+        }
+    }
+}
+
+#debug-size {
+    &::before {
+        text-align: center;
+        
+        @media (width <= 350px) { content: '< 300px'; }
+        @media (350px < width <= 500px) { content: '351–500px'; }
+        @media (500px < width <= 600px) { content: '501–600px'; }
+        @media (600px < width <= 700px) { content: '601–700px'; }
+        @media (700px < width <= 800px) { content: '701–800px'; }
+        @media (800px < width <= 900px) { content: '801–900px'; }
+        @media (900px < width <= 1000px) { content: '901–1000px'; }
+        @media (1000px < width <= 1100px) { content: '1001–1100px'; }
+        @media (1100px < width <= 1200px) { content: '1101–1200px'; }
+        @media (1200px < width <= 1300px) { content: '1201–1300px'; }
+        @media (1300px < width <= 1400px) { content: '1301–1400px'; }
+        @media (1400px < width) { content: '> 1401px'; }
+    }
+}

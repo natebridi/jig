@@ -1,0 +1,7 @@
+{
+  "extends": "@jig-ui/tsconfig/react.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src"]
+}
