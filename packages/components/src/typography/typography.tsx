@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react';
 import { typography } from './typography.css';
 
 type TypeSizes = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-type TypeStyles = 'heading01' | 'body01';
+type TypeStyles = 'heading01' | 'heading02' | 'heading03' | 'body01' | 'body02' | 'caption01' | 'caption02';
 
 export interface TypographyProps extends HTMLAttributes<HTMLElement> {
   sizeMin?: TypeSizes;

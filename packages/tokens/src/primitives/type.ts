@@ -1,7 +1,7 @@
 import { Token, TokenSet } from '../types'
 
-const MIN = 0.75; // in rem
-const MAX = 6; // in rem
+const MIN = 0.15; // in rem
+const MAX = 5; // in rem
 const MULT = 1.33; // perfect fourth
 const start = MAX / Math.pow(MULT, 8);
 

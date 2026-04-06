@@ -1,6 +1,7 @@
 import { recipe } from '@vanilla-extract/recipes';
 import { radius, spacing, color } from '@jig-ui/styles/tokens';
 
+
 export const button = recipe({
     base: {
         appearance: 'none',
@@ -13,13 +14,43 @@ export const button = recipe({
     variants: {
         color: {
             primary: { 
-                background: color.primary,
+                background: color.button.primary.baseBg,
+                color: color.button.primary.text,
+                ':hover': {
+                    background: color.button.primary.hoverBg
+                },
+                ':active': {
+                    background: color.button.primary.activeBg
+                },
                 ':disabled': {
-                    background: color.primary
+                    background: color.button.primary.disabledBg
                 }
             },
             secondary: { 
-                background: color.secondary 
+                background: color.button.secondary.baseBg,
+                color: color.button.secondary.text,
+                ':hover': {
+                    background: color.button.secondary.hoverBg
+                },
+                ':active': {
+                    background: color.button.secondary.activeBg
+                },
+                ':disabled': {
+                    background: color.button.secondary.disabledBg
+                }
+             },
+             danger: {
+                background: color.button.danger.baseBg,
+                color: color.button.danger.text,
+                ':hover': {
+                    background: color.button.danger.hoverBg
+                },
+                ':active': {
+                    background: color.button.danger.activeBg
+                },
+                ':disabled': {
+                    background: color.button.danger.disabledBg
+                }
             }
         },
         size: {

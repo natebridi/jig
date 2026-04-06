@@ -6,15 +6,43 @@ const typography = {
     heading01 : {
         family: {
             $type: 'fontFamily',
-            $value: '{type.family.display}'
+            $value: '{type.family.sans}'
         },
         weight: {
             $type: 'fontWeight',
-            $value: '{type.weight.700}'
+            $value: '{type.weight.600}'
         },
         size: {
             $type: 'dimension',
-            $value: '{type.scale.700}'
+            $value: '{type.scale.300}'
+        }
+    },
+    heading02 : {
+        family: {
+            $type: 'fontFamily',
+            $value: '{type.family.sans}'
+        },
+        weight: {
+            $type: 'fontWeight',
+            $value: '{type.weight.600}'
+        },
+        size: {
+            $type: 'dimension',
+            $value: '{type.scale.400}'
+        }
+    },
+    heading03 : {
+        family: {
+            $type: 'fontFamily',
+            $value: '{type.family.sans}'
+        },
+        weight: {
+            $type: 'fontWeight',
+            $value: '{type.weight.600}'
+        },
+        size: {
+            $type: 'dimension',
+            $value: '{type.scale.500}'
         }
     },
     body01 : {
@@ -28,7 +56,49 @@ const typography = {
         },
         size: {
             $type: 'dimension',
+            $value: '{type.scale.300}'
+        }
+    },
+    body02 : {
+        family: {
+            $type: 'fontFamily',
+            $value: '{type.family.sans}'
+        },
+        weight: {
+            $type: 'fontWeight',
+            $value: '{type.weight.400}'
+        },
+        size: {
+            $type: 'dimension',
             $value: '{type.scale.400}'
+        }
+    },
+    caption01 : {
+        family: {
+            $type: 'fontFamily',
+            $value: '{type.family.sans}'
+        },
+        weight: {
+            $type: 'fontWeight',
+            $value: '{type.weight.400}'
+        },
+        size: {
+            $type: 'dimension',
+            $value: '{type.scale.100}'
+        }
+    },
+    caption02 : {
+        family: {
+            $type: 'fontFamily',
+            $value: '{type.family.sans}'
+        },
+        weight: {
+            $type: 'fontWeight',
+            $value: '{type.weight.400}'
+        },
+        size: {
+            $type: 'dimension',
+            $value: '{type.scale.200}'
         }
     }
 } as TokenSet;

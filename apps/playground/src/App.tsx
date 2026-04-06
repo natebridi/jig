@@ -6,6 +6,8 @@ import './debug.css'
 
 export function App() {
 
+  console.log(color.button.primary)
+
   return (
     <div
         style={{
@@ -21,14 +23,20 @@ export function App() {
         <div id='debug-size' />
       </div>
       
+      <Typography as="h2" with="heading03">Testing copy, and this is heading 03</Typography>
       <Typography as="h2" with="heading01">Testing copy, and this is heading 01</Typography>
-      <Typography as="h2" with="body01">Testing copy, and this is body 01</Typography>
+      <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
+      <Typography as="h2" with="heading02">Testing copy, and this is heading 02</Typography>
+      <Typography as="p" with="body02">Testing copy, and this is body 02</Typography>
+      <Typography as="p" with="caption01">Testing copy, and this is caption 01</Typography>
+      <Typography as="p" with="caption02">Testing copy, and this is caption 02</Typography>
 
       <Typography as="p" with="body01">Testing</Typography>
       
       <Stack direction="row">
         <Button variant="primary">Primary</Button>
         <Button variant="secondary">Secondary</Button>
+        <Button variant="danger">Danger</Button>
       </Stack>
       
       <Typography as="p" sizeMin="500" sizeMax="600">                                                                                                                      

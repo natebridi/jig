@@ -26,6 +26,7 @@ export type TokenSet = {
 
 export interface ThemeTokenSet {
     color: {
+        focus: Token;
         surfaces: {
             100: Token;
             200: Token;
@@ -33,6 +34,11 @@ export interface ThemeTokenSet {
         text: {
             primary: Token;
             secondary: Token;
+        },
+        button: {
+            primary: TokenSet;
+            secondary: TokenSet;
+            danger: TokenSet;
         }
     }
 }

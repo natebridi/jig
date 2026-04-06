@@ -1,7 +1,12 @@
-import { ThemeTokenSet } from '../types';
+import { ThemeTokenSet } from '../types'
+import { buttonSet } from '../utils'
 
 export default {
     color: {
+        focus: {
+            '$type': 'color',
+            '$value': '{color.black}'
+        },
         surfaces: {
             100: {
                 '$type': 'color',
@@ -21,6 +26,11 @@ export default {
                 '$type': 'color',
                 '$value': '{color.gray.700}'
             }
+        },
+        button: {
+            primary: buttonSet('blue'),
+            secondary: buttonSet('pink'),
+            danger: buttonSet('red')
         }
     }
 } as ThemeTokenSet;
