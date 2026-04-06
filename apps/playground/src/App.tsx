@@ -1,12 +1,23 @@
 import '@jig-ui/styles/vars.css'
 import '@jig-ui/styles/base.css'
-import { Button, Typography, Adorn, Stack } from '@jig-ui/components'
+import { Button, Typography, Adorn, Stack, Grid } from '@jig-ui/components'
 import { color } from '@jig-ui/styles/tokens'
 import './debug.css'
 
-export function App() {
+const Item = ({ children }: { children: React.ReactNode }) => (
+  <div
+    style={{
+      backgroundColor: color.surfaces[200],
+      padding: '16px',
+      borderRadius: '4px',
+      textAlign: 'center',
+    }}
+  >
+    {children}
+  </div>
+);
 
-  console.log(color.button.primary)
+export function App() {
 
   return (
     <div
@@ -22,6 +33,20 @@ export function App() {
         <div id='debug-mode' />
         <div id='debug-size' />
       </div>
+
+      <Grid columns={{ xs: 3, md: 4 }} spacing="500">
+        <Grid columns={2} spacing="200">
+          <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
+        </Grid>
+        <Item>
+          <Grid columns={2} spacing="200">
+            <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
+          </Grid>
+        </Item>
+        <Item>
+          <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
+        </Item>
+      </Grid>
       
       <Typography as="h2" with="heading03">Testing copy, and this is heading 03</Typography>
       <Typography as="h2" with="heading01">Testing copy, and this is heading 01</Typography>

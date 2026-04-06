@@ -23,7 +23,7 @@ export function resolveResponsive<T extends string>(
     variants: { xs: Record<T, string> } & Partial<Record<Breakpoint, Record<T, string>>>
 ): string {
     if (value == null) return '';
-    if (typeof value === 'string') return variants.xs[value] ?? '';
+    if (typeof value === 'string' || typeof value === 'number') return variants.xs[value] ?? '';
     return (Object.entries(value) as [Breakpoint, T][])
         .map(([bp, val]) => variants[bp]?.[val] ?? '')
         .filter(Boolean)

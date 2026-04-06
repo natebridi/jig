@@ -8,3 +8,5 @@ export { Adorn } from './adorn';
 export type { AdornProps, AdornStyle } from './adorn';
 export { Stack } from './stack';
 export type { StackProps } from './stack';
+export { Grid } from './grid';
+export type { GridProps } from './grid';
