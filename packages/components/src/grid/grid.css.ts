@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 import { spacing } from '@jig-ui/styles/tokens';
-import { mediaQueries } from '@jig-ui/styles/breakpoints';
+import { mediaQueries } from '../breakpoints';
 
 export const base = style({ 
     display: 'grid',

@@ -1,30 +1,30 @@
 {
-    "description": "Exports Vanilla Extract theme and contract",
+    "description": "Internal: builds token CSS variables, the reset, and base styles",
     "name": "@jig-ui/styles",
+    "version": "0.0.0",
+    "private": true,
     "type": "module",
     "exports": {
         "./theme": "./dist/theme.css.ts",
         "./vars.css": "./dist/tokens.css",
-        "./reset": "./dist/reset.ts",
+        "./reset.css": "./dist/reset.css",
         "./base.css": "./dist/styles.css",
         "./tokens": {
             "types": "./dist/vars.d.ts",
             "default": "./dist/vars.js"
-        },
-        "./breakpoints": "./dist/breakpoints.ts"
+        }
     },
     "scripts": {
-        "build": "tz build --config src/terrazzo.config.ts && copyfiles -u 1 src/reset*.ts dist/ && copyfiles -u 1 src/breakpoints.ts dist/ && copyfiles -u 1 src/styles.css dist/",
+        "build": "tz build --config src/terrazzo.config.ts && vite build && copyfiles -u 1 src/styles.css dist/",
         "terrazzo": "tz build --config src/terrazzo.config.ts"
     },
     "sideEffects": [
-        "**/*.css"
+        "**/*.css",
+        "**/*.css.ts"
     ],
     "dependencies": {
         "@jig-ui/tokens": "workspace:*",
-        "@vanilla-extract/css": "^1.20.0",
-        "react": "^19.2.4",
-        "react-dom": "^19.2.4"
+        "@vanilla-extract/css": "^1.20.0"
     },
     "devDependencies": {
         "@jig-ui/tsconfig": "workspace:*",
@@ -33,11 +33,8 @@
         "@terrazzo/plugin-css-in-js": "^2.0.0",
         "@terrazzo/plugin-vanilla-extract": "^2.0.0",
         "@types/node": "25.5.0",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
         "@vanilla-extract/vite-plugin": "^5.2.1",
         "copyfiles": "^2.4.1",
-        "node": "25.8.2",
         "vite": "8.0.3"
     }
 }

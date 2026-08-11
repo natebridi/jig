@@ -1,3 +1,5 @@
+export type { Breakpoint } from './breakpoints';
+export { breakpoints, mediaQueries } from './breakpoints';
 export type { Responsive } from './responsive';
 export { resolveResponsive } from './responsive';
 export { Button } from './button';

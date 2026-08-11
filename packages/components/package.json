@@ -1,24 +1,61 @@
 {
-    "name": "@jig-ui/components",
-    "exports": {
-        ".": "./src/index.ts"
+    "name": "@jig-ui/react",
+    "version": "1.0.0",
+    "description": "Jig design system — React components",
+    "license": "MIT",
+    "author": "Nate Bridi",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/natebridi/jig.git",
+        "directory": "packages/components"
     },
-    "dependencies": {
-        "@jig-ui/styles": "workspace:*",
-        "@jig-ui/tokens": "workspace:*"
+    "files": [
+        "dist"
+    ],
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./tokens": {
+            "types": "./dist/tokens.d.ts",
+            "default": "./dist/tokens.js"
+        },
+        "./styles.css": "./dist/styles.css",
+        "./reset.css": "./dist/reset.css",
+        "./package.json": "./package.json"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite build --watch"
+    },
+    "peerDependencies": {
+        "react": ">=18",
+        "react-dom": ">=18"
     },
     "devDependencies": {
+        "@jig-ui/styles": "workspace:*",
+        "@jig-ui/tokens": "workspace:*",
         "@jig-ui/tsconfig": "workspace:*",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
+        "@vanilla-extract/css": "^1.20.0",
         "@vanilla-extract/recipes": "^0.5.7",
         "@vanilla-extract/sprinkles": "^1.6.5",
         "@vanilla-extract/vite-plugin": "^5.2.1",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
-        "typescript": "^6.0.2"
-    },
-    "peerDependencies": {
-        "@vanilla-extract/css": "^1.20.0"
+        "typescript": "^6.0.2",
+        "vite": "8.0.3",
+        "vite-plugin-dts": "^4.5.4"
     }
 }

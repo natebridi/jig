@@ -1,7 +1,6 @@
-import '@jig-ui/styles/vars.css'
-import '@jig-ui/styles/base.css'
-import { Button, Typography, Adorn, Stack, Grid } from '@jig-ui/components'
-import { color } from '@jig-ui/styles/tokens'
+import '@jig-ui/react/styles.css'
+import { Button, Typography, Adorn, Stack, Grid } from '@jig-ui/react'
+import { color } from '@jig-ui/react/tokens'
 import './debug.css'
 
 const Item = ({ children }: { children: React.ReactNode }) => (

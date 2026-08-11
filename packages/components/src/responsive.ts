@@ -1,4 +1,4 @@
-import type { Breakpoint } from '@jig-ui/styles/breakpoints';
+import type { Breakpoint } from './breakpoints';
 
 /**
  * A responsive prop value — either a plain value applied at all breakpoints,

@@ -2,6 +2,8 @@ import fs from 'node:fs'
 import primitives from './src/primitives/index'
 import tokens from './src/semantics/index'
 
+fs.mkdirSync(`${import.meta.dirname}/dist`, { recursive: true })
+
 Object.keys(primitives).map(tokenGroup => {
     const jsonData = JSON.stringify(primitives[tokenGroup as keyof typeof primitives], null, 2);
     const fileName = `${import.meta.dirname}/dist/${tokenGroup}.dtcg.json`;

@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "noEmit": false,
+        // api-extractor (used to roll the declarations into one self-contained
+        // file) can't follow the "exports" subpath of the workspace package,
+        // so point it straight at the built type file.
+        "paths": {
+            "@jig-ui/styles/tokens": ["../styles/dist/vars.d.ts"]
+        }
+    },
+    "include": ["src"]
+}

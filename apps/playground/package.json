@@ -8,9 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@jig-ui/components": "workspace:*",
-    "@jig-ui/styles": "workspace:*",
-    "@jig-ui/tokens": "workspace:*",
+    "@jig-ui/react": "workspace:*",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
@@ -18,7 +16,6 @@
     "@jig-ui/tsconfig": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vanilla-extract/vite-plugin": "^5.2.1",
     "@vitejs/plugin-react": "^6.0.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.2"

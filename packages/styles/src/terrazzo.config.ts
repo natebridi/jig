@@ -24,7 +24,8 @@ export default defineConfig({
                     :root {
                         color-scheme: dark;
                         ${contents}
-                    }`
+                    }
+                }`
             }]
         }),
         cssInJs({

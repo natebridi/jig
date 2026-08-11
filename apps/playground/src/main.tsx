@@ -1,9 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import '@jig-ui/styles/reset';
-//import '@jig-ui/styles/theme';
-
+import '@jig-ui/react/reset.css';
 
 
 const root = document.getElementById('root');

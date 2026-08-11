@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 
+// No Vanilla Extract plugin: the playground consumes the built @jig-ui/react
+// package the same way an outside project does, which keeps that path tested.
 export default defineConfig({
-  plugins: [react(), vanillaExtractPlugin()]
+  plugins: [react()],
+  resolve: { dedupe: ['react', 'react-dom'] }
 });
