@@ -36,6 +36,44 @@ export function Example() {
 }
 ```
 
+### Fonts
+
+Jig's type tokens name three families but deliberately do not load them, so that
+the package makes no network requests of its own and you stay in control of how
+the fonts are served. You must make them available yourself, or text will fall
+back to `sans-serif` / `monospace` / `serif`:
+
+| Token             | Family           |
+| ----------------- | ---------------- |
+| `type.family.sans`    | Work Sans        |
+| `type.family.mono`    | Source Code Pro  |
+| `type.family.display` | Amarna           |
+
+All three are variable fonts covering weights 400–700, which is the full range
+the weight tokens use. The quickest option is Google Fonts — add to your
+`<head>`:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Amarna:wght@400..700&family=Source+Code+Pro:wght@400..700&family=Work+Sans:wght@400..700&display=swap"
+  rel="stylesheet"
+/>
+```
+
+To avoid the third-party request, self-host instead — via `@fontsource-variable`
+packages or your own `@font-face` rules — using the exact family names above.
+
+To substitute your own typefaces, override the custom properties rather than
+loading these at all:
+
+```css
+:root {
+  --type-family-sans: 'Inter', sans-serif;
+}
+```
+
 ### Reset
 
 An optional reset is available separately. Import it before `styles.css`:

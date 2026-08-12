@@ -36,7 +36,8 @@
     },
     "scripts": {
         "build": "vite build",
-        "dev": "vite build --watch"
+        "dev": "vite build --watch",
+        "pack:local": "pnpm build && pnpm pack"
     },
     "peerDependencies": {
         "react": ">=18",

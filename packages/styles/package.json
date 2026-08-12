@@ -16,6 +16,7 @@
     },
     "scripts": {
         "build": "tz build --config src/terrazzo.config.ts && vite build && copyfiles -u 1 src/styles.css dist/",
+        "dev": "tz build --watch --config src/terrazzo.config.ts",
         "terrazzo": "tz build --config src/terrazzo.config.ts"
     },
     "sideEffects": [

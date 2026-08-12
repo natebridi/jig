@@ -27,6 +27,9 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4(react@19.2.4)
     devDependencies:
+      '@jig-ui/styles':
+        specifier: workspace:*
+        version: link:../../packages/styles
       '@jig-ui/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/tsconfig

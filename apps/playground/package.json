@@ -13,6 +13,7 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@jig-ui/styles": "workspace:*",
     "@jig-ui/tsconfig": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

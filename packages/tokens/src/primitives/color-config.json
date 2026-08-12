@@ -1,0 +1,663 @@
+[
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 220,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0,
+        "end": 0.02,
+        "rate": 1,
+        "curve": "easeOutQuad"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.05,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.005,
+        "end": 0.015,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 83,
+        "end": 83,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Warm",
+      "provideInverted": false,
+      "rotation": "clockwise",
+      "gamut": "display-p3"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 200,
+        "end": 210,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.02,
+        "end": 0.08,
+        "rate": 1,
+        "curve": "easeOutQuad"
+      },
+      "brightness": {
+        "start": 0.98,
+        "end": 0.65,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.015,
+        "end": 0.045,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 264,
+        "end": 264,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Cool",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 225,
+        "end": 235,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.15,
+        "end": 0.7,
+        "rate": 1,
+        "curve": "easeOutQuad"
+      },
+      "brightness": {
+        "start": 0.88,
+        "end": 0.12,
+        "curve": "easeInQuart"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.09,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 250,
+        "end": 270,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Blue",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 98,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.09,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 210,
+        "end": 220,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Teal",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 98,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.09,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 140,
+        "end": 170,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Green",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 98,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.2,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 125,
+        "end": 110,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Lime",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 98,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.2,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 95,
+        "end": 75,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Yellow",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.3,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 70,
+        "end": 30,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Orange",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.15,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 30,
+        "end": 20,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Red",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.2,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 350,
+        "end": 300,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Fuschia",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 217,
+        "end": 220,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.04,
+        "end": 0.95,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "brightness": {
+        "start": 1,
+        "end": 0.06,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0.2,
+        "end": 0.35,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 300,
+        "end": 280,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Purple",
+      "provideInverted": false,
+      "rotation": "counterclockwise"
+    }
+  },
+  {
+    "properties": {
+      "steps": 10,
+      "hue": {
+        "start": 200,
+        "end": 210,
+        "curve": "easeOutQuad"
+      },
+      "saturation": {
+        "start": 0.02,
+        "end": 0.08,
+        "rate": 1,
+        "curve": "easeOutQuad"
+      },
+      "brightness": {
+        "start": 0.98,
+        "end": 0.65,
+        "curve": "linear"
+      },
+      "mode": "oklch",
+      "lightness": {
+        "start": 95,
+        "end": 12,
+        "curve": "easeInOutSine"
+      },
+      "chroma": {
+        "start": 0,
+        "end": 0,
+        "rate": 1,
+        "curve": "linear"
+      },
+      "oklchHue": {
+        "start": 264,
+        "end": 264,
+        "curve": "linear"
+      }
+    },
+    "options": {
+      "minorSteps": [
+        0,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "name": "Gray",
+      "provideInverted": false,
+      "rotation": "clockwise"
+    }
+  }
+]

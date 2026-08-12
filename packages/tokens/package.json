@@ -8,7 +8,8 @@
         "./color": "./dist/color.dtcg.json"
     },
     "scripts": {
-        "build": "tsx ./build.ts"
+        "build": "tsx ./build.ts",
+        "dev": "tsx watch --clear-screen=false ./build.ts"
     },
     "devDependencies": {
         "@jig-ui/tsconfig": "workspace:*",

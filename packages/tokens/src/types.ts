@@ -16,7 +16,7 @@ export type DimensionTokenValue = {
 }
 
 export type Token = {
-    '$type': 'color' | 'dimension' | 'fontWeight' | 'fontFamily';
+    '$type': 'color' | 'dimension' | 'fontWeight' | 'fontFamily' | 'number';
     '$value': ColorTokenValue | DimensionTokenValue | string | string[] | number;
 }
 
@@ -28,8 +28,9 @@ export interface ThemeTokenSet {
     color: {
         focus: Token;
         surfaces: {
-            100: Token;
-            200: Token;
+            body: Token;
+            card: Token;
+            popover: Token;
         }
         text: {
             primary: Token;

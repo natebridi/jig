@@ -8,11 +8,15 @@ export default {
             '$value': '{color.black}'
         },
         surfaces: {
-            100: {
+            body: {
+                '$type': 'color',
+                '$value': '{color.warm.25}'
+            },
+            card: {
                 '$type': 'color',
                 '$value': '{color.white}'
             },
-            200: {
+            popover: {
                 '$type': 'color',
                 '$value': '{color.gray.100}'
             }
@@ -20,17 +24,17 @@ export default {
         text: {
             primary: {
                 '$type': 'color',
-                '$value': '{color.gray.800}'
+                '$value': '{color.warm.600}'
             },
             secondary: {
                 '$type': 'color',
-                '$value': '{color.gray.700}'
+                '$value': '{color.gray.500}'
             }
         },
         button: {
-            primary: buttonSet('blue'),
-            secondary: buttonSet('pink'),
-            danger: buttonSet('red')
+            primary: buttonSet('blue', 'light'),
+            secondary: buttonSet('warm', 'light'),
+            danger: buttonSet('red', 'light')
         }
     }
 } as ThemeTokenSet;
