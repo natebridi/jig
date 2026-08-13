@@ -31,10 +31,12 @@ export interface ThemeTokenSet {
             body: Token;
             card: Token;
             popover: Token;
+            inverse: Token;
         }
         text: {
             primary: Token;
             secondary: Token;
+            inverse: Token;
         },
         button: {
             primary: TokenSet;

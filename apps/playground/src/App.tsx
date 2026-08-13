@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, Typography, Adorn, Stack, Grid } from '@jig-ui/react'
+import { Button, Typography, Adorn, Stack, Grid, Tooltip } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -73,9 +73,37 @@ export function App() {
       </Stack>
 
       <Typography as="p" sizeMin="500" sizeMax="600">
-        This is <Adorn with="semibold">important</Adorn> and this is{' '}
+        This is <Adorn with="semibold">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
         <Adorn with="danger"><Adorn with="italic">critical</Adorn></Adorn>.
       </Typography>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">Tooltip</Typography>
+
+        <Stack direction="row" spacing="500" align="center">
+          {(['top', 'bottom', 'left', 'right'] as const).map((side) => (
+            <Tooltip key={side} content={`Placed on the ${side}`} placement={side}>
+              <Button variant="secondary">{side}</Button>
+            </Tooltip>
+          ))}
+        </Stack>
+
+        <Stack direction="row" spacing="500" align="center">
+          <Tooltip content="Long descriptions wrap at a readable measure rather than running off the edge of the viewport.">
+            <Button variant="primary">Long content</Button>
+          </Tooltip>
+
+          <Tooltip content="Any focusable element can be a trigger." placement="bottom">
+            <span tabIndex={0} style={{ textDecoration: 'underline dotted', cursor: 'help' }}>
+              a plain span
+            </span>
+          </Tooltip>
+
+          <Tooltip content="Opens immediately." delay={0}>
+            <Button variant="secondary" size="sm">No delay</Button>
+          </Tooltip>
+        </Stack>
+      </Stack>
 
       <Stack spacing="400" direction={{ xs: 'column', md: 'row' }}>
         {(['primary', 'secondary'] as const).map((variant) => (

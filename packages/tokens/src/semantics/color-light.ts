@@ -19,6 +19,13 @@ export default {
             popover: {
                 '$type': 'color',
                 '$value': '{color.gray.100}'
+            },
+            // Inverted chrome — tooltips and anything else that must read as
+            // sitting above the page rather than on it. Mirrors the body
+            // surface and primary text, swapped.
+            inverse: {
+                '$type': 'color',
+                '$value': '{color.warm.600}'
             }
         },
         text: {
@@ -29,6 +36,10 @@ export default {
             secondary: {
                 '$type': 'color',
                 '$value': '{color.gray.500}'
+            },
+            inverse: {
+                '$type': 'color',
+                '$value': '{color.warm.25}'
             }
         },
         button: {
