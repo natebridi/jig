@@ -1,21 +1,59 @@
 import { useState, type ButtonHTMLAttributes, type MouseEvent } from 'react';
-import { button } from '../button/button.css';
+import { Icon, type IconName } from '../icon';
+import { button, buttonIconSize } from '../button/button.css';
 
 type ToggleButtonSize = 'sm' | 'md' | 'lg';
 
-export interface ToggleButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ToggleButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ToggleButtonSize;
   /** Controlled pressed state. Leave undefined to let the button manage its own. */
   pressed?: boolean;
   defaultPressed?: boolean;
   onPressedChange?: (pressed: boolean) => void;
+  /** Shown while unpressed, at the regular weight. */
+  icon?: IconName;
+  /**
+   * Swapped in while pressed. Defaults to `icon`, and either way the pressed
+   * state renders at the `fill` weight — which is what fill is for.
+   */
+  pressedIcon?: IconName;
+  /** Which side of the label the icon sits on. */
+  iconPosition?: 'start' | 'end';
 }
+
+export type ToggleButtonProps = ToggleButtonBaseProps &
+  (
+    | {
+        /**
+         * Drops the label and takes IconButton's square padding, so the two
+         * sit together at matching dimensions.
+         */
+        isIconOnly?: false;
+        /** Overrides the accessible name that the visible text would give. */
+        label?: string;
+      }
+    | {
+        isIconOnly: true;
+        /**
+         * Required here: with no visible text there is nothing else to name
+         * the button for assistive technology.
+         */
+        label: string;
+        /** Required here too — an icon-only toggle with no icon is an empty square. */
+        icon: IconName;
+      }
+  );
 
 export function ToggleButton({
   size = 'md',
   pressed: pressedProp,
   defaultPressed = false,
   onPressedChange,
+  icon,
+  pressedIcon,
+  iconPosition = 'start',
+  isIconOnly = false,
+  label,
   // Buttons default to type="submit", which would post the form a toggle
   // happens to sit in.
   type = 'button',
@@ -38,15 +76,29 @@ export function ToggleButton({
     onPressedChange?.(next);
   };
 
+  const name = pressed ? pressedIcon ?? icon : icon;
+  const glyph = name ? (
+    <Icon icon={name} weight={pressed ? 'fill' : 'regular'} size={buttonIconSize} />
+  ) : null;
+
   return (
     <button
       type={type}
       aria-pressed={pressed}
-      className={[button({ color: 'ghost', size, pressed }), className].filter(Boolean).join(' ')}
+      // Same recipe and the same iconOnly variant IconButton uses, so the two
+      // resolve to identical padding at every size rather than to two
+      // definitions that have to be kept in step.
+      className={[
+        button({ color: 'ghost', size, pressed, iconOnly: isIconOnly }),
+        className,
+      ].filter(Boolean).join(' ')}
+      {...(label ? { 'aria-label': label } : {})}
       onClick={handleClick}
       {...props}
     >
-      {children}
+      {iconPosition === 'start' && glyph}
+      {!isIconOnly && children}
+      {iconPosition === 'end' && glyph}
     </button>
   );
 }

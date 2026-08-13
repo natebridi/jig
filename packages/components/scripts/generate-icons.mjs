@@ -22,6 +22,8 @@ const NAMES = [
   'copy', 'check-circle', 'warning', 'warning-circle', 'info', 'question',
   'magnifying-glass', 'gear', 'user', 'calendar', 'clock',
   'trash', 'pencil-simple', 'list', 'arrow-square-out', 'sun', 'moon',
+  // Toggle affordances, where the fill weight carries the pressed state.
+  'star', 'heart', 'eye', 'eye-slash', 'bell',
 ];
 
 const here = dirname(fileURLToPath(import.meta.url));

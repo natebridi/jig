@@ -3,7 +3,7 @@ import { Button } from './button';
 import { Stack } from '../stack';
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Components/Buttons/Button',
   component: Button,
   tags: ['autodocs'],
   args: { children: 'Button' },
@@ -44,4 +44,25 @@ export const Sizes: Story = {
       <Button {...args} size="lg">Large</Button>
     </Stack>
   ),
+};
+
+export const WithIcon: Story = {
+  args: { icon: 'copy', children: 'Copy' },
+};
+
+export const IconAtEnd: Story = {
+  args: { icon: 'arrow-right', iconPosition: 'end', children: 'Continue' },
+};
+
+export const IconSizing: Story = {
+  render: (args) => (
+    <Stack direction="row" spacing="300" align="center">
+      <Button {...args} icon="copy" size="sm">Small</Button>
+      <Button {...args} icon="copy" size="md">Medium</Button>
+      <Button {...args} icon="copy" size="lg">Large</Button>
+    </Stack>
+  ),
+  parameters: {
+    docs: { description: { story: 'The icon is sized in `em`, so it scales with each size variant along with the gap — nothing to set per button.' } },
+  },
 };

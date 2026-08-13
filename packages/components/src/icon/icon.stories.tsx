@@ -3,7 +3,6 @@ import { Icon } from './icon';
 import { icons } from './generated';
 import { Stack } from '../stack';
 import { Typography } from '../typography';
-import { Button } from '../button';
 
 const meta = {
   title: 'Components/Icon',
@@ -55,25 +54,6 @@ export const SizesWithText: Story = {
   ),
   parameters: {
     docs: { description: { story: 'No size is set on any of these. The default of `1em` makes an icon track the type it sits in.' } },
-  },
-};
-
-export const InAButton: Story = {
-  render: () => (
-    <Stack direction="row" spacing="300" align="center">
-      <Button variant="primary">
-        <Icon icon="copy" /> Copy
-      </Button>
-      <Button variant="secondary">
-        Continue <Icon icon="arrow-right" />
-      </Button>
-      <Button variant="ghost" aria-label="Delete">
-        <Icon icon="trash" label="Delete" />
-      </Button>
-    </Stack>
-  ),
-  parameters: {
-    docs: { description: { story: 'Icons beside a text label stay decorative. The icon-only button passes `label`, which is what puts the icon into the accessibility tree.' } },
   },
 };
 

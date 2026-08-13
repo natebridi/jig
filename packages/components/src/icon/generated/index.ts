@@ -30,6 +30,11 @@ import { list } from './list';
 import { arrowSquareOut } from './arrow-square-out';
 import { sun } from './sun';
 import { moon } from './moon';
+import { star } from './star';
+import { heart } from './heart';
+import { eye } from './eye';
+import { eyeSlash } from './eye-slash';
+import { bell } from './bell';
 
 export const icons = {
   'caret-down': caretDown,
@@ -61,6 +66,11 @@ export const icons = {
   'arrow-square-out': arrowSquareOut,
   'sun': sun,
   'moon': moon,
+  'star': star,
+  'heart': heart,
+  'eye': eye,
+  'eye-slash': eyeSlash,
+  'bell': bell,
 };
 
 export type IconName = keyof typeof icons;

@@ -39,8 +39,9 @@
         "access": "public"
     },
     "scripts": {
-        "build": "node scripts/generate-icons.mjs && vite build",
+        "build": "node scripts/build.mjs",
         "generate:icons": "node scripts/generate-icons.mjs",
+        "verify:types": "node scripts/verify-types.mjs",
         "dev": "vite build --watch",
         "pack:local": "pnpm build && pnpm pack"
     },

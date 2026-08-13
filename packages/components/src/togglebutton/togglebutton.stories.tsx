@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 import { ToggleButton } from './togglebutton';
+import { IconButton } from '../iconbutton';
 import { Stack } from '../stack';
 
 const meta = {
-  title: 'Components/ToggleButton',
+  title: 'Components/Buttons/ToggleButton',
   component: ToggleButton,
   tags: ['autodocs'],
   args: { children: 'Bold' },
@@ -37,6 +38,58 @@ export const Sizes: Story = {
       <ToggleButton {...args} size="lg">Large</ToggleButton>
     </Stack>
   ),
+};
+
+export const WithIcon: Story = {
+  args: { icon: 'star', children: 'Favourite' },
+  parameters: {
+    docs: { description: { story: 'The icon renders at `regular` while unpressed and switches to `fill` when pressed, so the state reads even without the background change.' } },
+  },
+};
+
+export const WithPressedIcon: Story = {
+  args: { icon: 'eye', pressedIcon: 'eye-slash', children: 'Hide' },
+  parameters: {
+    docs: { description: { story: 'Pass `pressedIcon` when the two states are different things rather than the same thing switched on.' } },
+  },
+};
+
+export const ThemeToggle: Story = {
+  args: { icon: 'moon', pressedIcon: 'sun', children: 'Dark mode' },
+};
+
+export const IconOnly: Story = {
+  args: { isIconOnly: true, icon: 'star', label: 'Favourite' },
+  parameters: {
+    docs: { description: { story: 'Takes IconButton\'s square padding from the same recipe variant. `label` and `icon` are both required in this form — the type will not let you build an anonymous or empty one.' } },
+  },
+};
+
+export const IconOnlySizes: Story = {
+  render: (args) => (
+    <Stack direction="row" spacing="300" align="center">
+      <ToggleButton {...args} isIconOnly icon="star" label="Favourite" size="sm" />
+      <ToggleButton {...args} isIconOnly icon="star" label="Favourite" size="md" />
+      <ToggleButton {...args} isIconOnly icon="star" label="Favourite" size="lg" />
+    </Stack>
+  ),
+};
+
+export const MatchesIconButton: Story = {
+  render: (args) => (
+    <Stack spacing="300">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Stack key={size} direction="row" spacing="300" align="center">
+          <IconButton icon="star" label="Favourite" size={size} />
+          <ToggleButton {...args} isIconOnly icon="star" label="Favourite" size={size} />
+          <ToggleButton {...args} isIconOnly icon="star" label="Favourite" size={size} defaultPressed />
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: { description: { story: 'IconButton beside an unpressed and a pressed icon-only ToggleButton at each size. Both read the same `iconOnly` variant, so the dimensions cannot drift apart.' } },
+  },
 };
 
 export const TogglesOnClick: Story = {

@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, Typography, Adorn, Stack, Grid, Tooltip, CodeBlock, ToggleButton } from '@jig-ui/react'
+import { Button, IconButton, Typography, Adorn, Stack, Grid, Tooltip, CodeBlock, ToggleButton } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -47,36 +47,50 @@ export function App() {
         </Item>
       </Grid>
 
-      <Stack spacing='300'>
-        <Typography as="h2" with="display01">Testing copy, and this is heading 01</Typography>
-        <Typography as="h2" with="heading02">Testing copy, and this is heading 02</Typography>
-        <Typography as="h2" with="heading03">Testing copy, and this is heading 03</Typography>
-        <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
-        <Typography as="p" with="body02">Testing copy, and this is body 02</Typography>
-        <Typography as="p" with="caption01">Testing copy, and this is caption 01</Typography>
-        <Typography as="p" with="caption02">Testing copy, and this is caption 02</Typography>
-      </Stack>
+      <Stack spacing="700">
 
-      <Stack spacing='300'>
-        <div style={{ backgroundColor: color.surfaces.card, padding: spacing[400] }}>
+        <Stack spacing='300'>
+          <Typography as="h2" with="display01">Testing copy, and this is heading 01</Typography>
+          <Typography as="h2" with="heading02">Testing copy, and this is heading 02</Typography>
           <Typography as="h2" with="heading03">Testing copy, and this is heading 03</Typography>
-        </div>
+          <Typography as="p" with="body01">Testing copy, and this is body 01</Typography>
+          <Typography as="p" with="body02">Testing copy, and this is body 02</Typography>
+          <Typography as="p" with="caption01">Testing copy, and this is caption 01</Typography>
+          <Typography as="p" with="caption02">Testing copy, and this is caption 02</Typography>
+        </Stack>
+
+        <Stack spacing='300'>
+          <div style={{ backgroundColor: color.surfaces.card, padding: spacing[400] }}>
+            <Typography as="h2" with="heading03">Testing copy, and this is heading 03</Typography>
+          </div>
+        </Stack>
+
+        <Stack direction="row" spacing="400">
+          <Button variant="primary" icon="warning">Primary</Button>
+          <Button variant="primary">Primary</Button>
+          <IconButton variant="primary" label="Trash" icon="trash" />
+          <IconButton variant="ghost" label="Trash" icon="trash" />
+          <ToggleButton isIconOnly icon="heart" label="Trash" />
+          <Button variant="primary" disabled>Disabled</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="danger">Danger</Button>
+          <Button variant="ghost" icon="calendar" size="sm">Ghost</Button>
+        </Stack>
+
+        <Stack direction="row" spacing="400">
+          <Button variant="primary" icon="star" size="sm">Primary</Button>
+          <IconButton variant="primary" label="Trash" icon="trash" size="sm" />
+          <Button variant="primary" icon="star" size="lg">Primary</Button>
+          <IconButton variant="primary" label="Trash" icon="trash" size="lg" />
+        </Stack>
+
+        <Typography as="p" sizeMin="500" sizeMax="600">
+          This is <Adorn with="semibold">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
+          <Adorn with="danger"><Adorn with="italic">critical</Adorn></Adorn>.
+        </Typography>
+
       </Stack>
 
-      <Typography as="p" with="body01">Testing</Typography>
-
-      <Stack direction="row">
-        <Button variant="primary">Primary</Button>
-        <Button variant="primary" disabled>Disabled</Button>
-        <Button variant="secondary">Secondary</Button>
-        <Button variant="danger">Danger</Button>
-        <Button variant="ghost">Ghost</Button>
-      </Stack>
-
-      <Typography as="p" sizeMin="500" sizeMax="600">
-        This is <Adorn with="semibold">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
-        <Adorn with="danger"><Adorn with="italic">critical</Adorn></Adorn>.
-      </Typography>
 
       <Stack spacing="400">
         <Typography as="h2" with="heading03">Tooltip</Typography>
