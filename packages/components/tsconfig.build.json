@@ -11,5 +11,8 @@
             "@jig-ui/styles/tokens": ["../styles/dist/vars.d.ts"]
         }
     },
-    "include": ["src"]
+    "include": ["src"],
+    // Stories live beside their components but are not part of the published
+    // package — the lib entry can't reach them and `files` is dist only.
+    "exclude": ["src/**/*.stories.tsx"]
 }

@@ -1,0 +1,11 @@
+/*
+ * The canvas is otherwise unpainted, which leaves components sitting on white
+ * in both themes. Using the tokens means the toolbar's theme switch moves the
+ * background with the components.
+ */
+body {
+  background: var(--color-surfaces-body);
+  color: var(--color-text-primary);
+  font-family: var(--type-family-sans), ui-sans-serif, system-ui, sans-serif;
+  padding: 1.5rem;
+}

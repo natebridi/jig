@@ -42,6 +42,7 @@ export interface ThemeTokenSet {
             primary: TokenSet;
             secondary: TokenSet;
             danger: TokenSet;
+            ghost: TokenSet;
         }
     }
 }

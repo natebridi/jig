@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, Typography, Adorn, Stack, Grid, Tooltip } from '@jig-ui/react'
+import { Button, Typography, Adorn, Stack, Grid, Tooltip, CodeBlock, ToggleButton } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -70,6 +70,7 @@ export function App() {
         <Button variant="primary" disabled>Disabled</Button>
         <Button variant="secondary">Secondary</Button>
         <Button variant="danger">Danger</Button>
+        <Button variant="ghost">Ghost</Button>
       </Stack>
 
       <Typography as="p" sizeMin="500" sizeMax="600">
@@ -103,6 +104,55 @@ export function App() {
             <Button variant="secondary" size="sm">No delay</Button>
           </Tooltip>
         </Stack>
+      </Stack>
+
+      <Stack spacing="400" align="stretch">
+        <Typography as="h2" with="heading03">CodeBlock</Typography>
+
+        <CodeBlock label="app.tsx">{`
+          import { Button } from '@jig-ui/react';
+
+          export function Example() {
+            return <Button variant="primary">Click me</Button>;
+          }
+        `}</CodeBlock>
+
+        <CodeBlock>{`pnpm add @jig-ui/react`}</CodeBlock>
+
+        <CodeBlock label="a-very-long-line.sh">{`echo "this single line is far too wide for the block, so the code area scrolls horizontally instead of wrapping or spilling out of the card"`}</CodeBlock>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">ToggleButton</Typography>
+
+        <Stack direction="row" spacing="300" align="center">
+          <ToggleButton size="sm">Small</ToggleButton>
+          <ToggleButton>Medium</ToggleButton>
+          <ToggleButton size="lg">Large</ToggleButton>
+          <ToggleButton defaultPressed>Starts pressed</ToggleButton>
+          <ToggleButton disabled>Disabled</ToggleButton>
+          <ToggleButton defaultPressed disabled>Pressed + disabled</ToggleButton>
+        </Stack>
+      </Stack>
+
+      <Stack spacing="400" align="stretch">
+        <Typography as="h2" with="heading03">Spacing</Typography>
+
+        {/* Margins doing the work, in a plain container with no gap of its own. */}
+        <div style={{ backgroundColor: color.surfaces.card, padding: spacing[400] }}>
+          <Typography as="h3" with="heading04" mb="500">Heading, mb 500</Typography>
+          <Typography as="p" with="body01" mb="200">Paragraph, mb 200.</Typography>
+          <Typography as="p" with="body01" mb="200">Another paragraph, mb 200.</Typography>
+          <Typography as="p" with="body01">Last paragraph, no margin at all.</Typography>
+        </div>
+
+        {/* Responsive: the object form of the same prop. */}
+        <div style={{ backgroundColor: color.surfaces.card, padding: spacing[400] }}>
+          <Typography as="p" with="body01" mb={{ xs: '100', md: '700' }}>
+            Responsive margin — mb 100 below md, mb 700 from md up. Resize to see it.
+          </Typography>
+          <Typography as="p" with="caption01">The element that follows it.</Typography>
+        </div>
       </Stack>
 
       <Stack spacing="400" direction={{ xs: 'column', md: 'row' }}>

@@ -1,0 +1,38 @@
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Stack } from './stack';
+import { Button } from '../button';
+
+const meta = {
+  title: 'Layout/Stack',
+  component: Stack,
+  tags: ['autodocs'],
+  args: {
+    children: (
+      <>
+        <Button variant="secondary">One</Button>
+        <Button variant="secondary">Two</Button>
+        <Button variant="secondary">Three</Button>
+      </>
+    ),
+  },
+} satisfies Meta<typeof Stack>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Column: Story = { args: { direction: 'column', spacing: '300' } };
+export const Row: Story = { args: { direction: 'row', spacing: '300' } };
+
+export const Responsive: Story = {
+  args: { direction: { xs: 'column', md: 'row' }, spacing: '400' },
+  parameters: {
+    docs: { description: { story: 'Every Stack prop takes either a bare value or an object keyed by breakpoint, applied mobile-first.' } },
+  },
+};
+
+export const Alignment: Story = {
+  args: { direction: 'column', spacing: '300', align: 'center' },
+  parameters: {
+    docs: { description: { story: 'align defaults to "start", which makes children shrink to their content. Use "stretch" for children that should fill the width.' } },
+  },
+};

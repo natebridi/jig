@@ -26,6 +26,16 @@ export default defineConfig({
                         ${contents}
                     }
                 }`
+            },{
+                // An explicit override for consumers who want to choose a theme
+                // rather than follow the OS. Both directions are needed: the
+                // attribute selector outweighs the media query above, so
+                // data-theme="light" is what forces light while the OS is dark.
+                input: { theme: "lux" },
+                prepare: (contents) => `:root[data-theme="light"] {\n  color-scheme: light;\n  ${contents} }`
+            },{
+                input: { theme: "dark" },
+                prepare: (contents) => `:root[data-theme="dark"] {\n  color-scheme: dark;\n  ${contents} }`
             }]
         }),
         cssInJs({

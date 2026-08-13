@@ -1,5 +1,4 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { defineProperties, createSprinkles } from "@vanilla-extract/sprinkles";
 import { color, type } from "@jig-ui/styles/tokens";
 
 export const typography = recipe({

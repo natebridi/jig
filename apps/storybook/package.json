@@ -1,0 +1,30 @@
+{
+  "name": "@jig-ui/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@jig-ui/react": "workspace:*",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@jig-ui/styles": "workspace:*",
+    "@jig-ui/tsconfig": "workspace:*",
+    "@storybook/addon-a11y": "^10.5.7",
+    "@storybook/addon-docs": "^10.5.7",
+    "@storybook/addon-themes": "^10.5.7",
+    "@storybook/react-vite": "^10.5.7",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vanilla-extract/vite-plugin": "^5.2.1",
+    "storybook": "^10.5.7",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
+  }
+}

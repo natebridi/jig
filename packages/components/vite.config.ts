@@ -48,7 +48,8 @@ export default defineConfig({
         lib: {
             entry: {
                 index: resolve(here, 'src/index.ts'),
-                tokens: resolve(here, 'src/tokens.ts')
+                tokens: resolve(here, 'src/tokens.ts'),
+                icons: resolve(here, 'src/icons.ts')
             },
             formats: ['es']
         },

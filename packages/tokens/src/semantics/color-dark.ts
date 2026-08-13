@@ -1,5 +1,5 @@
 import { ThemeTokenSet } from '../types'
-import { buttonSet } from '../utils'
+import { buttonSet, ghostButtonSet } from '../utils'
 
 export default {
     color: {
@@ -45,7 +45,8 @@ export default {
         button: {
             primary: buttonSet('blue', 'dark'),
             secondary: buttonSet('gray', 'dark'),
-            danger: buttonSet('red', 'dark')
+            danger: buttonSet('red', 'dark'),
+            ghost: ghostButtonSet('dark')
         }
     }
 } as ThemeTokenSet;

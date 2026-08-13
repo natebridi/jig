@@ -1,0 +1,18 @@
+{
+    "extends": "@jig-ui/tsconfig/react.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "types": ["node"]
+    },
+    // Dot-directories are skipped by a bare directory include, so .storybook is
+    // globbed explicitly. The component sources are here because this is the
+    // tsconfig react-docgen-typescript builds its program from — without them
+    // it cannot resolve the props it documents.
+    "include": [
+        ".storybook/**/*.ts",
+        ".storybook/**/*.tsx",
+        "../../packages/components/src/**/*.ts",
+        "../../packages/components/src/**/*.tsx"
+    ],
+    "exclude": ["node_modules"]
+}
