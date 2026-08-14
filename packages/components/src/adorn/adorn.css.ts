@@ -1,26 +1,30 @@
 import { recipe } from '@vanilla-extract/recipes'
 import { color, type } from "@jig-ui/styles/tokens";
 
+/**
+ * Weight and slant are not variants here — `as="strong"` and `as="em"` already
+ * carry both the styling and the semantics, and duplicating them as visual-only
+ * props invites text that looks emphasised without being announced as such.
+ * What is left is the part HTML has no element for: which semantic colour the
+ * text takes.
+ */
 export const adorn = recipe({
     base: {},
     variants: {
         with: {
-            semibold: {
-                fontWeight: 600,
+            muted: {
+                color: color.text.muted,
             },
-            bold: {
-                fontWeight: 700,
+            accent: {
+                color: color.text.accent,
             },
-            italic: {
-                fontStyle: 'italic',
+            danger: {
+                color: color.text.danger,
             },
             code: {
-              fontFamily: type.family.mono,
-              color: color.text.primary
+                fontFamily: type.family.mono,
+                color: color.text.primary,
             },
-            muted: {},
-            accent: {},
-            danger: {},
         },
     },
 })

@@ -5,7 +5,6 @@ import { withThemeByDataAttribute } from '@storybook/addon-themes';
 // uses in the playground: reset, then tokens, then base styles.
 import '@jig-ui/styles/reset.css';
 import '@jig-ui/styles/vars.css';
-import '@jig-ui/styles/base.css';
 import './preview.css';
 
 const preview: Preview = {
@@ -18,7 +17,7 @@ const preview: Preview = {
   ],
   parameters: {
     controls: { matchers: { color: /(background|color)$/i } },
-    a11y: { test: 'todo' },
+    a11y: { test: 'error' },
   },
 };
 

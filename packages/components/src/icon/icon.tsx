@@ -1,11 +1,15 @@
-import type { ReactNode, SVGAttributes } from 'react';
+import type { ReactNode, Ref, SVGAttributes } from 'react';
 import { icons, type IconName } from './generated';
 import { icon as iconClass } from './icon.css';
 
 export type { IconName };
 export type IconWeight = 'regular' | 'fill';
 
-export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, 'children'> {
+export interface IconProps
+  // `role`, `aria-label` and `aria-hidden` are decided together by `label` —
+  // letting a caller set one of the three would produce an icon that is
+  // half-announced.
+  extends Omit<SVGAttributes<SVGSVGElement>, 'children' | 'role' | 'aria-label' | 'aria-hidden'> {
   /** A name from the curated set. Omit when supplying `children` instead. */
   icon?: IconName;
   /** `fill` reads as active, selected or pressed against the default `regular`. */
@@ -27,6 +31,7 @@ export interface IconProps extends Omit<SVGAttributes<SVGSVGElement>, 'children'
    * is handled the same way as a built-in icon.
    */
   children?: ReactNode;
+  ref?: Ref<SVGSVGElement>;
 }
 
 export function Icon({
@@ -43,16 +48,17 @@ export function Icon({
 
   return (
     <svg
+      {...props}
       xmlns="http://www.w3.org/2000/svg"
       viewBox={viewBox}
       width={size}
       height={size}
       className={[iconClass, className].filter(Boolean).join(' ')}
       // An unlabelled icon is decorative: kept out of the accessibility tree
-      // entirely, rather than announced as an anonymous graphic.
+      // entirely, rather than announced as an anonymous graphic. Set after the
+      // spread so this cannot be half-overridden.
       {...(label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': true })}
       focusable="false"
-      {...props}
     >
       {path ? <path d={path} /> : children}
     </svg>

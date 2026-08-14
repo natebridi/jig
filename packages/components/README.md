@@ -11,7 +11,9 @@ build tooling is required in the consuming project.
 npm install @jig-ui/react
 ```
 
-`react` and `react-dom` (>=18) are peer dependencies.
+`react` and `react-dom` (>=19) are peer dependencies. React 19 is required
+because components take `ref` as an ordinary prop rather than through
+`forwardRef`.
 
 ## Use
 
@@ -95,6 +97,84 @@ import { color, spacing } from '@jig-ui/react/tokens';
 
 Theming is done entirely through CSS custom properties, so you can override any
 token in your own stylesheet without touching the package.
+
+## Theming
+
+### Cascade layers
+
+All of Jig's CSS ships inside cascade layers, declared in this order:
+
+```css
+@layer jig.reset, jig.tokens, jig.base, jig.components;
+```
+
+Both `styles.css` and `reset.css` state this order, so importing them in either
+order gives the same cascade.
+
+Because every Jig rule sits in a layer, **any unlayered CSS you write beats all
+of it**, regardless of selector specificity. Overriding a token is therefore
+just:
+
+```css
+:root {
+  --color-text-primary: #111;
+}
+```
+
+You do not need to out-specify Jig's own `:root[data-theme="dark"]` selectors —
+layer order settles it first. If your app uses layers itself, name Jig's in your
+own `@layer` statement to place your rules deliberately:
+
+```css
+@layer jig.reset, jig.tokens, jig.base, jig.components, app;
+```
+
+`jig.base` currently emits nothing. It is declared so that adding base styles
+later does not renumber an order you have already written against.
+
+`jig.reset` is lowest on purpose. A reset exists to beat the *browser's* default
+styles, and those lose to author CSS at any layer — so layering it takes nothing
+away. It also has to sit below `jig.components`, or its `h1`–`h6` rules would
+override the components' own typography.
+
+### Light and dark
+
+By default Jig follows the operating system via `prefers-color-scheme`. To take
+control, set `data-theme` on the root element:
+
+```html
+<html data-theme="dark">
+```
+
+Both directions are supported: `data-theme="light"` forces light even when the
+OS is dark, and vice versa.
+
+Theme selectors are scoped to `:root`, so a theme applies to the whole document.
+Nested theme regions — a dark card inside a light page — are not supported.
+
+### Avoiding a flash of the wrong theme
+
+Following the OS needs no JavaScript and is correct before first paint, because
+it is pure CSS.
+
+A **persisted** preference is different. If you read a stored theme and apply
+`data-theme` after hydration, the user sees the OS theme first and yours a moment
+later. Jig deliberately ships no runtime for this — it is your app's data, and a
+library-injected script cannot know where you keep it. Either render the
+attribute server-side:
+
+```html
+<html data-theme="{{ user.theme }}">
+```
+
+or set it from a small blocking script in `<head>`, before the stylesheet:
+
+```html
+<script>
+  const t = localStorage.getItem('theme');
+  if (t) document.documentElement.dataset.theme = t;
+</script>
+```
 
 ## License
 

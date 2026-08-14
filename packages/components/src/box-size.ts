@@ -15,9 +15,22 @@ export interface BoxSizeProps {
   height?: CSSProperties['height'];
   minHeight?: CSSProperties['minHeight'];
   maxWidth?: CSSProperties['maxWidth'];
+  /**
+   * Centres the box in its container via `margin-inline: auto`. Separate from
+   * `maxWidth` on purpose — constraining a width and centring it are two
+   * decisions, and a constrained box pinned to the start of a column is a
+   * perfectly ordinary thing to want.
+   */
+  centered?: boolean;
 }
 
-const boxSizeKeys = new Set<keyof BoxSizeProps>(['width', 'height', 'minHeight', 'maxWidth']);
+const boxSizeKeys = new Set<keyof BoxSizeProps>([
+  'width',
+  'height',
+  'minHeight',
+  'maxWidth',
+  'centered',
+]);
 
 /**
  * Splits the box-dimension props out of a component's props, returning the
@@ -29,14 +42,16 @@ export function splitBoxSize<P extends object>(props: P) {
   const rest: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(props)) {
-    if (boxSizeKeys.has(key as keyof BoxSizeProps)) {
-      if (value !== undefined) {
-        (style as Record<string, unknown>)[key] = value;
-        /* If you're setting a maxWidth, assume you want it to be centered */
-        if (key == 'maxWidth') style['marginInline'] = 'auto';
-      }
-    } else {
+    if (!boxSizeKeys.has(key as keyof BoxSizeProps)) {
       rest[key] = value;
+      continue;
+    }
+    if (value === undefined) continue;
+
+    if (key === 'centered') {
+      if (value) style.marginInline = 'auto';
+    } else {
+      (style as Record<string, unknown>)[key] = value;
     }
   }
 

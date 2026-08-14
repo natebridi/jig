@@ -1,10 +1,13 @@
-import { useState, type ButtonHTMLAttributes, type MouseEvent } from 'react';
+import { useState, type ButtonHTMLAttributes, type MouseEvent, type Ref } from 'react';
 import { Icon, type IconName } from '../icon';
 import { button, buttonIconSize } from '../button/button.css';
 
 type ToggleButtonSize = 'sm' | 'md' | 'lg';
 
-interface ToggleButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ToggleButtonBaseProps
+  // `aria-pressed` *is* the pressed state and `aria-label` is owned by `label`
+  // — accepting either would let the DOM contradict the component.
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-pressed' | 'aria-label'> {
   size?: ToggleButtonSize;
   /** Controlled pressed state. Leave undefined to let the button manage its own. */
   pressed?: boolean;
@@ -19,6 +22,7 @@ interface ToggleButtonBaseProps extends ButtonHTMLAttributes<HTMLButtonElement> 
   pressedIcon?: IconName;
   /** Which side of the label the icon sits on. */
   iconPosition?: 'start' | 'end';
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export type ToggleButtonProps = ToggleButtonBaseProps &
@@ -83,7 +87,10 @@ export function ToggleButton({
 
   return (
     <button
+      {...props}
       type={type}
+      // Everything the component owns is set after the spread, so consumer
+      // props can add to the button but cannot contradict its state.
       aria-pressed={pressed}
       // Same recipe and the same iconOnly variant IconButton uses, so the two
       // resolve to identical padding at every size rather than to two
@@ -94,7 +101,6 @@ export function ToggleButton({
       ].filter(Boolean).join(' ')}
       {...(label ? { 'aria-label': label } : {})}
       onClick={handleClick}
-      {...props}
     >
       {iconPosition === 'start' && glyph}
       {!isIconOnly && children}

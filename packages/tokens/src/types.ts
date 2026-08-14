@@ -24,25 +24,34 @@ export type TokenSet = {
     [key: string]: Token | TokenSet | ThemeTokenSet;
 }
 
+/** A flat set of tokens keyed by role — `surfaces`, `text`, and the like. */
+export type TokenGroup = {
+    [role: string]: Token;
+}
+
+/**
+ * A theme's colour semantics.
+ *
+ * `focus`, `surfaces` and `text` are the document-level roles every theme owes
+ * the system, so they are named here. Everything else is a per-component set —
+ * `button` today, and whatever the next component needs — which is why this
+ * stays open rather than enumerating them.
+ *
+ * The previous version listed Button's four variants inline. At forty
+ * components that becomes a hand-synchronised monolith that has to be edited
+ * in lockstep with every new component, and which still cannot check that
+ * light and dark agree. The *names* are enforced instead by
+ * `REQUIRED_SEMANTICS` and the parity check in `validate.ts`, which run over
+ * the generated documents and can see things the type never could.
+ */
+export type ThemeColors = {
+    focus: Token;
+    surfaces: TokenGroup;
+    text: TokenGroup;
+} & {
+    [component: string]: Token | TokenGroup | TokenSet;
+}
+
 export interface ThemeTokenSet {
-    color: {
-        focus: Token;
-        surfaces: {
-            body: Token;
-            card: Token;
-            popover: Token;
-            inverse: Token;
-        }
-        text: {
-            primary: Token;
-            secondary: Token;
-            inverse: Token;
-        },
-        button: {
-            primary: TokenSet;
-            secondary: TokenSet;
-            danger: TokenSet;
-            ghost: TokenSet;
-        }
-    }
+    color: ThemeColors;
 }

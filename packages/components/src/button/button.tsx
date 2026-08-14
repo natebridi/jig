@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 import { Icon, type IconName } from '../icon';
 import { button, buttonIconSize } from './button.css';
 
@@ -15,6 +15,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: IconName;
   /** Which side of the label the icon sits on. */
   iconPosition?: 'start' | 'end';
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export function Button({
@@ -22,6 +23,10 @@ export function Button({
   size = 'md',
   icon,
   iconPosition = 'start',
+  // Matches IconButton and ToggleButton. A bare <button> defaults to
+  // type="submit", which silently posts whatever form it happens to sit in —
+  // pass type="submit" explicitly when that is what you want.
+  type = 'button',
   className,
   children,
   ...props
@@ -30,8 +35,9 @@ export function Button({
 
   return (
     <button
-      className={[button({ color: variant, size: size }), className].filter(Boolean).join(' ')}
       {...props}
+      type={type}
+      className={[button({ color: variant, size: size }), className].filter(Boolean).join(' ')}
     >
       {iconPosition === 'start' && glyph}
       {children}

@@ -1,16 +1,21 @@
 {
-	"name": "jig",
-	"private": true,
-	"scripts": {
-		"build": "turbo run build",
-		"dev": "turbo run build && turbo run dev",
-		"storybook": "turbo run storybook",
-		"build-storybook": "turbo run build-storybook",
-		"lint": "turbo run lint"
-	},
-	"devDependencies": {
-		"turbo": "latest",
-		"typescript": "^6.0.2"
-	},
-	"packageManager": "pnpm@10.0.0"
+    "name": "jig",
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "typecheck": "turbo run typecheck",
+        "test": "turbo run test",
+        "dev": "turbo run build && turbo run dev",
+        "storybook": "turbo run storybook",
+        "build-storybook": "turbo run build-storybook",
+        "changeset": "changeset",
+        "version-packages": "changeset version",
+        "release": "turbo run build && changeset publish"
+    },
+    "devDependencies": {
+        "@changesets/cli": "^3.0.0",
+        "turbo": "latest",
+        "typescript": "^6.0.2"
+    },
+    "packageManager": "pnpm@10.0.0"
 }

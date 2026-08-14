@@ -40,6 +40,22 @@ export default {
             inverse: {
                 '$type': 'color',
                 '$value': '{color.warm.25}'
+            },
+            // Recedes further than secondary — captions, timestamps, and the
+            // rest of the text that is present but not being read.
+            muted: {
+                '$type': 'color',
+                '$value': '{color.gray.400}'
+            },
+            // Tracks the primary button's hue so emphasised text and the
+            // primary action read as the same colour idea.
+            accent: {
+                '$type': 'color',
+                '$value': '{color.blue.550}'
+            },
+            danger: {
+                '$type': 'color',
+                '$value': '{color.red.550}'
             }
         },
         button: {

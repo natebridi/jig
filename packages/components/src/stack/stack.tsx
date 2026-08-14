@@ -1,25 +1,36 @@
-import { HTMLAttributes } from 'react';
-import { Responsive, resolveResponsive } from '../responsive';
+import type { ElementType, HTMLAttributes, Ref } from 'react';
+import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { splitBoxSize, type BoxSizeProps } from '../box-size';
-import { base, direction, stackSpacing, align } from './stack.css';
+import { layoutSprinkles } from '../layout.css';
+import type { LayoutAlign, LayoutDirection, LayoutJustify, LayoutSpacing } from '../layout';
+import { base } from './stack.css';
 
-type StackDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse';
-type StackSpacing = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-type StackAlign = 'start' | 'center' | 'end' | 'stretch' | 'baseline';
+/**
+ * The elements a Stack is willing to render as. Restricted rather than open:
+ * an arbitrary ElementType would not change the props or the ref type anyway,
+ * so it promised a flexibility it never actually had.
+ */
+export type StackElement =
+  | 'div' | 'section' | 'article' | 'aside'
+  | 'nav' | 'header' | 'footer' | 'main'
+  | 'ul' | 'ol' | 'li';
 
 export interface StackProps extends HTMLAttributes<HTMLElement>, SpacingProps, BoxSizeProps {
-  as?: React.ElementType;
-  direction?: Responsive<StackDirection>;
-  spacing?: Responsive<StackSpacing>;
-  align?: Responsive<StackAlign>;
+  as?: StackElement;
+  direction?: Responsive<LayoutDirection>;
+  spacing?: Responsive<LayoutSpacing>;
+  align?: Responsive<LayoutAlign>;
+  justify?: Responsive<LayoutJustify>;
+  ref?: Ref<HTMLElement>;
 }
 
 export function Stack({
-  as: Component = 'div',
-  direction: directionProp = 'column',
+  as = 'div',
+  direction = 'column',
   spacing: spacingProp = '300',
-  align: alignProp = 'start',
+  align = 'start',
+  justify,
   className,
   style,
   children,
@@ -27,14 +38,21 @@ export function Stack({
 }: StackProps) {
   const { spacing, rest: afterSpacing } = splitSpacing(props);
   const { style: boxStyle, rest } = splitBoxSize(afterSpacing);
+  // The union is the public contract. Internally it has to widen, or JSX tries
+  // to satisfy every element in it at once and intersects their ref types down
+  // to nothing.
+  const Component = as as ElementType;
 
   return (
     <Component
       className={[
         base,
-        resolveResponsive(directionProp, direction),
-        resolveResponsive(spacingProp, stackSpacing),
-        resolveResponsive(alignProp, align),
+        layoutSprinkles({
+          flexDirection: direction,
+          gap: spacingProp,
+          alignItems: align,
+          ...(justify ? { justifyContent: justify } : {}),
+        }),
         spacing,
         className,
       ].filter(Boolean).join(' ')}

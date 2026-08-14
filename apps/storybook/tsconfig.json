@@ -2,7 +2,9 @@
     "extends": "@jig-ui/tsconfig/react.json",
     "compilerOptions": {
         "noEmit": true,
-        "types": ["node"]
+        // vite/client carries the ambient declarations for side-effect CSS
+        // imports, which .storybook/preview.ts relies on.
+        "types": ["node", "vite/client"]
     },
     // Dot-directories are skipped by a bare directory include, so .storybook is
     // globbed explicitly. The component sources are here because this is the

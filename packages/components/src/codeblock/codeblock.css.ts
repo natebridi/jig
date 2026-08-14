@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { color, radius, spacing, type } from '@jig-ui/styles/tokens';
+import { focusRing } from '../focus-ring';
 
 export const root = style({
   boxSizing: 'border-box',
@@ -38,6 +39,9 @@ export const label = style({
 export const pre = style({
   margin: 0,
   padding: `0 ${spacing[400]} ${spacing[400]}`,
+  // The <pre> is focusable so keyboard users can scroll the overflow, which
+  // means it needs the ring too.
+  ...focusRing,
   overflowX: 'auto',
   whiteSpace: 'pre',
   fontFamily: type.family.mono,

@@ -30,7 +30,7 @@ export function App() {
         <div id='debug-size' />
       </div>
 
-      <Stack px="500" py="800" maxWidth="74rem" spacing="800" align="start">
+      <Stack px="500" py="800" maxWidth="74rem" centered spacing="800" align="start">
 
         <Stack spacing="400">
           <Typography as="h2" with="heading04">Buttons</Typography>
@@ -135,9 +135,9 @@ export function App() {
           <IconButton variant="primary" label="Trash" icon="trash" size="lg" />
         </Stack>
 
-        <Typography as="p" sizeMin="500" sizeMax="600">
-          This is <Adorn with="semibold">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
-          <Adorn with="danger"><Adorn with="italic">critical</Adorn></Adorn>.
+        <Typography as="p" with="body01">
+          This is <Adorn as="strong">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
+          <Adorn with="danger"><Adorn as="em">critical</Adorn></Adorn>.
         </Typography>
 
       </Stack>

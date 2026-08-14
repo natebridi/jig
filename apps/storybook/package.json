@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "storybook": "storybook dev -p 6006 --no-open",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "build-storybook": "storybook build"
   },
   "dependencies": {

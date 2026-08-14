@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type HTMLAttributes } from 'react';
-import { ToggleButton } from '../togglebutton';
+import { useEffect, useRef, useState, type HTMLAttributes, type Ref } from 'react';
+import { IconButton } from '../iconbutton';
 import { Tooltip } from '../tooltip';
+import { visuallyHidden } from '../visually-hidden.css';
 import { bar, code as codeStyle, label as labelStyle, pre as preStyle, root } from './codeblock.css';
 
 export interface CodeBlockProps extends HTMLAttributes<HTMLElement> {
@@ -8,6 +9,7 @@ export interface CodeBlockProps extends HTMLAttributes<HTMLElement> {
   label?: string;
   /** Content to display as a plain string. */
   children: string;
+  ref?: Ref<HTMLDivElement>;
 }
 
 /**
@@ -52,9 +54,27 @@ export function CodeBlock({ label, className, children, ...props }: CodeBlockPro
     <div className={[root, className].filter(Boolean).join(' ')} {...props}>
       <div className={bar}>
         <span className={labelStyle}>{label}</span>
-        <Tooltip content="Copy" delay={0}>
-          <ToggleButton pressed={copied} size="sm" icon="copy" isIconOnly onClick={copy}  aria-live="polite" />
+        {/*
+          Copying is an action, not a state the button stays in — so it is an
+          IconButton whose name changes, rather than a toggle. The icon swap is
+          the visual half of the same feedback.
+        */}
+        <Tooltip content={copied ? 'Copied' : 'Copy'} delay={0}>
+          <IconButton
+            size="sm"
+            icon={copied ? 'check' : 'copy'}
+            label={copied ? 'Copied' : 'Copy'}
+            onClick={copy}
+          />
         </Tooltip>
+        {/*
+          Renaming the button mid-interaction is not reliably announced, so the
+          confirmation goes through a live region that is empty until there is
+          something to say.
+        */}
+        <span role="status" className={visuallyHidden}>
+          {copied ? 'Copied to clipboard' : ''}
+        </span>
       </div>
       {/* Focusable so the overflow is reachable by keyboard, not just by drag. */}
       <pre className={preStyle} tabIndex={0}>

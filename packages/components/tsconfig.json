@@ -2,8 +2,7 @@
     "extends": "@jig-ui/tsconfig/react.json",
     "compilerOptions": {
         "outDir": "dist",
-        "rootDir": "src",
-        "types": ["node"]
+        "rootDir": "src"
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist"]

@@ -1,23 +1,34 @@
+import { createRequire } from 'node:module'
 import { defineConfig } from '@terrazzo/cli'
 import css from '@terrazzo/plugin-css'
-import vanillaExtract from '@terrazzo/plugin-vanilla-extract'
 import cssInJs from '@terrazzo/plugin-css-in-js'
 
-const pathToTokens = __dirname.slice(0, -3) // remove 'src' from end
+// Terrazzo wants a file path rather than a module specifier, so the workspace
+// dependency is resolved through Node instead of reached for by hand. The
+// `workspace:*` dependency on @jig-ui/tokens is what guarantees Turbo has
+// already built this file, and `./resolver` makes the DTCG resolver document a
+// declared export rather than a path into another package's dist.
+const require = createRequire(import.meta.url)
+const tokensFile = require.resolve('@jig-ui/tokens/resolver')
 
 export default defineConfig({
-    // doesn't feel like the best way to do this, but Terrazzo requires a direct file and this works
-    tokens: [`${pathToTokens}node_modules/@jig-ui/tokens/dist/tokens.dtcg.json`],
+    tokens: [tokensFile],
     outDir: './dist/',
     plugins: [
         css({
             filename: 'tokens.css',
+            // Four permutations, not five: the default input already resolves
+            // to the light theme, so a separate explicit-light `:root` block
+            // was emitting a second full copy of the graph that the first one
+            // could never win against.
+            //
+            // Every block below still emits the *whole* token graph. The
+            // dedupe pass in scripts/dedupe-tokens.mjs then strips from the
+            // last three anything the base block already declares, leaving
+            // only the properties that actually change with the theme.
             permutations: [{
-                input: {}, // default
+                input: {}, // the default theme (lux), and the invariant primitives
                 prepare: (contents) => `:root {\n  color-scheme: light dark;\n  ${contents} }`
-            },{
-                input: { theme: "lux" },
-                prepare: (contents) => `:root {\n  color-scheme: light;\n  ${contents} }`
             },{
                 input: { theme: "dark" },
                 prepare: (contents) => `@media (prefers-color-scheme: dark) {
@@ -38,16 +49,15 @@ export default defineConfig({
                 prepare: (contents) => `:root[data-theme="dark"] {\n  color-scheme: dark;\n  ${contents} }`
             }]
         }),
+        // The components reference tokens as plain custom-property strings from
+        // here, which is what lets a `.css.ts` file use a token without the
+        // consumer needing Vanilla Extract at all.
         cssInJs({
             filename: "vars.js",
-        }),
-        vanillaExtract({
-            filename: 'theme.css.ts',
-            globalThemeContract: true,
-            themes: {
-                light: { input: { theme: "lux" } },
-                dark: { input: { theme: "dark" } },
-            }
         })
+        // A vanilla-extract `theme.css.ts` contract used to be generated too.
+        // Nothing imported it — the components never used the contract — so it
+        // was 43KB of build output and one more shape to keep in step for no
+        // consumer. Reinstate it only alongside something that reads it.
     ]
 });

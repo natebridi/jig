@@ -1,22 +1,43 @@
-import { HTMLAttributes } from 'react';
-import { Responsive, resolveResponsive } from '../responsive';
+import type { ElementType, HTMLAttributes, Ref } from 'react';
+import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { splitBoxSize, type BoxSizeProps } from '../box-size';
-import { base, gridSpacing, gridColumns } from './grid.css';
+import { layoutSprinkles } from '../layout.css';
+import type { GridColumns, LayoutSpacing } from '../layout';
+import { base } from './grid.css';
 
-type GridSpacing = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-type GridColumns = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
+/** The elements a Grid is willing to render as. See StackElement. */
+export type GridElement =
+  | 'div' | 'section' | 'article' | 'aside'
+  | 'nav' | 'header' | 'footer' | 'main'
+  | 'ul' | 'ol' | 'li';
+
+export type { GridColumns };
 
 export interface GridProps extends HTMLAttributes<HTMLElement>, SpacingProps, BoxSizeProps {
-  as?: React.ElementType;
-  spacing?: Responsive<GridSpacing>;
-  columns?: Responsive<GridColumns> | number;
+  as?: GridElement;
+  spacing?: Responsive<LayoutSpacing>;
+  /**
+   * Twelve is the whole grid. Previously this also accepted `number`, which
+   * let `columns={13}` through to produce no class at all rather than a type
+   * error.
+   */
+  columns?: Responsive<GridColumns>;
+  ref?: Ref<HTMLElement>;
 }
 
+/** Sprinkles keys its column values by string; the prop reads better as a number. */
+const toColumnKey = (value: Responsive<GridColumns>): Responsive<`${GridColumns}`> =>
+  typeof value === 'number'
+    ? (`${value}` as `${GridColumns}`)
+    : (Object.fromEntries(
+        Object.entries(value).map(([bp, v]) => [bp, `${v}`])
+      ) as Responsive<`${GridColumns}`>);
+
 export function Grid({
-  as: Component = 'div',
+  as = 'div',
   spacing: spacingProp = '300',
-  columns: columnsProp = 1,
+  columns = 1,
   className,
   style,
   children,
@@ -24,13 +45,18 @@ export function Grid({
 }: GridProps) {
   const { spacing, rest: afterSpacing } = splitSpacing(props);
   const { style: boxStyle, rest } = splitBoxSize(afterSpacing);
+  // See Stack: the union is the public contract, widened internally so JSX
+  // does not intersect the ref types of every allowed element.
+  const Component = as as ElementType;
 
   return (
     <Component
       className={[
         base,
-        resolveResponsive(spacingProp, gridSpacing),
-        resolveResponsive(columnsProp as string, gridColumns),
+        layoutSprinkles({
+          gridTemplateColumns: toColumnKey(columns),
+          gap: spacingProp,
+        }),
         spacing,
         className,
       ].filter(Boolean).join(' ')}

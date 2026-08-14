@@ -1,6 +1,6 @@
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { spacing } from '@jig-ui/styles/tokens';
-import { mediaQueries } from './breakpoints';
+import { responsiveConditions, defaultCondition } from './breakpoints';
 
 /**
  * The same steps Stack and Grid expose as `spacing`, plus an explicit zero for
@@ -22,14 +22,8 @@ const scale = {
 const spacingProperties = defineProperties({
   // The same mobile-first breakpoints as Responsive<T>, so `mb="300"` applies
   // everywhere and `mb={{ xs: '200', md: '400' }}` steps up from md.
-  conditions: {
-    xs: {},
-    sm: { '@media': mediaQueries.sm },
-    md: { '@media': mediaQueries.md },
-    lg: { '@media': mediaQueries.lg },
-    xl: { '@media': mediaQueries.xl },
-  },
-  defaultCondition: 'xs',
+  conditions: responsiveConditions,
+  defaultCondition,
   // Margin and padding, on the same scale. Button is still the exception —
   // its padding *is* its size variant, so it doesn't take these.
   properties: {

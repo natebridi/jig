@@ -1,9 +1,12 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 import { Icon, type IconName, type IconWeight } from '../icon';
 import { button, buttonIconSize } from '../button/button.css';
 import type { ButtonVariant, ButtonSize } from '../button';
 
-export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+export interface IconButtonProps
+  // `aria-label` is owned by `label` — accepting both would let the two
+  // disagree, and the spread below can no longer overwrite it either way.
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children' | 'aria-label'> {
   icon: IconName;
   /**
    * Names the button for assistive technology, and is the only thing that
@@ -13,6 +16,7 @@ export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonEle
   variant?: ButtonVariant;
   size?: ButtonSize;
   weight?: IconWeight;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 export function IconButton({
@@ -29,12 +33,13 @@ export function IconButton({
 }: IconButtonProps) {
   return (
     <button
+      {...props}
       type={type}
       // The button carries the name; the icon inside stays decorative so it is
-      // not announced twice.
+      // not announced twice. Set after the spread so consumer props cannot
+      // leave the DOM disagreeing with the component.
       aria-label={label}
       className={[button({ color: variant, size, iconOnly: true }), className].filter(Boolean).join(' ')}
-      {...props}
     >
       <Icon icon={icon} weight={weight} size={buttonIconSize} />
     </button>

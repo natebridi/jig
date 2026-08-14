@@ -20,7 +20,12 @@ export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 type TriggerProps = HTMLAttributes<HTMLElement>;
 
 export interface TooltipProps {
-  /** The tooltip text. */
+  /**
+   * The tooltip text. Must be non-interactive — a tooltip is not reachable by
+   * pointer or keyboard in its own right, so anything focusable inside it
+   * would be announced but unusable. Interactive overlay content belongs in a
+   * popover instead.
+   */
   content: ReactNode;
   /** Preferred side. Flips to the opposite side when there isn't room. */
   placement?: TooltipPlacement;
@@ -42,9 +47,19 @@ export interface TooltipProps {
   children: ReactElement<TriggerProps>;
 }
 
-function chain<E>(theirs: ((event: E) => void) | undefined, ours: (event: E) => void) {
+/**
+ * Runs the trigger's own handler first, then the tooltip's — unless the
+ * trigger cancelled the event, which is the same contract ToggleButton
+ * honours. A trigger that calls `preventDefault` gets to suppress the tooltip
+ * along with whatever else it was cancelling.
+ */
+function chain<E extends { defaultPrevented: boolean }>(
+  theirs: ((event: E) => void) | undefined,
+  ours: (event: E) => void
+) {
   return (event: E) => {
     theirs?.(event);
+    if (event.defaultPrevented) return;
     ours(event);
   };
 }

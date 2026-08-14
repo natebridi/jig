@@ -5,19 +5,19 @@
     "private": true,
     "type": "module",
     "exports": {
-        "./theme": "./dist/theme.css.ts",
         "./vars.css": "./dist/tokens.css",
         "./reset.css": "./dist/reset.css",
-        "./base.css": "./dist/styles.css",
         "./tokens": {
             "types": "./dist/vars.d.ts",
             "default": "./dist/vars.js"
         }
     },
     "scripts": {
-        "build": "tz build --config src/terrazzo.config.ts && vite build && copyfiles -u 1 src/styles.css dist/",
+        "build": "tz build --config src/terrazzo.config.ts && node scripts/dedupe-tokens.mjs && vite build",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
         "dev": "tz build --watch --config src/terrazzo.config.ts",
-        "terrazzo": "tz build --config src/terrazzo.config.ts"
+        "terrazzo": "tz build --config src/terrazzo.config.ts",
+        "test": "vitest run"
     },
     "sideEffects": [
         "**/*.css",
@@ -32,10 +32,9 @@
         "@terrazzo/cli": "^2.0.0",
         "@terrazzo/plugin-css": "^2.0.0",
         "@terrazzo/plugin-css-in-js": "^2.0.0",
-        "@terrazzo/plugin-vanilla-extract": "^2.0.0",
         "@types/node": "25.5.0",
         "@vanilla-extract/vite-plugin": "^5.2.1",
-        "copyfiles": "^2.4.1",
-        "vite": "8.0.3"
+        "vite": "8.0.3",
+        "vitest": "^4.1.10"
     }
 }

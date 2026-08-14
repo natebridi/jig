@@ -1,9 +1,21 @@
 {
     "tasks": {
         "build": {
+            "dependsOn": ["^build", "typecheck"],
+            "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+            "outputs": ["dist/**"]
+        },
+        "typecheck": {
             "dependsOn": ["^build"],
             "inputs": ["$TURBO_DEFAULT$", "!README.md"],
-            "outputs": ["dist/**", "build/**/*.css"]
+            "outputs": []
+        },
+        "test": {
+            // Depends on this package's own build too: the token contract
+            // tests read the generated stylesheet out of dist.
+            "dependsOn": ["^build", "build"],
+            "inputs": ["$TURBO_DEFAULT$", "!README.md"],
+            "outputs": []
         },
         "dev": {
             "cache": false,
@@ -17,9 +29,10 @@
         "build-storybook": {
             "dependsOn": ["^build"],
             "outputs": ["storybook-static/**"]
-        },
-        "lint": {
-            "dependsOn": ["^build"]
         }
+        // There is deliberately no `lint` task. One existed, and passed on
+        // every run — because no package defined a lint script, so Turbo had
+        // nothing to run. A green check that cannot fail is worse than no
+        // check. Reinstate this alongside an actual linter.
     }
 }

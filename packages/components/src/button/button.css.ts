@@ -1,6 +1,7 @@
 import { globalStyle } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { radius, spacing, color, type } from "@jig-ui/styles/tokens";
+import { focusRing } from "../focus-ring";
 import { icon } from "../icon/icon.css";
 
 export const button = recipe({
@@ -18,6 +19,7 @@ export const button = recipe({
     alignItems: "center",
     justifyContent: "center",
     lineHeight: '1em',
+    ...focusRing,
     ":disabled": {
       pointerEvents: "none",
     }

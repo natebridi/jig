@@ -5,15 +5,19 @@
     "version": "0.0.0",
     "private": true,
     "exports": {
-        "./color": "./dist/color.dtcg.json"
+        "./color": "./dist/color.dtcg.json",
+        "./resolver": "./dist/tokens.dtcg.json"
     },
     "scripts": {
         "build": "tsx ./build.ts",
-        "dev": "tsx watch --clear-screen=false ./build.ts"
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "dev": "tsx watch --clear-screen=false ./build.ts",
+        "test": "vitest run"
     },
     "devDependencies": {
         "@jig-ui/tsconfig": "workspace:*",
         "@types/node": "^25.5.0",
-        "node": "25.8.2"
+        "tsx": "^4.21.0",
+        "vitest": "^4.1.10"
     }
 }

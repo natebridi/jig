@@ -1,32 +1,38 @@
-import { HTMLAttributes } from 'react';
+import type { ElementType, HTMLAttributes, Ref } from 'react';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { typography } from './typography.css';
 
-type TypeSizes = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+/**
+ * The elements Typography is willing to render as. `with` chooses how the text
+ * looks; `as` chooses what it means, and the two are deliberately independent —
+ * a `heading01` preset on a `<p>` is a legitimate thing to want.
+ */
+export type TypographyElement =
+  | 'p' | 'span' | 'div'
+  | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  | 'label' | 'blockquote' | 'figcaption';
+
 type TypeStyles =
   | 'display01' | 'display02' | 'display03' | 'display04' | 'display05' | 'display06'
   | 'heading01' | 'heading02' | 'heading03' | 'heading04' | 'heading05' | 'heading06'
   | 'body01' | 'body02' | 'caption01' | 'caption02';
 
 export interface TypographyProps extends HTMLAttributes<HTMLElement>, SpacingProps {
-  sizeMin?: TypeSizes;
-  sizeMax?: TypeSizes;
-  as? : React.ElementType;
+  as?: TypographyElement;
   with?: TypeStyles;
+  ref?: Ref<HTMLElement>;
 }
 
-export function Typography({ sizeMin = '100', sizeMax = '100', with: typeStyle = 'body01', as: Component = 'div', className, children, ...props }: TypographyProps) {
+export function Typography({ with: typeStyle = 'body01', as = 'div', className, children, ...props }: TypographyProps) {
   const { spacing, rest } = splitSpacing(props);
+  // See Stack: the union is the public contract, widened internally so JSX
+  // does not intersect the ref types of every allowed element.
+  const Component = as as ElementType;
 
   return (
     <Component
       className={[
-        typography({
-          sizeMin: sizeMin,
-          sizeMax: sizeMax,
-          style: typeStyle
-        }),
-        'fluid-type',
+        typography({ style: typeStyle }),
         spacing,
         className,
       ].filter(Boolean).join(' ')}
