@@ -19,7 +19,7 @@ const scale = {
   '900': spacing['900'],
 };
 
-const marginProperties = defineProperties({
+const spacingProperties = defineProperties({
   // The same mobile-first breakpoints as Responsive<T>, so `mb="300"` applies
   // everywhere and `mb={{ xs: '200', md: '400' }}` steps up from md.
   conditions: {
@@ -30,13 +30,17 @@ const marginProperties = defineProperties({
     xl: { '@media': mediaQueries.xl },
   },
   defaultCondition: 'xs',
-  // Margin only. Padding is a component's own business — Button's padding *is*
-  // its size variant — so it isn't offered here.
+  // Margin and padding, on the same scale. Button is still the exception —
+  // its padding *is* its size variant, so it doesn't take these.
   properties: {
     marginTop: scale,
     marginRight: scale,
     marginBottom: scale,
     marginLeft: scale,
+    paddingTop: scale,
+    paddingRight: scale,
+    paddingBottom: scale,
+    paddingLeft: scale,
   },
   shorthands: {
     m: ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
@@ -46,7 +50,14 @@ const marginProperties = defineProperties({
     mr: ['marginRight'],
     mb: ['marginBottom'],
     ml: ['marginLeft'],
+    p: ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft'],
+    px: ['paddingLeft', 'paddingRight'],
+    py: ['paddingTop', 'paddingBottom'],
+    pt: ['paddingTop'],
+    pr: ['paddingRight'],
+    pb: ['paddingBottom'],
+    pl: ['paddingLeft'],
   },
 });
 
-export const spacingSprinkles = createSprinkles(marginProperties);
+export const spacingSprinkles = createSprinkles(spacingProperties);

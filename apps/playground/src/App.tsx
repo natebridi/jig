@@ -22,16 +22,77 @@ export function App() {
     <div
         style={{
           minHeight: '100vh',
-          padding: '48px',
-          fontFamily: 'ui-sans-serif, system-ui, sans-serif',
           backgroundColor: color.surfaces.body,
         }}
       >
-
       <div className="style-debug">
         <div id='debug-mode' />
         <div id='debug-size' />
       </div>
+
+      <Stack px="500" py="800" maxWidth="74rem" spacing="800" align="start">
+
+        <Stack spacing="400">
+          <Typography as="h2" with="heading04">Buttons</Typography>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing="400">
+            <Button variant="primary" icon="warning">Primary</Button>
+            <Button variant="primary">Primary</Button>
+            <IconButton variant="primary" label="Trash" icon="trash" />
+            <IconButton variant="ghost" label="Trash" icon="trash" />
+            <ToggleButton isIconOnly icon="heart" label="Trash" />
+            <Button variant="primary" disabled>Disabled</Button>
+            <Button variant="secondary">Secondary</Button>
+            <Button variant="danger">Danger</Button>
+            <Button variant="ghost" icon="calendar" size="sm">Ghost</Button>
+          </Stack>
+        </Stack>
+
+        <Stack spacing="400">
+          <Typography as="h2" with="heading04">Tooltips</Typography>
+          <Stack spacing="400">
+            <Stack direction="row" spacing="500" align="center">
+              {(['top', 'bottom', 'left', 'right'] as const).map((side) => (
+                <Tooltip key={side} content={`Placed on the ${side}`} placement={side}>
+                  <Button variant="secondary">{side}</Button>
+                </Tooltip>
+              ))}
+            </Stack>
+            <Stack direction="row" spacing="500" align="center">
+              <Tooltip content="Long descriptions wrap at a readable measure rather than running off the edge of the viewport.">
+                <Button variant="primary">Long content</Button>
+              </Tooltip>
+
+              <Tooltip content="Any focusable element can be a trigger." placement="bottom">
+                <span tabIndex={0} style={{ textDecoration: 'underline dotted', cursor: 'help' }}>
+                  a plain span
+                </span>
+              </Tooltip>
+
+              <Tooltip content="Opens immediately." delay={0}>
+                <Button variant="secondary" size="sm">No delay</Button>
+              </Tooltip>
+            </Stack>
+          </Stack>
+
+        </Stack>
+
+        <Stack spacing="400" align="stretch">
+          <Typography as="h2" with="heading04">Code Block</Typography>
+          <CodeBlock label="app.tsx">{`
+            import { Button } from '@jig-ui/react';
+
+            export function Example() {
+              return <Button variant="primary">Click me</Button>;
+            }
+          `}</CodeBlock>
+
+          <CodeBlock>{`pnpm add @jig-ui/react`}</CodeBlock>
+
+          <CodeBlock label="a-very-long-line.sh">{`echo "this single line is far too wide for the block, so the code area scrolls horizontally instead of wrapping or spilling out of the card"`}</CodeBlock>
+        </Stack>
+
+      </Stack>
+
 
       <Grid columns={{ xs: 3, md: 4 }} spacing="500">
         <Grid columns={2} spacing="200">
@@ -65,17 +126,7 @@ export function App() {
           </div>
         </Stack>
 
-        <Stack direction="row" spacing="400">
-          <Button variant="primary" icon="warning">Primary</Button>
-          <Button variant="primary">Primary</Button>
-          <IconButton variant="primary" label="Trash" icon="trash" />
-          <IconButton variant="ghost" label="Trash" icon="trash" />
-          <ToggleButton isIconOnly icon="heart" label="Trash" />
-          <Button variant="primary" disabled>Disabled</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="danger">Danger</Button>
-          <Button variant="ghost" icon="calendar" size="sm">Ghost</Button>
-        </Stack>
+
 
         <Stack direction="row" spacing="400">
           <Button variant="primary" icon="star" size="sm">Primary</Button>
@@ -92,49 +143,7 @@ export function App() {
       </Stack>
 
 
-      <Stack spacing="400">
-        <Typography as="h2" with="heading03">Tooltip</Typography>
 
-        <Stack direction="row" spacing="500" align="center">
-          {(['top', 'bottom', 'left', 'right'] as const).map((side) => (
-            <Tooltip key={side} content={`Placed on the ${side}`} placement={side}>
-              <Button variant="secondary">{side}</Button>
-            </Tooltip>
-          ))}
-        </Stack>
-
-        <Stack direction="row" spacing="500" align="center">
-          <Tooltip content="Long descriptions wrap at a readable measure rather than running off the edge of the viewport.">
-            <Button variant="primary">Long content</Button>
-          </Tooltip>
-
-          <Tooltip content="Any focusable element can be a trigger." placement="bottom">
-            <span tabIndex={0} style={{ textDecoration: 'underline dotted', cursor: 'help' }}>
-              a plain span
-            </span>
-          </Tooltip>
-
-          <Tooltip content="Opens immediately." delay={0}>
-            <Button variant="secondary" size="sm">No delay</Button>
-          </Tooltip>
-        </Stack>
-      </Stack>
-
-      <Stack spacing="400" align="stretch">
-        <Typography as="h2" with="heading03">CodeBlock</Typography>
-
-        <CodeBlock label="app.tsx">{`
-          import { Button } from '@jig-ui/react';
-
-          export function Example() {
-            return <Button variant="primary">Click me</Button>;
-          }
-        `}</CodeBlock>
-
-        <CodeBlock>{`pnpm add @jig-ui/react`}</CodeBlock>
-
-        <CodeBlock label="a-very-long-line.sh">{`echo "this single line is far too wide for the block, so the code area scrolls horizontally instead of wrapping or spilling out of the card"`}</CodeBlock>
-      </Stack>
 
       <Stack spacing="400">
         <Typography as="h2" with="heading03">ToggleButton</Typography>

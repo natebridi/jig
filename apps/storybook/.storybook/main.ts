@@ -6,17 +6,6 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 const here = dirname(fileURLToPath(import.meta.url));
 const componentsSrc = resolve(here, '../../../packages/components/src');
 
-/**
- * The margin props Typography picks up from SpacingProps. Their declaration
- * lives in a generated Sprinkles type inside node_modules, so the
- * node_modules filter below would drop them from the props table without
- * this allowance.
- */
-const spacingProps = new Set([
-  'm', 'mx', 'my', 'mt', 'mr', 'mb', 'ml',
-  'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
-]);
-
 const config: StorybookConfig = {
   stories: [`${componentsSrc}/**/*.stories.@(ts|tsx)`],
   addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-themes'],
@@ -34,10 +23,7 @@ const config: StorybookConfig = {
       shouldRemoveUndefinedFromOptional: true,
       // Without this every component that extends an HTML element's attributes
       // reports several hundred inherited DOM props.
-      propFilter: (prop) =>
-        spacingProps.has(prop.name) ||
-        !prop.parent ||
-        !/node_modules/.test(prop.parent.fileName),
+      propFilter: (prop) => !prop.parent || !/node_modules/.test(prop.parent.fileName),
     },
   },
   viteFinal: async (viteConfig) => {

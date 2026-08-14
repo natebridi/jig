@@ -20,7 +20,8 @@ export const bar = style({
   // Holds the copy button to the right whether or not there is a label.
   justifyContent: 'space-between',
   gap: spacing[300],
-  padding: `${spacing[200]} ${spacing[300]}`,
+  color: color.text.secondary,
+  padding: `${spacing[400]} ${spacing[400]}`,
 });
 
 export const label = style({

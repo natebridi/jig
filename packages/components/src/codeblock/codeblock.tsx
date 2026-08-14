@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type HTMLAttributes } from 'react';
-import { Button } from '../button';
+import { ToggleButton } from '../togglebutton';
+import { Tooltip } from '../tooltip';
 import { bar, code as codeStyle, label as labelStyle, pre as preStyle, root } from './codeblock.css';
 
 export interface CodeBlockProps extends HTMLAttributes<HTMLElement> {
-  /** Shown at the left of the bar — a script name, a language, a file path. */
+  /** Display a script name, language, etc. at top of block. */
   label?: string;
-  /** The code itself, as a plain string. */
+  /** Content to display as a plain string. */
   children: string;
 }
 
@@ -51,9 +52,9 @@ export function CodeBlock({ label, className, children, ...props }: CodeBlockPro
     <div className={[root, className].filter(Boolean).join(' ')} {...props}>
       <div className={bar}>
         <span className={labelStyle}>{label}</span>
-        <Button variant="ghost" size="sm" onClick={copy} aria-live="polite">
-          {copied ? 'Copied' : 'Copy'}
-        </Button>
+        <Tooltip content="Copy" delay={0}>
+          <ToggleButton pressed={copied} size="sm" icon="copy" isIconOnly onClick={copy}  aria-live="polite" />
+        </Tooltip>
       </div>
       {/* Focusable so the overflow is reachable by keyboard, not just by drag. */}
       <pre className={preStyle} tabIndex={0}>

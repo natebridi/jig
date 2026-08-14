@@ -20,7 +20,7 @@ export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 type TriggerProps = HTMLAttributes<HTMLElement>;
 
 export interface TooltipProps {
-  /** The tooltip text. Kept short — it describes the trigger, it isn't a popover. */
+  /** The tooltip text. */
   content: ReactNode;
   /** Preferred side. Flips to the opposite side when there isn't room. */
   placement?: TooltipPlacement;

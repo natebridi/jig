@@ -31,3 +31,15 @@ export const Responsive: Story = {
     docs: { description: { story: 'Two columns below md, four from md up. Resize the canvas to see it.' } },
   },
 };
+
+export const PaddedAndSized: Story = {
+  args: { columns: 3, p: '500', maxWidth: '480px' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. width, height, minHeight and maxWidth take any CSS length directly rather than a token scale.',
+      },
+    },
+  },
+};

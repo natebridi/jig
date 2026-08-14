@@ -3,6 +3,7 @@ export { breakpoints, mediaQueries } from './breakpoints';
 export type { Responsive } from './responsive';
 export { resolveResponsive } from './responsive';
 export type { SpacingProps } from './spacing';
+export type { BoxSizeProps } from './box-size';
 export { Button } from './button';
 export type { ButtonProps, ButtonVariant, ButtonSize } from './button';
 export { ToggleButton } from './togglebutton';

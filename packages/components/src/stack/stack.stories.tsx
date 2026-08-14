@@ -36,3 +36,15 @@ export const Alignment: Story = {
     docs: { description: { story: 'align defaults to "start", which makes children shrink to their content. Use "stretch" for children that should fill the width.' } },
   },
 };
+
+export const PaddedAndSized: Story = {
+  args: { direction: 'row', spacing: '300', p: '500', maxWidth: '360px', style: { background: 'rgba(127, 127, 127, 0.15)' } },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. width, height, minHeight and maxWidth take any CSS length directly (\'360px\', \'50%\', \'100vh\') rather than a token scale, since box dimensions rarely fall on one.',
+      },
+    },
+  },
+};

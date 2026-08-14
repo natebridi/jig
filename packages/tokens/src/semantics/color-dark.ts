@@ -35,7 +35,7 @@ export default {
             },
             secondary: {
                 '$type': 'color',
-                '$value': '{color.gray.100}'
+                '$value': '{color.gray.200}'
             },
             inverse: {
                 '$type': 'color',
