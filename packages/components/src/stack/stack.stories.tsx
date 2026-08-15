@@ -38,12 +38,17 @@ export const Alignment: Story = {
 };
 
 export const PaddedAndSized: Story = {
-  args: { direction: 'row', spacing: '300', p: '500', maxWidth: '360px', style: { background: 'rgba(127, 127, 127, 0.15)' } },
+  args: {
+    direction: 'row',
+    spacing: '300',
+    p: '500',
+    style: { maxWidth: '360px', background: 'rgba(127, 127, 127, 0.15)' },
+  },
   parameters: {
     docs: {
       description: {
         story:
-          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. width, height, minHeight and maxWidth take any CSS length directly (\'360px\', \'50%\', \'100vh\') rather than a token scale, since box dimensions rarely fall on one.',
+          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. Box dimensions rarely fall on a token scale, so they are not props — pass them through `style`, which Stack merges onto the rendered element.',
       },
     },
   },

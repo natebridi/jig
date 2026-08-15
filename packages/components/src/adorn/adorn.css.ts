@@ -21,7 +21,7 @@ export const adorn = recipe({
             danger: {
                 color: color.text.danger,
             },
-            code: {
+            mono: {
                 fontFamily: type.family.mono,
                 color: color.text.primary,
             },

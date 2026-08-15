@@ -13,9 +13,9 @@
         }
     },
     "scripts": {
-        "build": "tz build --config src/terrazzo.config.ts && node scripts/dedupe-tokens.mjs && vite build",
+        "build": "pnpm typecheck && tz build --config src/terrazzo.config.ts && node scripts/dedupe-tokens.mjs && vite build",
         "typecheck": "tsc --noEmit -p tsconfig.json",
-        "dev": "tz build --watch --config src/terrazzo.config.ts",
+        "dev": "node scripts/dev.mjs",
         "terrazzo": "tz build --config src/terrazzo.config.ts",
         "test": "vitest run"
     },

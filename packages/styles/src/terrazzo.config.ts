@@ -14,6 +14,12 @@ const tokensFile = require.resolve('@jig-ui/tokens/resolver')
 export default defineConfig({
     tokens: [tokensFile],
     outDir: './dist/',
+    // `core/consistent-naming` is left at its default (kebab-case) and is
+    // expected to pass silently. Token IDs are kebab-case throughout; both the
+    // emitted custom properties and the css-in-js accessors are derived from
+    // them, so the source casing costs nothing at the call site — the
+    // components read `color.button.primary.baseBg` from a `'base-bg'` token
+    // either way.
     plugins: [
         css({
             filename: 'tokens.css',

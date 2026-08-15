@@ -63,7 +63,7 @@ function* walk(source) {
   }
 }
 
-function dedupe(source) {
+export function dedupe(source) {
   // Put every closing brace that shares a line with a declaration onto its own
   // line, so removing a redundant declaration cannot take a brace with it.
   const normalised = source.replace(/;[ \t]*\}/g, ';\n}');
@@ -118,19 +118,34 @@ function dedupe(source) {
   return { css: `${css.replace(/\n{3,}/g, '\n\n').trim()}\n`, removed };
 }
 
-const before = readFileSync(file, 'utf8');
-const { css, removed } = dedupe(before);
+/**
+ * Runs the pass over the generated stylesheet in place. Exported so the dev
+ * watcher can reuse it — development used to run bare `tz build --watch`,
+ * which skipped this entirely and let a token edit silently restore the full
+ * duplicated output that the production build strips.
+ */
+export function dedupeFile(path = file) {
+  const before = readFileSync(path, 'utf8');
+  const { css, removed } = dedupe(before);
 
-if (removed === 0) {
-  throw new Error(
-    'Token dedupe removed nothing. Terrazzo\'s output shape has probably changed — ' +
-    'check that the themed blocks still resolve to the selectors this script walks.'
-  );
+  if (removed === 0) {
+    throw new Error(
+      'Token dedupe removed nothing. Terrazzo\'s output shape has probably changed — ' +
+      'check that the themed blocks still resolve to the selectors this script walks.'
+    );
+  }
+
+  writeFileSync(path, css, 'utf8');
+  return { removed, before: before.length, after: css.length };
 }
 
-writeFileSync(file, css, 'utf8');
-console.log(
-  `Token CSS deduped: removed \x1b[32m${removed}\x1b[0m redundant declarations ` +
-  `(${before.length} → ${css.length} bytes, ` +
-  `${((1 - css.length / before.length) * 100).toFixed(0)}% smaller)`
-);
+// Only when run as a command — importing this module (tests, the dev watcher)
+// must not rewrite anything as a side effect.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const { removed, before, after } = dedupeFile();
+  console.log(
+    `Token CSS deduped: removed \x1b[32m${removed}\x1b[0m redundant declarations ` +
+    `(${before} → ${after} bytes, ` +
+    `${((1 - after / before) * 100).toFixed(0)}% smaller)`
+  );
+}

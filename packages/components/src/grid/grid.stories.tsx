@@ -33,12 +33,12 @@ export const Responsive: Story = {
 };
 
 export const PaddedAndSized: Story = {
-  args: { columns: 3, p: '500', maxWidth: '480px' },
+  args: { columns: 3, p: '500', style: { maxWidth: '480px' } },
   parameters: {
     docs: {
       description: {
         story:
-          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. width, height, minHeight and maxWidth take any CSS length directly rather than a token scale.',
+          'p/px/py/pt/pr/pb/pl take the same scale and responsive object shape as the margin props. Box dimensions rarely fall on a token scale, so they are not props — pass them through `style`, which Grid merges onto the rendered element.',
       },
     },
   },

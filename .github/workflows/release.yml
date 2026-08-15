@@ -13,7 +13,15 @@ permissions:
   id-token: write
 
 jobs:
+  # Publishing is gated on the same pipeline CI runs — including the packed
+  # consumer test. This job existing, and `release` needing it, is the whole
+  # point: a push to main used to start CI and Release in parallel, so nothing
+  # stopped a publish from racing ahead of (or straight past) a failing check.
+  verify:
+    uses: ./.github/workflows/verify.yml
+
   release:
+    needs: verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -1,5 +1,6 @@
-import type { ElementType, HTMLAttributes, Ref } from 'react';
+import type { ElementType } from 'react';
 import { splitSpacing, type SpacingProps } from '../spacing';
+import type { PolymorphicProps } from '../polymorphic';
 import { typography } from './typography.css';
 
 /**
@@ -12,22 +13,30 @@ export type TypographyElement =
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   | 'label' | 'blockquote' | 'figcaption';
 
-type TypeStyles =
+/** The type presets. Exported so consumers building wrappers can name one. */
+export type TypeStyles =
   | 'display01' | 'display02' | 'display03' | 'display04' | 'display05' | 'display06'
   | 'heading01' | 'heading02' | 'heading03' | 'heading04' | 'heading05' | 'heading06'
   | 'body01' | 'body02' | 'caption01' | 'caption02';
 
-export interface TypographyProps extends HTMLAttributes<HTMLElement>, SpacingProps {
-  as?: TypographyElement;
+/** Typography's own props. The element's own attributes are added by PolymorphicProps. */
+export interface TypographyOwnProps extends SpacingProps {
   with?: TypeStyles;
-  ref?: Ref<HTMLElement>;
 }
 
-export function Typography({ with: typeStyle = 'body01', as = 'div', className, children, ...props }: TypographyProps) {
+export type TypographyProps<E extends TypographyElement = 'div'> =
+  PolymorphicProps<E, TypographyOwnProps>;
+
+export function Typography<E extends TypographyElement = 'div'>({
+  with: typeStyle = 'body01',
+  as,
+  className,
+  children,
+  ...props
+}: TypographyProps<E>) {
   const { spacing, rest } = splitSpacing(props);
-  // See Stack: the union is the public contract, widened internally so JSX
-  // does not intersect the ref types of every allowed element.
-  const Component = as as ElementType;
+  // See Stack: widened for JSX only, the union is the public contract.
+  const Component = (as ?? 'div') as ElementType;
 
   return (
     <Component

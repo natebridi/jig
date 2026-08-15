@@ -98,8 +98,21 @@ export function Tooltip({
   const setOpen = useCallback(
     (next: boolean) => {
       if (openRef.current === next) return;
-      openRef.current = next;
-      if (!isControlled) setUncontrolledOpen(next);
+      // Only the uncontrolled path may run ahead of the render. There, the
+      // optimistic write is what stops two requests in the same tick from
+      // both firing onOpenChange before the state update lands.
+      //
+      // Controlled, the parent owns `open`, and openRef is re-synced to it on
+      // every render — so leaving it alone makes the check above compare
+      // against what is actually *rendered*. Writing it optimistically here
+      // meant that a parent which ignored `onOpenChange(true)` left the ref
+      // stuck at `true` with nothing to re-sync it: the next open request was
+      // then swallowed as a duplicate, and the next close request fired an
+      // onOpenChange(false) for a tooltip that had never opened.
+      if (!isControlled) {
+        openRef.current = next;
+        setUncontrolledOpen(next);
+      }
       onOpenChange?.(next);
     },
     [isControlled, onOpenChange]

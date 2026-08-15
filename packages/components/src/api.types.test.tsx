@@ -1,3 +1,4 @@
+import type { RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
 import { Adorn, Button, Grid, IconButton, Stack, ToggleButton, Typography } from './index';
 
@@ -105,6 +106,63 @@ describe('public API types', () => {
       <Stack ref={(node) => { node?.scrollIntoView(); }} />
       <Typography ref={(node) => { node?.getBoundingClientRect(); }} />
       <Button ref={(node) => { node?.focus(); }} />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  /**
+   * The point of PolymorphicProps over a hand-declared `as` union: the props
+   * and the ref follow the element. Every positive case here was a type error
+   * under the previous pattern, which typed all four components as
+   * `HTMLAttributes<HTMLElement>` with a `Ref<HTMLElement>`.
+   */
+  it('correlates element-specific props with `as`', () => {
+    <>
+      <Typography as="label" htmlFor="field" with="body01" />
+      <Typography as="blockquote" cite="https://example.com" />
+      <Stack as="ol" start={3} reversed />
+      <Grid as="ol" start={1} />
+
+      {/* @ts-expect-error htmlFor is a <label> attribute, not a <p> one */}
+      <Typography as="p" htmlFor="field" />
+      {/* @ts-expect-error cite is a <blockquote> attribute */}
+      <Typography as="p" cite="https://example.com" />
+      {/* @ts-expect-error start belongs to <ol>, not <section> */}
+      <Stack as="section" start={3} />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('correlates the ref type with `as`', () => {
+    // Written as ref *objects*, not `Ref<T> = null`: `null` inhabits every
+    // Ref type, so a null-typed ref proves nothing about the negative cases.
+    const label: RefObject<HTMLLabelElement | null> = { current: null };
+    const paragraph: RefObject<HTMLParagraphElement | null> = { current: null };
+    const list: RefObject<HTMLOListElement | null> = { current: null };
+    const generic: RefObject<HTMLElement | null> = { current: null };
+
+    <>
+      <Typography as="label" ref={label} />
+      <Typography as="p" ref={paragraph} />
+      <Stack as="ol" ref={list} />
+
+      {/* @ts-expect-error a <p> does not accept an HTMLLabelElement ref */}
+      <Typography as="p" ref={label} />
+      {/* @ts-expect-error an <ol> ref has to be narrower than HTMLElement */}
+      <Stack as="ol" ref={generic} />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('no longer accepts the removed box-size props', () => {
+    <>
+      <Stack style={{ maxWidth: '640px', marginInline: 'auto' }} />
+      {/* @ts-expect-error box dimensions moved to `style` */}
+      <Stack maxWidth="640px" />
+      {/* @ts-expect-error centering moved to `style` */}
+      <Stack centered />
+      {/* @ts-expect-error box dimensions moved to `style` */}
+      <Grid minHeight={200} />
     </>;
     expect(true).toBe(true);
   });

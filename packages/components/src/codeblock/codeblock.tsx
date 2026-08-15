@@ -1,10 +1,14 @@
-import { useEffect, useRef, useState, type HTMLAttributes, type Ref } from 'react';
+import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type Ref } from 'react';
 import { IconButton } from '../iconbutton';
 import { Tooltip } from '../tooltip';
 import { visuallyHidden } from '../visually-hidden.css';
 import { bar, code as codeStyle, label as labelStyle, pre as preStyle, root } from './codeblock.css';
 
-export interface CodeBlockProps extends HTMLAttributes<HTMLElement> {
+// The root is always a `div` — unlike Stack or Typography there is no `as`
+// here — so the props are that element's, not a generic HTMLElement's.
+// `children` is narrowed to a string because the snippet gets dedented and
+// measured as text.
+export interface CodeBlockProps extends Omit<ComponentPropsWithoutRef<'div'>, 'children'> {
   /** Display a script name, language, etc. at top of block. */
   label?: string;
   /** Content to display as a plain string. */

@@ -39,18 +39,16 @@
 #debug-size {
     &::before {
         text-align: center;
-        
-        @media (width <= 350px) { content: '< 300px'; }
-        @media (350px < width <= 500px) { content: '351–500px'; }
-        @media (500px < width <= 600px) { content: '501–600px'; }
-        @media (600px < width <= 700px) { content: '601–700px'; }
-        @media (700px < width <= 800px) { content: '701–800px'; }
-        @media (800px < width <= 900px) { content: '801–900px'; }
-        @media (900px < width <= 1000px) { content: '901–1000px'; }
-        @media (1000px < width <= 1100px) { content: '1001–1100px'; }
-        @media (1100px < width <= 1200px) { content: '1101–1200px'; }
-        @media (1200px < width <= 1300px) { content: '1201–1300px'; }
-        @media (1300px < width <= 1400px) { content: '1301–1400px'; }
-        @media (1400px < width) { content: '> 1401px'; }
+
+        @media (width <= 350px) { content: 'xs: < 300px'; }
+        @media (350px < width < 480px) { content: 'xs: 351–479px'; }
+        @media (480px <= width <= 600px) { content: 'sm: 480–600px'; }
+        @media (600px < width < 768px) { content: 'sm: 601–767px'; }
+        @media (768px <= width <= 900px) { content: 'md: 768–900px'; }
+        @media (900px < width < 1024px) { content: 'md: 901–1023px'; }
+        @media (1024px <= width <= 1100px) { content: 'lg: 1024–1100px'; }
+        @media (1100px < width < 1280px) { content: 'lg: 1101–1279px'; }
+        @media (1280px <= width <= 1400px) { content: 'xl: 1280–1400px'; }
+        @media (1400px < width) { content: 'xl: > 1401px'; }
     }
 }

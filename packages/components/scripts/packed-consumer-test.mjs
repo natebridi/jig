@@ -72,7 +72,7 @@ import '@jig-ui/react/reset.css';
 
 export function App() {
   return (
-    <Stack as="section" spacing={{ xs: '200', md: '500' }} maxWidth="60rem" centered>
+    <Stack as="section" spacing={{ xs: '200', md: '500' }} style={{ maxWidth: '60rem', marginInline: 'auto' }}>
       <Typography as="h1" with="heading01" mb="400">Hello</Typography>
       <Grid columns={{ xs: 1, md: 3 }} spacing="300">
         <Button variant="primary" icon="check">Go</Button>
@@ -80,6 +80,10 @@ export function App() {
         <ToggleButton isIconOnly icon="star" label="Favourite" />
       </Grid>
       <Typography as="p">An <Adorn as="strong" with="danger">urgent</Adorn> note.</Typography>
+      {/* Element-correlated props: these only typecheck because \`as\` drives the prop set. */}
+      <Typography as="label" htmlFor="field" with="body01">Labelled</Typography>
+      <Stack as="ol" start={2}><li>correlated</li></Stack>
+      <Adorn as="code" with="mono">mono</Adorn>
       <Icon icon="heart" label="Liked" />
       <CodeBlock label="app.tsx">{'const a = 1;'}</CodeBlock>
       <div style={{ background: color.surfaces.card, padding: spacing['500'] }} />

@@ -1,9 +1,9 @@
-import type { ElementType, HTMLAttributes, Ref } from 'react';
+import type { ElementType } from 'react';
 import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
-import { splitBoxSize, type BoxSizeProps } from '../box-size';
 import { layoutSprinkles } from '../layout.css';
 import type { GridColumns, LayoutSpacing } from '../layout';
+import type { PolymorphicProps } from '../polymorphic';
 import { base } from './grid.css';
 
 /** The elements a Grid is willing to render as. See StackElement. */
@@ -14,8 +14,8 @@ export type GridElement =
 
 export type { GridColumns };
 
-export interface GridProps extends HTMLAttributes<HTMLElement>, SpacingProps, BoxSizeProps {
-  as?: GridElement;
+/** Grid's own props. The element's own attributes are added by PolymorphicProps. */
+export interface GridOwnProps extends SpacingProps {
   spacing?: Responsive<LayoutSpacing>;
   /**
    * Twelve is the whole grid. Previously this also accepted `number`, which
@@ -23,8 +23,9 @@ export interface GridProps extends HTMLAttributes<HTMLElement>, SpacingProps, Bo
    * error.
    */
   columns?: Responsive<GridColumns>;
-  ref?: Ref<HTMLElement>;
 }
+
+export type GridProps<E extends GridElement = 'div'> = PolymorphicProps<E, GridOwnProps>;
 
 /** Sprinkles keys its column values by string; the prop reads better as a number. */
 const toColumnKey = (value: Responsive<GridColumns>): Responsive<`${GridColumns}`> =>
@@ -34,20 +35,17 @@ const toColumnKey = (value: Responsive<GridColumns>): Responsive<`${GridColumns}
         Object.entries(value).map(([bp, v]) => [bp, `${v}`])
       ) as Responsive<`${GridColumns}`>);
 
-export function Grid({
-  as = 'div',
+export function Grid<E extends GridElement = 'div'>({
+  as,
   spacing: spacingProp = '300',
   columns = 1,
   className,
-  style,
   children,
   ...props
-}: GridProps) {
-  const { spacing, rest: afterSpacing } = splitSpacing(props);
-  const { style: boxStyle, rest } = splitBoxSize(afterSpacing);
-  // See Stack: the union is the public contract, widened internally so JSX
-  // does not intersect the ref types of every allowed element.
-  const Component = as as ElementType;
+}: GridProps<E>) {
+  const { spacing, rest } = splitSpacing(props);
+  // See Stack: widened for JSX only, the union is the public contract.
+  const Component = (as ?? 'div') as ElementType;
 
   return (
     <Component
@@ -60,7 +58,6 @@ export function Grid({
         spacing,
         className,
       ].filter(Boolean).join(' ')}
-      style={{ ...boxStyle, ...style }}
       {...rest}
     >
       {children}

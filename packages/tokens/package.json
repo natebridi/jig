@@ -9,7 +9,7 @@
         "./resolver": "./dist/tokens.dtcg.json"
     },
     "scripts": {
-        "build": "tsx ./build.ts",
+        "build": "pnpm typecheck && tsx ./build.ts",
         "typecheck": "tsc --noEmit -p tsconfig.json",
         "dev": "tsx watch --clear-screen=false ./build.ts",
         "test": "vitest run"

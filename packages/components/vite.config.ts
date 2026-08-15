@@ -146,6 +146,25 @@ export default defineConfig({
             // would ship orphaned declarations whose only effect is to
             // reference @vanilla-extract packages consumers do not install.
             exclude: ['**/*.css.ts', '**/*.stories.tsx', '**/*.test.ts', '**/*.test.tsx'],
+            // Turbo makes `build` depend on `typecheck`, but a package-local
+            // `vite build` — or `pack:local`, or a release tool invoking the
+            // script directly — bypasses Turbo entirely. Without this, those
+            // paths printed the type errors and then exited 0, packing the
+            // broken code anyway.
+            //
+            // The diagnostics are already computed here to emit declarations,
+            // so failing on them costs nothing. Note this covers `src` only:
+            // tsconfig.build.json excludes tests and stories, which is right
+            // for what gets packed but means `typecheck` is still the wider
+            // gate (it is what enforces api.types.test.tsx).
+            afterDiagnostic: (diagnostics) => {
+                if (diagnostics.length) {
+                    throw new Error(
+                        `${diagnostics.length} type error(s) in src — refusing to emit declarations. ` +
+                        `Run \`pnpm typecheck\` for the full report.`
+                    );
+                }
+            },
             afterBuild: () => {
                 vendorTokenTypes();
                 verifyDeclarations();

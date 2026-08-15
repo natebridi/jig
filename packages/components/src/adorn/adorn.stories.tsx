@@ -26,7 +26,7 @@ export const Colours: Story = {
   render: () => (
     <Typography as="p" with="body01">
       This is <Adorn with="muted">muted</Adorn>, this is <Adorn with="accent">accent</Adorn>, this
-      is <Adorn with="danger">danger</Adorn>, and this is <Adorn with="code">code</Adorn>.
+      is <Adorn with="danger">danger</Adorn>, and this is <Adorn as="code" with="mono">mono</Adorn>.
     </Typography>
   ),
 };

@@ -1,0 +1,660 @@
+<title>Jig Build Pipeline</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+  p.lead { color: var(--ink-2); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- figures ---- */
+
+  figure {
+    margin: 2rem 0 0;
+    padding: 0;
+  }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figure svg {
+    display: block;
+    width: 100%;
+    min-width: 620px;
+    height: auto;
+  }
+
+  /* A real rule rather than relying on var() inside a presentation attribute,
+     so the diagrams cannot silently fall back to a serif. */
+  figure svg text { font-family: var(--mono); }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* ---- legend ---- */
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+  }
+
+  .legend li { display: flex; align-items: center; gap: 0.5rem; }
+
+  .swatch {
+    width: 22px;
+    height: 13px;
+    border-radius: 3px;
+    flex: none;
+  }
+
+  .sw-src  { background: var(--surface);     border: 1px solid var(--line-2); }
+  .sw-gen  { background: var(--surface-2);   border: 1px dashed var(--line-2); }
+  .sw-bld  { background: var(--accent-wash); border: 1px solid var(--accent); }
+  .sw-gate { background: var(--gate-wash);   border: 1px solid var(--gate); }
+
+  /* ---- package table ---- */
+
+  .table-scroll { overflow-x: auto; margin-top: 1.5rem; }
+
+  table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom-color: var(--line-2);
+    padding-top: 0;
+  }
+
+  td.pkg { font-family: var(--mono); font-size: 0.8rem; color: var(--ink); white-space: nowrap; }
+  td.role { color: var(--ink-2); }
+  td.out { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .tag-pub  { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .tag-priv { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- notes ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; monorepo architecture</p>
+    <h1>Build Pipeline</h1>
+    <p class="standfirst">
+      How a colour written as an OKLCH triple in TypeScript becomes a custom property
+      in a published stylesheet &mdash; and every gate it has to pass on the way.
+    </p>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Tokens to package</h2>
+    <p>
+      Four stages, each one a workspace package that builds only after the one above it.
+      The columns hold across every stage: what a person wrote, what transforms it, and
+      what lands on disk. Nothing in the right-hand column is committed except the icons,
+      which are generated <em>and</em> tracked so that drift between the two is detectable.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <svg viewBox="0 0 920 560" role="img"
+             aria-label="Four-stage build pipeline: the tokens package validates hand-written TypeScript into DTCG JSON; the styles package runs Terrazzo and a dedupe pass to produce token CSS and JS variables; the React package bundles components and composes the layered stylesheet; and Storybook, the playground and npm consumers each read a different artifact.">
+
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line-2)"/>
+            </marker>
+            <marker id="ar-a" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <!-- column headers -->
+          <g font-family="var(--mono)" font-size="9.5" letter-spacing="1.3" fill="var(--muted)">
+            <text x="40"  y="20">HAND-AUTHORED</text>
+            <text x="340" y="20">BUILD STEP</text>
+            <text x="640" y="20">GENERATED</text>
+          </g>
+
+          <!-- ============ stage 1 ============ -->
+          <text x="40" y="46" font-family="var(--mono)" font-size="10.5" letter-spacing="0.8" fill="var(--accent)">01 &middot; @jig-ui/tokens</text>
+
+          <rect x="40"  y="56" width="240" height="56" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="340" y="56" width="240" height="56" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="640" y="56" width="240" height="56" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+
+          <g font-family="var(--mono)" font-size="11" fill="var(--ink)">
+            <text x="56" y="80">src/primitives/*.ts</text>
+            <text x="356" y="80">tsx build.ts</text>
+            <text x="656" y="80">dist/*.dtcg.json &times;7</text>
+          </g>
+          <g font-family="var(--mono)" font-size="9.5" fill="var(--muted)">
+            <text x="56" y="97">src/semantics/*.ts</text>
+            <text x="356" y="97">validate &middot; cycles &middot; parity</text>
+            <text x="656" y="97">tokens.dtcg.json &mdash; resolver</text>
+          </g>
+
+          <line x1="284" y1="84" x2="332" y2="84" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="84" x2="632" y2="84" stroke="var(--line-2)" marker-end="url(#ar)"/>
+
+          <!-- carry 1 -->
+          <path d="M 760 112 V 128 H 22 V 191 H 32" fill="none" stroke="var(--accent)"
+                stroke-dasharray="3 3" opacity="0.75" marker-end="url(#ar-a)"/>
+          <text x="392" y="124" font-family="var(--mono)" font-size="9" fill="var(--accent)">DTCG resolver document</text>
+
+          <!-- ============ stage 2 ============ -->
+          <text x="44" y="152" font-family="var(--mono)" font-size="10.5" letter-spacing="0.8" fill="var(--accent)">02 &middot; @jig-ui/styles</text>
+
+          <rect x="40"  y="174" width="240" height="34" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="40"  y="216" width="240" height="34" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="340" y="174" width="110" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="470" y="174" width="110" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="340" y="216" width="240" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="640" y="174" width="240" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+          <rect x="640" y="216" width="240" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+
+          <g font-family="var(--mono)" font-size="11" fill="var(--ink)">
+            <text x="56"  y="196">terrazzo.config.ts</text>
+            <text x="56"  y="238">reset.css.ts</text>
+            <text x="356" y="196">tz build</text>
+            <text x="486" y="196">dedupe</text>
+            <text x="356" y="238">vite build</text>
+            <text x="656" y="196">dist/tokens.css</text>
+            <text x="656" y="238">dist/vars.js &middot; reset.css</text>
+          </g>
+          <text x="782" y="196" font-family="var(--mono)" font-size="9.5" fill="var(--accent)">25 KB &middot; &minus;71%</text>
+
+          <line x1="454" y1="191" x2="466" y2="191" stroke="var(--accent)" marker-end="url(#ar-a)"/>
+          <line x1="284" y1="191" x2="332" y2="191" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="191" x2="632" y2="191" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="284" y1="233" x2="332" y2="233" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="233" x2="632" y2="233" stroke="var(--line-2)" marker-end="url(#ar)"/>
+
+          <!-- carry 2 -->
+          <path d="M 760 250 V 266 H 22 V 359 H 32" fill="none" stroke="var(--accent)"
+                stroke-dasharray="3 3" opacity="0.75" marker-end="url(#ar-a)"/>
+          <text x="372" y="262" font-family="var(--mono)" font-size="9" fill="var(--accent)">token values as CSS custom properties</text>
+
+          <!-- ============ stage 3 ============ -->
+          <text x="44" y="290" font-family="var(--mono)" font-size="10.5" letter-spacing="0.8" fill="var(--accent)">03 &middot; @jig-ui/react</text>
+          <text x="176" y="290" font-family="var(--mono)" font-size="9" letter-spacing="0.6" fill="var(--muted)">&mdash; published</text>
+
+          <rect x="40"  y="300" width="240" height="34" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="40"  y="342" width="240" height="34" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="40"  y="384" width="240" height="34" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="340" y="300" width="240" height="118" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="640" y="300" width="240" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+          <rect x="640" y="342" width="240" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+          <rect x="640" y="384" width="240" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+
+          <g font-family="var(--mono)" font-size="11" fill="var(--ink)">
+            <text x="56"  y="322">src/**/*.tsx</text>
+            <text x="56"  y="364">src/**/*.css.ts</text>
+            <text x="56"  y="406">src/icon/generated/*</text>
+            <text x="356" y="322">vite build</text>
+            <text x="656" y="322">index &middot; tokens &middot; icons .js</text>
+            <text x="656" y="364">dist/**/*.d.ts tree</text>
+            <text x="656" y="406">styles.css &middot; reset.css</text>
+          </g>
+          <g font-family="var(--mono)" font-size="9.5" fill="var(--muted)">
+            <text x="368" y="348">vanilla-extract</text>
+            <text x="368" y="371">dts &rarr; vendor + verify</text>
+            <text x="368" y="394">composeStylesheet</text>
+          </g>
+          <text x="196" y="406" font-family="var(--mono)" font-size="8.5" fill="var(--gate)">tracked</text>
+
+          <line x1="284" y1="317" x2="332" y2="317" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="284" y1="359" x2="332" y2="359" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="284" y1="401" x2="332" y2="401" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="317" x2="632" y2="317" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="359" x2="632" y2="359" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <line x1="584" y1="401" x2="632" y2="401" stroke="var(--line-2)" marker-end="url(#ar)"/>
+
+          <!-- carry 3 -->
+          <path d="M 160 418 V 432 H 173 V 460" fill="none" stroke="var(--line-2)"
+                stroke-dasharray="3 3" marker-end="url(#ar)"/>
+          <path d="M 760 418 V 432 H 746 V 460" fill="none" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <path d="M 760 432 H 459 V 460" fill="none" stroke="var(--line-2)" marker-end="url(#ar)"/>
+          <text x="190" y="428" font-family="var(--mono)" font-size="8.5" fill="var(--muted)">from source</text>
+
+          <!-- ============ stage 4 ============ -->
+          <text x="40" y="454" font-family="var(--mono)" font-size="10.5" letter-spacing="0.8" fill="var(--accent)">04 &middot; consumers</text>
+
+          <rect x="40"  y="468" width="266" height="52" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="326" y="468" width="266" height="52" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="612" y="468" width="268" height="52" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+
+          <g font-family="var(--mono)" font-size="11" fill="var(--ink)">
+            <text x="56"  y="492">apps/storybook</text>
+            <text x="342" y="492">apps/playground</text>
+            <text x="628" y="492">npm consumer</text>
+          </g>
+          <g font-family="var(--mono)" font-size="9.5" fill="var(--muted)">
+            <text x="56"  y="509">aliased to src &mdash; hot reload</text>
+            <text x="342" y="509">consumes the built dist/</text>
+            <text x="628" y="509">tarball &middot; packed-consumer-test</text>
+          </g>
+        </svg>
+      </div>
+
+      <ul class="legend">
+        <li><span class="swatch sw-src"></span>tracked in git</li>
+        <li><span class="swatch sw-gen"></span>generated &middot; gitignored</li>
+        <li><span class="swatch sw-bld"></span>build step</li>
+      </ul>
+
+      <figcaption>
+        Each stage's artifacts become the next stage's inputs &mdash; the dashed return lanes on
+        the left. Storybook is the one consumer that bypasses <code>dist/</code> entirely,
+        which is why a broken export map can pass Storybook and still fail a real install.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Packages at a glance</h2>
+    <p>
+      One package is published. The other two exist to be compiled away &mdash; their output is
+      bundled into <code>@jig-ui/react</code>, so the published package has no runtime
+      dependencies beyond React itself.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Role</th>
+            <th>Produces</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pkg">@jig-ui/tokens</td>
+            <td class="role">Authors primitives and semantics in TypeScript; validates aliases, cycles, light/dark parity and required semantics before anything is written.</td>
+            <td class="out">*.dtcg.json + resolver</td>
+            <td><span class="tag tag-priv">private</span></td>
+          </tr>
+          <tr>
+            <td class="pkg">@jig-ui/styles</td>
+            <td class="role">Runs Terrazzo over the resolver to emit four theme permutations, strips the redundant declarations, and builds the optional reset.</td>
+            <td class="out">tokens.css &middot; vars.js &middot; reset.css</td>
+            <td><span class="tag tag-priv">private</span></td>
+          </tr>
+          <tr>
+            <td class="pkg">@jig-ui/react</td>
+            <td class="role">The components. Bundles the token values in, emits a declaration tree, and composes the single layered stylesheet consumers import.</td>
+            <td class="out">ESM &middot; d.ts tree &middot; styles.css</td>
+            <td><span class="tag tag-pub">published</span></td>
+          </tr>
+          <tr>
+            <td class="pkg">@jig-ui/tsconfig</td>
+            <td class="role">Shared TypeScript base configs for node and library targets.</td>
+            <td class="out">*.json</td>
+            <td><span class="tag tag-priv">private</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>How the stylesheet is assembled</h2>
+    <p>
+      <code>styles.css</code> is not a concatenation &mdash; it is a declared cascade. Every Jig
+      rule sits inside a layer, which means unlayered CSS in a consumer's app beats all of
+      it regardless of selector specificity. Overriding a token does not require
+      out-specifying <code>:root[data-theme="dark"]</code>.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <svg viewBox="0 0 820 300" role="img"
+             aria-label="Cascade layer order in the published stylesheet: jig.reset is weakest, then jig.tokens, then the reserved and currently empty jig.base, then jig.components; unlayered consumer CSS outranks all four.">
+
+          <defs>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <text x="200" y="22" font-family="var(--mono)" font-size="9.5" letter-spacing="1.2" fill="var(--muted)">DECLARED ORDER &mdash; LATER LAYER WINS</text>
+
+          <!-- strength arrow -->
+          <line x1="170" y1="262" x2="170" y2="44" stroke="var(--accent)" marker-end="url(#ar2)"/>
+          <text x="150" y="40" font-family="var(--mono)" font-size="9" fill="var(--accent)" text-anchor="end">wins</text>
+
+          <!-- consumer, unlayered -->
+          <rect x="200" y="34" width="380" height="38" rx="6" fill="var(--gate-wash)" stroke="var(--gate)"/>
+          <text x="216" y="58" font-family="var(--mono)" font-size="11.5" fill="var(--ink)">your app's unlayered CSS</text>
+          <text x="600" y="58" font-family="var(--mono)" font-size="9.5" fill="var(--gate)">always outranks Jig</text>
+
+          <!-- layers -->
+          <rect x="200" y="90"  width="380" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="200" y="134" width="380" height="34" rx="6" fill="var(--surface-2)" stroke="var(--line-2)" stroke-dasharray="4 3"/>
+          <rect x="200" y="178" width="380" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <rect x="200" y="222" width="380" height="34" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+
+          <g font-family="var(--mono)" font-size="11.5" fill="var(--ink)">
+            <text x="216" y="112">@layer jig.components</text>
+            <text x="216" y="156">@layer jig.base</text>
+            <text x="216" y="200">@layer jig.tokens</text>
+            <text x="216" y="244">@layer jig.reset</text>
+          </g>
+
+          <g font-family="var(--mono)" font-size="9.5" fill="var(--muted)">
+            <text x="600" y="112">components.css</text>
+            <text x="600" y="156">reserved &mdash; emits nothing</text>
+            <text x="600" y="200">tokens.css, deduped</text>
+            <text x="600" y="244">reset.css &mdash; separate import</text>
+          </g>
+
+          <text x="200" y="284" font-family="var(--mono)" font-size="9.5" fill="var(--muted)">the order statement is emitted at the top of both published stylesheets</text>
+        </svg>
+      </div>
+
+      <figcaption>
+        <code>jig.reset</code> sits lowest deliberately: a reset only has to beat the
+        browser's default styles, and those lose to author CSS at any layer. Left unlayered
+        it outranked <code>jig.components</code> and flattened the type presets.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Where it can fail closed</h2>
+    <p>
+      Three independent gates, each covering a path the others miss. The local one matters
+      because maintainers and release tooling invoke package scripts directly, without
+      Turbo in front of them.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <svg viewBox="0 0 880 270" role="img"
+             aria-label="Verification wiring: a push to main triggers both ci.yml and release.yml, and both call the same reusable verify.yml workflow; the publish job depends on verify, so publishing cannot start until every check has passed.">
+
+          <defs>
+            <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line-2)"/>
+            </marker>
+            <marker id="ar3g" viewBox="0 0 10 10" refX="9" refY="5"
+                    markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--gate)"/>
+            </marker>
+          </defs>
+
+          <rect x="20"  y="104" width="150" height="44" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <text x="36" y="131" font-family="var(--mono)" font-size="11" fill="var(--ink)">push to main</text>
+
+          <rect x="230" y="42"  width="170" height="44" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <rect x="230" y="166" width="170" height="44" rx="6" fill="var(--surface)" stroke="var(--line-2)"/>
+          <text x="246" y="69"  font-family="var(--mono)" font-size="11" fill="var(--ink)">ci.yml</text>
+          <text x="246" y="193" font-family="var(--mono)" font-size="11" fill="var(--ink)">release.yml</text>
+
+          <path d="M 174 118 V 64 H 226" fill="none" stroke="var(--line-2)" marker-end="url(#ar3)"/>
+          <path d="M 174 134 V 188 H 226" fill="none" stroke="var(--line-2)" marker-end="url(#ar3)"/>
+
+          <!-- shared reusable workflow -->
+          <rect x="460" y="70" width="200" height="112" rx="6" fill="var(--accent-wash)" stroke="var(--accent)"/>
+          <text x="476" y="94" font-family="var(--mono)" font-size="11" fill="var(--ink)">verify.yml</text>
+          <text x="476" y="109" font-family="var(--mono)" font-size="8.5" fill="var(--muted)">reusable &mdash; one definition</text>
+          <g font-family="var(--mono)" font-size="9" fill="var(--ink-2)">
+            <text x="476" y="130">typecheck &middot; build &middot; test</text>
+            <text x="476" y="146">icons &middot; packed consumer</text>
+            <text x="476" y="162">storybook</text>
+          </g>
+
+          <path d="M 404 64 H 432 V 108 H 456" fill="none" stroke="var(--line-2)" marker-end="url(#ar3)"/>
+          <path d="M 404 188 H 432 V 144 H 456" fill="none" stroke="var(--line-2)" marker-end="url(#ar3)"/>
+
+          <!-- publish, gated -->
+          <rect x="744" y="104" width="136" height="44" rx="6" fill="var(--gate-wash)" stroke="var(--gate)"/>
+          <text x="760" y="124" font-family="var(--mono)" font-size="11" fill="var(--ink)">changeset</text>
+          <text x="760" y="139" font-family="var(--mono)" font-size="11" fill="var(--ink)">publish</text>
+
+          <line x1="664" y1="126" x2="740" y2="126" stroke="var(--gate)" marker-end="url(#ar3g)"/>
+          <text x="700" y="118" font-family="var(--mono)" font-size="8.5" fill="var(--gate)" text-anchor="middle">needs: verify</text>
+
+          <text x="20" y="242" font-family="var(--mono)" font-size="9" fill="var(--muted)">local gate &mdash; vite-plugin-dts afterDiagnostic throws, so a package-local `pnpm build` or `pack:local` cannot emit on a type error</text>
+          <text x="20" y="258" font-family="var(--mono)" font-size="9" fill="var(--muted)">graph gate &mdash; turbo `build` dependsOn `^build` and its own `typecheck`</text>
+        </svg>
+      </div>
+
+      <figcaption>
+        Both workflows call one verification definition, and the publish job declares
+        <code>needs: verify</code>. Before this, a push started CI and Release in parallel
+        with nothing ordering them &mdash; so a package could fail only when installed from a
+        tarball and publish anyway.
+      </figcaption>
+    </figure>
+
+    <ul class="notes">
+      <li>The packed-consumer test installs the real tarball into an isolated project and type-checks it, which is the only check that sees a broken export map or a declaration importing a private workspace package.</li>
+      <li>Icons are generated but committed; <code>check:icons</code> regenerates and fails if anything moved.</li>
+      <li>Token validation runs inside the tokens build, so an unresolvable alias or a light/dark parity gap stops the pipeline at stage one.</li>
+    </ul>
+  </section>
+
+  <footer>
+    Jig &middot; generated from the repository at <code>main</code> &middot; pnpm workspaces + Turbo
+  </footer>
+
+</div>

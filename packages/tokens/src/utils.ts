@@ -15,11 +15,11 @@ export const buttonSet = (c: string, lightOrDark: string) => {
     'active-bg': `{color.${c}.550}`,
     'disabled-bg': `{color.warm.150}`,
     'disabled-text': `{color.warm.300}`,
-    'text': `{color.${c}.100}`
+    'text': `{color.${c}.50}`
   } : {
-    'base-bg': `{color.${c}.450}`,
-    'hover-bg': `{color.${c}.500}`,
-    'active-bg': `{color.${c}.550}`,
+    'base-bg': `{color.${c}.500}`,
+    'hover-bg': `{color.${c}.550}`,
+    'active-bg': `{color.${c}.600}`,
     'disabled-bg': `{color.gray.600}`,
     'disabled-text': `{color.gray.700}`,
     'text': `{color.${c}.100}`

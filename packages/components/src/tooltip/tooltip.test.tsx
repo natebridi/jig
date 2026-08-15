@@ -101,6 +101,55 @@ describe('Tooltip', () => {
     expect(screen.getByRole('button', { name: 'Save' })).toHaveAccessibleDescription('Tip');
   });
 
+  /**
+   * A controlled parent is allowed to ignore `onOpenChange` — that is what
+   * being the owner of the state means. These two cover what used to happen
+   * when it did: the tooltip optimistically recorded itself as open, nothing
+   * ever re-synced that (no prop change means no render), and its
+   * request-deduplication then started lying about the rendered state.
+   */
+  it('repeats a controlled open request the owner ignored', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Tooltip content="Tip" delay={0} closeDelay={0} open={false} onOpenChange={onOpenChange}>
+        <button>Save</button>
+      </Tooltip>
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Save' });
+
+    await user.hover(trigger);
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
+
+    // Focus is a second, independent request to open. The owner ignored the
+    // first, so the tooltip is still closed and still has something to ask for.
+    onOpenChange.mockClear();
+    await user.tab();
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
+  });
+
+  it('does not report a close for a controlled tooltip that never opened', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <Tooltip content="Tip" delay={0} closeDelay={0} open={false} onOpenChange={onOpenChange}>
+        <button>Save</button>
+      </Tooltip>
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Save' });
+
+    await user.hover(trigger);
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(true));
+
+    onOpenChange.mockClear();
+    await user.unhover(trigger);
+
+    // `open` stayed false throughout, so there is no close to report.
+    await waitFor(() => expect(onOpenChange).not.toHaveBeenCalledWith(false));
+  });
+
   it('keeps an existing aria-describedby alongside its own', () => {
     render(
       <>

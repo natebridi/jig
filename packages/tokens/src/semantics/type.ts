@@ -14,7 +14,12 @@ const textStyle = (family: string, weight: number, scale: number, lineHeight: nu
     $type: "dimension",
     $value: `{type.scale.${scale}}`,
   } as Token,
-  lineHeight: {
+  // Kebab-case to match every other token ID. The css-in-js output camelCases
+  // it back to `type.body01.lineHeight` for the .css.ts files, and the custom
+  // property was already `--type-body01-line-height`, so this is a source-only
+  // change — it just stops `core/consistent-naming` reporting 32 warnings a
+  // build that nobody could act on.
+  "line-height": {
     $type: "number",
     $value: lineHeight,
   } as Token,
@@ -28,10 +33,10 @@ const typography = {
   display04: textStyle("display", 400, 600, 1),
   display05: textStyle("display", 400, 500, 1),
   display06: textStyle("display", 400, 400, 1),
-  heading01: textStyle("sans", 600, 800, 1),
-  heading02: textStyle("sans", 600, 700, 1),
-  heading03: textStyle("sans", 600, 600, 1),
-  heading04: textStyle("sans", 600, 500, 1),
+  heading01: textStyle("sans", 500, 800, 1),
+  heading02: textStyle("sans", 500, 700, 1),
+  heading03: textStyle("sans", 500, 600, 1),
+  heading04: textStyle("sans", 500, 500, 1),
   heading05: textStyle("sans", 600, 400, 1),
   heading06: textStyle("sans", 600, 300, 1),
   body01: textStyle("sans", 400, 300, 1.4),

@@ -30,7 +30,7 @@ export function App() {
         <div id='debug-size' />
       </div>
 
-      <Stack px="500" py="800" maxWidth="74rem" centered spacing="800" align="start">
+      <Stack px="500" py="800" spacing="800" align="start" style={{ maxWidth: '74rem', marginInline: 'auto' }}>
 
         <Stack spacing="400">
           <Typography as="h2" with="heading04">Buttons</Typography>
@@ -136,7 +136,7 @@ export function App() {
         </Stack>
 
         <Typography as="p" with="body01">
-          This is <Adorn as="strong">important</Adorn> <Adorn with="code">codeBlock01</Adorn> and this is{' '}
+          This is <Adorn as="strong">important</Adorn> <Adorn as="code" with="mono">codeBlock01</Adorn> and this is{' '}
           <Adorn with="danger"><Adorn as="em">critical</Adorn></Adorn>.
         </Typography>
 

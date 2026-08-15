@@ -1,0 +1,57 @@
+name: Verify
+
+# The single verification pipeline, called by both CI and Release.
+#
+# It lives here rather than inline in ci.yml so that publishing can depend on
+# it. Previously CI and Release were separate workflows both triggered by a
+# push to main, with nothing ordering them — so `changeset publish` could run
+# while the packed-consumer test was still going, or had already failed. A
+# package could build fine, break only when installed from a tarball, and
+# publish anyway.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Ordered cheapest-first, so an obvious break fails in seconds rather
+      # than after a full Storybook build.
+      - name: Type-check
+        run: pnpm typecheck
+
+      # Token validation runs inside the tokens build (aliases resolve, no
+      # cycles, light/dark parity, required semantics present).
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      # The icons are generated but committed. This is what stops the two
+      # drifting: regenerate, and fail if anything moved.
+      - name: Check generated icons are up to date
+        run: pnpm --filter @jig-ui/react check:icons
+
+      # The one that catches what the monorepo hides — a broken export map, a
+      # declaration importing a private workspace package, a runtime import of
+      # something the consumer never installed.
+      - name: Packed consumer test
+        run: pnpm --filter @jig-ui/react test:packed
+
+      - name: Build Storybook
+        run: pnpm build-storybook

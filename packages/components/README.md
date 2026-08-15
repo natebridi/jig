@@ -149,8 +149,20 @@ control, set `data-theme` on the root element:
 Both directions are supported: `data-theme="light"` forces light even when the
 OS is dark, and vice versa.
 
-Theme selectors are scoped to `:root`, so a theme applies to the whole document.
-Nested theme regions — a dark card inside a light page — are not supported.
+Theme selectors are scoped to `:root`, and deliberately so: a Jig theme is a
+property of the document, not of a subtree. Jig is built for full-document
+applications, where exactly one theme is in effect at a time.
+
+That means these are out of scope by design rather than pending:
+
+- a dark section inside a light page,
+- side-by-side light and dark previews on one page,
+- independently themed embedded widgets or microfrontends.
+
+Subtree theming is not a selector change — primitives and semantic aliases
+inherit differently, and the tooltip's top-layer popover escapes its ancestors
+entirely. If you need any of the above, own the theme at the document level and
+render the two states on separate pages.
 
 ### Avoiding a flash of the wrong theme
 
