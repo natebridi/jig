@@ -184,9 +184,18 @@ export default defineConfig({
             formats: ['es']
         },
         rollupOptions: {
-            // Everything else — including the @jig-ui/* workspace packages — is
-            // bundled in, so the published package has no runtime dependencies.
-            external: ['react', 'react-dom', 'react/jsx-runtime'],
+            // The @jig-ui/* workspace packages are still bundled in — they are
+            // private and a consumer could not install them.
+            //
+            // Base UI is not. Decision 0001 (D1) made it a runtime dependency
+            // so that we control its version and consumers resolve one copy,
+            // and bundling it would defeat both: the consumer would install it
+            // *and* receive a second copy inlined here, and a consumer using
+            // Base UI directly would get two copies of its React context with
+            // certainty rather than by chance. The subpath pattern matters —
+            // the imports are `@base-ui/react/field` and friends, not the
+            // package root.
+            external: ['react', 'react-dom', 'react/jsx-runtime', /^@base-ui\/react(\/.*)?$/],
             output: { assetFileNames: 'components.css' }
         }
     }

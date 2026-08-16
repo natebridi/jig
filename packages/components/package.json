@@ -1,7 +1,7 @@
 {
     "name": "@jig-ui/react",
     "version": "0.1.0",
-    "description": "Jig design system \u2014 React components",
+    "description": "Jig design system — React components",
     "license": "MIT",
     "author": "Nate Bridi",
     "type": "module",
@@ -74,5 +74,8 @@
         "vite": "8.0.3",
         "vite-plugin-dts": "^4.5.4",
         "vitest": "^4.1.10"
+    },
+    "dependencies": {
+        "@base-ui/react": "~1.7.0"
     }
 }

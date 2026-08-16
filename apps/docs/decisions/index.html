@@ -1,0 +1,249 @@
+<title>Jig Decisions</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  section { margin-top: 3.5rem; }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .table-scroll { overflow-x: auto; margin-top: 1.5rem; }
+
+  table {
+    width: 100%;
+    min-width: 640px;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.7rem 1rem 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom-color: var(--line-2);
+    padding-top: 0;
+  }
+
+  td.n { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  td.date { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); white-space: nowrap; }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  .empty {
+    margin-top: 1.5rem;
+    padding: 2rem 1.5rem;
+    background: var(--surface);
+    border: 1px dashed var(--line-2);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 0.9375rem;
+    text-align: center;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; design system</p>
+    <h1>Decisions</h1>
+    <p class="standfirst">
+      Every component and token change that had a real fork in it, worked up as visual
+      options before any code was written &mdash; and the record of what was chosen.
+    </p>
+  </header>
+
+  <section>
+    <p>
+      New entries come from <code>/propose</code>. Open a document, accept or reject each
+      option, hit <strong>Copy decisions</strong>, and paste the block back into the chat.
+      <code>/implement</code> builds a decided document and writes back what the build
+      taught us.
+    </p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Decision</th>
+            <th>Status</th>
+            <th>Decided</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows are appended by /propose. Newest last, so the numbering reads
+               as a chronology. -->
+          <tr>
+            <td class="n">0001</td>
+            <td><a href="0001-base-ui-foundation.html">Base UI as a foundation</a></td>
+            <td><span class="status status-decided">Decided</span></td>
+            <td class="date">2026-08-15</td>
+          </tr>
+          <tr>
+            <td class="n">0002</td>
+            <td><a href="0002-text-input.html">Text Input</a></td>
+            <td><span class="status status-built">Built</span></td>
+            <td class="date">2026-08-15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions
+  </footer>
+
+</div>

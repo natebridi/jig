@@ -1,0 +1,885 @@
+<title>NNNN &middot; TITLE</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes — real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option — a
+     measurement table, a diagram — sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way — dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose — localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision NNNN</p>
+    <h1>TITLE</h1>
+    <p class="standfirst">
+      One or two sentences on what is being decided and why it is coming up now.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-proposed" id="doc-status">Proposed</span></li>
+      <li>YYYY-MM-DD</li>
+      <li>N decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      What exists today, what the change has to fit into, and what forced the question.
+      Cite real files with <code>path/to/file.ts</code> so this stays checkable later.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule and is <em>not</em> up for debate in this
+      document. Listing it is what keeps the decision count honest.
+    </p>
+    <ul class="notes">
+      <li>Example: consumes <code>spacing</code> from the shared ratio ramp; no new primitives.</li>
+      <li>Example: no <code>as</code> prop &mdash; polymorphism stays on layout and type components.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English.
+    </p>
+  </section>
+
+  <!-- ===================== one decision block ===================== -->
+  <section class="decision" data-decision="short-kebab-id" data-title="Human readable decision title">
+    <p class="decision-id">D1 &middot; short-kebab-id</p>
+    <h2>Human readable decision title</h2>
+    <p>
+      The question, stated so that someone reading it in a year understands what was at
+      stake without reading the code.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="option-a" data-label="Short option name">
+        <div class="option-head">
+          <h3>Short option name</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen">
+          <!-- Render the actual thing here: real markup with real token values,
+               inline SVG, a live ramp, swatches. Never a description of a picture. -->
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">What this buys.</li>
+          <li class="con">What it costs.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="option-b" data-label="Short option name">
+        <div class="option-head">
+          <h3>Short option name</h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen"></div>
+
+        <ul class="tradeoffs">
+          <li class="pro">What this buys.</li>
+          <li class="con">What it costs.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+  <!-- =================== end one decision block =================== -->
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; NNNN
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "NNNN-slug",
+  "status": "proposed",
+  "decided": null,
+  "built": null,
+  "decisions": []
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

@@ -1,5 +1,5 @@
 import { ThemeTokenSet } from '../types'
-import { buttonSet, ghostButtonSet } from '../utils'
+import { buttonSet, controlSet, ghostButtonSet } from '../utils'
 
 export default {
     color: {
@@ -64,6 +64,9 @@ export default {
             secondary: buttonSet('gray', 'dark'),
             danger: buttonSet('red', 'dark'),
             ghost: ghostButtonSet('dark')
-        }
+        },
+        // Shared by every field-like control rather than scoped to one, so
+        // Select and Combobox inherit this surface without another decision.
+        control: controlSet('dark')
     }
 } as ThemeTokenSet;

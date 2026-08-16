@@ -43,7 +43,7 @@ const read = (group: string) =>
 
 // The same composition the resolver below describes: the invariant foundation,
 // plus one theme context on top.
-const foundation = merge(read('color'), read('radius'), read('spacing'), read('typography'))
+const foundation = merge(read('color'), read('radius'), read('spacing'), read('typography'), read('size'))
 const light = merge(foundation, read('colorLight'))
 const dark = merge(foundation, read('colorDark'))
 
@@ -74,6 +74,7 @@ const resolver = {
                 { '$ref': 'radius.dtcg.json' },
                 { '$ref': 'spacing.dtcg.json' },
                 { '$ref': 'typography.dtcg.json' },
+                { '$ref': 'size.dtcg.json' },
             ]
         }
     },

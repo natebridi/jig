@@ -13,6 +13,8 @@ export { ToggleButton } from './togglebutton';
 export type { ToggleButtonProps } from './togglebutton';
 export { IconButton } from './iconbutton';
 export type { IconButtonProps } from './iconbutton';
+export { Input } from './input';
+export type { InputProps, InputSize } from './input';
 export { Typography } from './typography';
 export type { TypographyProps, TypographyElement, TypeStyles } from './typography';
 export { Adorn } from './adorn';

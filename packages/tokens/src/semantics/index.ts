@@ -4,11 +4,13 @@ import colorDark from './color-dark'
 import typography from './type'
 import radius from './radii'
 import spacing from './spacing'
+import size from './size'
 
 export default {
     colorLight,
     colorDark,
     typography,
     radius,
-    spacing
+    spacing,
+    size
 } as TokenSet;
