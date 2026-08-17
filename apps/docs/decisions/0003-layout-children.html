@@ -1,0 +1,1636 @@
+<title>0003 &middot; Layout children</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes — real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option — a
+     measurement table, a diagram — sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way — dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose — localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0003</p>
+    <h1>Layout children</h1>
+    <p class="standfirst">
+      Stack and Grid position themselves well and their children barely at all. A real
+      form makes that gap obvious &mdash; six wrapper <code>div</code>s and four inline
+      <code>gridTemplateColumns</code> overrides in one screen. Grid becomes a fixed
+      24-column field that children span, and a single <code>Box</code> carries the
+      child-side props for both containers.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-16</li>
+      <li>decided 2026-08-16</li>
+      <li>built 2026-08-16</li>
+      <li>4 decisions</li>
+      <li>follows <a href="0002-text-input.html">0002</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>What the form actually needed</h2>
+    <p>
+      The recipe form in <code>apps/playground/src/App.tsx</code> is the evidence. Every
+      workaround below is in that file today, and each one is a thing the layout props
+      cannot say.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr><th>Written</th><th>Meaning</th><th>Missing</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>&lt;div style="flex:1"&gt;<br>&nbsp;&nbsp;&lt;Input label="Step"/&gt;</td>
+              <td>fill the remaining space</td>
+              <td>child cannot grow</td>
+            </tr>
+            <tr>
+              <td>&lt;div style="flex:0"&gt;<br>&nbsp;&nbsp;&lt;Button&gt;Add step</td>
+              <td>stay at natural width</td>
+              <td>child cannot opt out</td>
+            </tr>
+            <tr>
+              <td>&lt;Grid columns={5}<br>&nbsp;&nbsp;style="1fr 1fr 4fr 4fr auto"&gt;</td>
+              <td>proportional form row</td>
+              <td>columns are always equal &mdash; and <code>columns={5}</code> is now a lie</td>
+            </tr>
+            <tr>
+              <td>&lt;Grid style="align-items:end"&gt;</td>
+              <td>bottom-align the row</td>
+              <td>Grid has no alignment props at all</td>
+            </tr>
+            <tr>
+              <td>&lt;Stack style="width:stretch"&gt;</td>
+              <td>fill the parent</td>
+              <td>a container cannot position <em>itself</em></td>
+            </tr>
+            <tr>
+              <td><i>nothing</i></td>
+              <td>collapse on a phone</td>
+              <td>a five-track row is unusable narrow, and there is no way to say so</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        Six workarounds, four root causes. Note the last row: the form is not responsive
+        at all, and the ingredient row is the case that most needs to be.
+      </figcaption>
+    </figure>
+
+    <div class="outcome">
+      <span class="tag">Revised before decision &mdash; 2026-08-16</span>
+      <b>The first draft proposed a different Grid and was redirected on review.</b>
+      It had <code>columns={[1, 1, 4, 4, 'auto']}</code> &mdash; arbitrary weight arrays
+      per Grid &mdash; which required a CSS custom-property mechanism because track
+      templates cannot be enumerated.
+      <p>
+        Redirected to the Carbon/MUI model instead: <b>the grid has a fixed column count
+        and children declare their span.</b> That is a better fit and it removes a whole
+        decision &mdash; with a fixed track, every value in the system is a closed set
+        again, so Sprinkles handles all of it and no custom-property escape is needed.
+        16 columns was considered and dropped: it does not divide by three, and the
+        <i>Servings / Total time / Active time</i> row would have been 5+5+6.
+      </p>
+    </div>
+
+    <h3>Already settled</h3>
+    <ul class="notes">
+      <li>
+        <strong>Grid is a fixed 24-column field.</strong> One track definition,
+        <code>repeat(24, minmax(0, 1fr))</code>, and children say how much of it they
+        occupy. 24 divides by 2, 3, 4, 6, 8 and 12, so thirds, quarters and eighths are
+        all exact.
+      </li>
+      <li>
+        <strong>Content-width layouts use Stack, not Grid.</strong> A fixed track has no
+        <code>auto</code> column, so a row with a natural-width trailing control &mdash;
+        the delete buttons &mdash; is a flex row. This is the rule for choosing between
+        the two primitives, which the system has never stated.
+      </li>
+      <li>
+        <strong>One <code>Box</code> serves both containers.</strong> It carries
+        <code>span</code> for Grid and <code>grow</code> for Stack, and the props that do
+        not apply to its parent are simply inert. Accepted deliberately, in preference to
+        a second Grid-specific container.
+      </li>
+      <li>
+        <strong>Everything is enumerable, so Sprinkles stays the only mechanism.</strong>
+        No inline custom properties, no raw CSS in props.
+      </li>
+      <li>
+        <strong>Sibling grids align by construction.</strong> Two 24-column Grids of the
+        same width share the same track positions, so repeated rows line up without
+        <code>subgrid</code> or a shared template.
+      </li>
+      <li>
+        <strong>Grid gains <code>align</code> and <code>justify</code></strong> matching
+        Stack's existing props. Symmetry with an existing component, not a fork.
+      </li>
+      <li>
+        <strong>Every new prop takes the responsive object form</strong>, mobile-first,
+        from the shared breakpoints. A prop that cannot be responsive is not finished.
+      </li>
+      <li>
+        <strong>Inline <code>style</code> stays legitimate</strong> for genuinely
+        arbitrary values &mdash; a one-off <code>maxWidth: '74rem'</code> is not a layout
+        prop waiting to be born.
+      </li>
+      <li>
+        <strong>Spacing props and <code>as</code> stay on layout components</strong>, and
+        <code>Box</code> is one. No Base UI &mdash; 0001&nbsp;D2's behaviour test puts
+        layout in the hand-rolled column.
+      </li>
+    </ul>
+
+    <p style="font-size:0.875rem;color:var(--muted);margin-top:1.5rem">
+      Specimens use real token values &mdash; control heights from
+      <code>size.control</code>, gaps from the spacing ramp, borders from
+      <code>color.control</code> &mdash; and render the light theme regardless of this
+      document's.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Four questions the fixed-track model leaves open. D1 and D2 are the ergonomics of
+      writing a form row; D3 is a scope question with a measurable cost; D4 is carried
+      over unchanged from the first draft.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="equal-shorthand" data-title="How you say &quot;three equal fields&quot;">
+    <p class="decision-id">D1 &middot; equal-shorthand</p>
+    <h2>How you say "three equal fields"</h2>
+    <p>
+      Under a pure span model, the <i>Servings / Total time / Active time</i> row needs
+      three wrappers at <code>span={8}</code> each &mdash; which is <em>more</em> to write
+      than today's <code>columns={3}</code>. Most rows in a real form are equal
+      divisions, so this is the common case getting worse to fix the uncommon one.
+    </p>
+    <p>
+      A second case tests each option: a gallery of five across.
+      24 does not divide by five.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="distribute" data-label="columns distributes">
+        <div class="option-head">
+          <h3><code>columns</code> distributes</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">columns={3} &rarr; every unwrapped child spans 8</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid <b>columns={3}</b> spacing="300"&gt;
+  &lt;Input label="Servings"/&gt;
+  &lt;Input label="Total time"/&gt;
+  &lt;Input label="Active time"/&gt;
+&lt;/Grid&gt;
+
+<i>and a Box still overrides:</i>
+&lt;Grid&gt;
+  &lt;<b>Box span={6}</b>&gt;&lt;Input label="Source"/&gt;&lt;/Box&gt;
+  &lt;<b>Box span={18}</b>&gt;&lt;Input label="URL"/&gt;&lt;/Box&gt;
+&lt;/Grid&gt;
+
+<i>five across:</i> <span class="no">columns={5} → 24/5 not integral</span></pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.45rem;text-align:left">
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Servings</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Total time</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Active time</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The common case stays one prop, and existing <code>columns={2|3|4|6|8|12}</code> call sites keep working with identical output.</li>
+          <li class="pro">Mixing is natural: unwrapped children take the distribution, a <code>Box</code> overrides it.</li>
+          <li class="con">Only divisors of 24 are expressible, so <code>columns={5}</code> or <code>{7}</code> must be a type error rather than a rounding.</li>
+          <li class="con">Two ways to reach the same layout, and someone will wonder which is canonical.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="track-override" data-label="columns overrides the track">
+        <div class="option-head">
+          <h3><code>columns</code> overrides the track</h3>
+        </div>
+
+        <p class="specimen-label">columns={5} &rarr; the grid becomes 5 tracks, not 24</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid <b>columns={5}</b> spacing="300"&gt;
+  <i>…five equal tracks, spans now
+  count in fifths, not 24ths</i>
+&lt;/Grid&gt;
+
+<i>five across:</i> <span class="in">works</span>
+<i>but span={8} inside it means</i>
+<span class="no">8 of 5 columns</span></pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0.45rem;text-align:left">
+            <div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Any column count is expressible, including five and seven.</li>
+          <li class="pro">Nothing about existing call sites changes at all.</li>
+          <li class="con">Destroys the property that makes 24 worth having — sibling grids no longer share track positions, and <code>span</code> means a different width in every Grid.</li>
+          <li class="con">Two grid models in one component, which is the ambiguity that made <code>columns={5}</code> a lie in the first place.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="spans-only" data-label="Spans only">
+        <div class="option-head">
+          <h3>Spans only</h3>
+        </div>
+
+        <p class="specimen-label">columns is removed; every child declares its span</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid spacing="300"&gt;
+  &lt;<b>Box span={8}</b>&gt;&lt;Input label="Servings"/&gt;&lt;/Box&gt;
+  &lt;<b>Box span={8}</b>&gt;&lt;Input label="Total time"/&gt;&lt;/Box&gt;
+  &lt;<b>Box span={8}</b>&gt;&lt;Input label="Active time"/&gt;&lt;/Box&gt;
+&lt;/Grid&gt;
+
+<i>five across:</i> <span class="no">not expressible</span></pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.45rem;text-align:left">
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Servings</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Total time</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 8"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Active time</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly one way to do everything. Nothing to learn beyond "children span".</li>
+          <li class="pro">The 24-column field is never subverted.</li>
+          <li class="con">Makes the most common row in any form more verbose than it is today, which is a regression paid on every page.</li>
+          <li class="con">Breaks all four existing <code>columns</code> call sites with no replacement shorthand.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b><code>columns</code> distributes.</b> <code>columns={n}</code> gives every
+      unwrapped child a span of <code>24 / n</code>. Only divisors of 24
+      &mdash; 1, 2, 3, 4, 6, 8, 12, 24 &mdash; are accepted; anything else is a type
+      error rather than a rounding.
+      <p>
+        <b>Precedence, now load-bearing:</b> a <code>Box</code> with an explicit
+        <code>span</code> always wins over the Grid's distribution, and a Grid may mix
+        distributed and explicit children freely. With D2 landing on per-child spans,
+        this is the rule that decides what an uneven row looks like, so it is stated
+        here rather than left to the implementation.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="collapse" data-title="How a row becomes a stack">
+    <p class="decision-id">D2 &middot; collapse</p>
+    <h2>How a row becomes a stack</h2>
+    <p>
+      This is the gap the screenshot shows most plainly: nothing in the form collapses.
+      The ingredient row has four fields at <code>3 / 3 / 9 / 9</code>, which is right at
+      desktop and unusable at 380px. The spans are uneven, so a responsive
+      <code>columns</code> shorthand cannot rescue it &mdash; the question is where the
+      breakpoint is written.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="collapse-prop" data-label="A prop on the Grid">
+        <div class="option-head">
+          <h3>A prop on the Grid</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">collapseBelow="md" &rarr; every child spans 24 below md</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid <b>collapseBelow="md"</b> spacing="300"&gt;
+  &lt;Box span={3}&gt;&lt;Input label="Measure"/&gt;&lt;/Box&gt;
+  &lt;Box span={3}&gt;&lt;Input label="Quantity"/&gt;&lt;/Box&gt;
+  &lt;Box span={9}&gt;&lt;Input label="Ingredient"/&gt;&lt;/Box&gt;
+  &lt;Box span={9}&gt;&lt;Input label="Preparation"/&gt;&lt;/Box&gt;
+&lt;/Grid&gt;</pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.4rem;text-align:left">
+            <div style="grid-column:span 3"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 3"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 9"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 9"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin:0.7rem 0 0.3rem">below md &mdash;</p>
+          <div style="display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.4rem;max-width:11rem">
+            <div style="grid-column:span 24"><div style="height:1.5rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 24"><div style="height:1.5rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 24"><div style="height:1.5rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 24"><div style="height:1.5rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One prop, one place, and it works for uneven spans — which is every interesting row.</li>
+          <li class="pro">Reads as the intent: "this row is a row from md up". The children stay declarative about proportion only.</li>
+          <li class="pro">Cheap: one extra class per breakpoint, not one per span per breakpoint.</li>
+          <li class="con">A parent prop reaching into children's spans, which is the coupling D3 of the previous draft argued against.</li>
+          <li class="con">All-or-nothing. A row where three of four fields should collapse still needs per-child values.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="per-child" data-label="Responsive span per child">
+        <div class="option-head">
+          <h3>Responsive span per child</h3>
+        </div>
+
+        <p class="specimen-label">Each Box carries its own breakpoints</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid spacing="300"&gt;
+  &lt;Box span={<b>{{ xs: 24, md: 3 }}</b>}&gt;…&lt;/Box&gt;
+  &lt;Box span={<b>{{ xs: 24, md: 3 }}</b>}&gt;…&lt;/Box&gt;
+  &lt;Box span={<b>{{ xs: 24, md: 9 }}</b>}&gt;…&lt;/Box&gt;
+  &lt;Box span={<b>{{ xs: 24, md: 9 }}</b>}&gt;…&lt;/Box&gt;
+&lt;/Grid&gt;
+
+<i>the same breakpoint, four times,
+in every row of every form</i></pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.4rem;text-align:left">
+            <div style="grid-column:span 3"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 3"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 9"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:span 9"><div style="height:1.9rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin:0.7rem 0 0">identical output &middot; four times the authoring</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No parent-to-child coupling. A child's layout is fully described by its own props.</li>
+          <li class="pro">Any collapse pattern is expressible, including partial ones.</li>
+          <li class="con">Repeats the same breakpoint on every child of every row, which is where inconsistency creeps in — one field left at <code>md</code> while the rest moved to <code>lg</code>.</li>
+          <li class="con">Nothing needs building, so it is really the "do less" option rather than a design.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Responsive span per child.</b> No <code>collapseBelow</code> prop is built. A
+      child's layout stays fully described by its own props, and a row collapses by every
+      <code>Box</code> carrying <code>span={{ xs: 24, md: … }}</code>.
+      <p>
+        Chosen against the recommendation. Recorded because it changes what the other
+        decisions have to carry: <code>span</code> must be responsive from the first
+        commit rather than gaining breakpoints later, and there is no parent-level prop
+        that can silently disagree with a child.
+      </p>
+      <p>
+        The verbosity concern is narrower than the proposal implied, given D1. An
+        <em>even</em> row collapses through <code>columns</code> alone &mdash;
+        <code>columns={{ xs: 1, md: 3 }}</code> distributes 24 then 8 &mdash; so only
+        rows with uneven spans repeat the breakpoint per child. In the recipe form that
+        is one row of four, not every row.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="offsets" data-title="Offsets and start lines">
+    <p class="decision-id">D3 &middot; offsets</p>
+    <h2>Offsets and start lines</h2>
+    <p>
+      A span says how wide; an offset says where. Indented sub-fields, a right-aligned
+      action, a field that starts at column 13 with nothing to its left &mdash; all need
+      a start position rather than document order. Nothing in the recipe form needs one,
+      which is the argument for deferring, and every grid system eventually grows them,
+      which is the argument for now.
+    </p>
+    <p>
+      It is not free. Enumerating <code>start</code> across 24 columns and five
+      breakpoints is 120 declarations, against a stylesheet that is 756 today.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="defer" data-label="Defer">
+        <div class="option-head">
+          <h3>Defer</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Projected declarations in styles.css</p>
+        <div class="specimen block">
+          <table class="spec-table">
+            <thead><tr><th>&nbsp;</th><th>decls</th><th>vs today</th></tr></thead>
+            <tbody>
+              <tr><td>today</td><td>756</td><td>&mdash;</td></tr>
+              <tr><td>retire columns 1&ndash;12</td><td>&minus;60</td><td></td></tr>
+              <tr><td>span 1&ndash;24 &times;5bp</td><td>+120</td><td></td></tr>
+              <tr><td>alignSelf, grow, collapse</td><td>+40</td><td></td></tr>
+              <tr><td><b>this proposal</b></td><td><b>856</b></td><td><span class="in">+13%</span></td></tr>
+              <tr><td>&nbsp;&nbsp;with start 1&ndash;24</td><td>976</td><td><span class="no">+29%</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing in the evidence needs it, and a prop designed without a real case is usually the wrong prop.</li>
+          <li class="pro">Holds the stylesheet growth to +13% right after a refactor aimed at shrinking it.</li>
+          <li class="pro">Adding it later is purely additive — no call site changes.</li>
+          <li class="con">The first layout that needs an offset reaches for <code>style</code>, and inline styles cannot be responsive.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="include" data-label="Include now">
+        <div class="option-head">
+          <h3>Include now</h3>
+        </div>
+
+        <p class="specimen-label">Box start={13} &mdash; a field in the right half only</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Grid&gt;
+  &lt;Box span={12}&gt;&lt;Input label="Source"/&gt;&lt;/Box&gt;
+  &lt;Box span={12} <b>start={13}</b>&gt;
+    &lt;Input label="Notes"/&gt;
+  &lt;/Box&gt;
+&lt;/Grid&gt;</pre>
+          <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:0.45rem;text-align:left">
+            <div style="grid-column:span 12"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Source</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+            <div style="grid-column:13 / span 12"><div style="font-size:0.62rem;color:oklch(0.313 0.012 83);margin-bottom:0.2rem">Notes</div><div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The grid is complete on day one, and asymmetric layouts never need an escape hatch.</li>
+          <li class="pro">Built alongside <code>span</code>, which is where the work naturally belongs.</li>
+          <li class="con">Nearly doubles this proposal's CSS cost for a case with no evidence behind it.</li>
+          <li class="con">Offsets invite layouts that break when content reflows, and there is no design guidance yet on when they are appropriate.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Defer.</b> No <code>start</code> or <code>offset</code> props. Holds the
+      stylesheet at roughly 856 declarations (+13%) rather than 976 (+29%), and adding
+      them later is purely additive &mdash; no call site changes.
+      <p>
+        The known cost stands: the first layout that needs an offset reaches for
+        <code>style</code>, and an inline style cannot carry a breakpoint. That is the
+        trigger for revisiting this.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="align-default" data-title="What a Stack does by default">
+    <p class="decision-id">D4 &middot; align-default</p>
+    <h2>What a Stack does by default</h2>
+    <p>
+      Stack defaults <code>align</code> to <code>'start'</code>. In a column that means
+      children shrink-wrap horizontally, which is why the form opens with
+      <code>align="stretch"</code> <em>and</em> <code>style={{ width: 'stretch' }}</code>
+      on the same element. CSS's own initial value for <code>align-items</code> is
+      <code>stretch</code>; Stack overrides it to <code>start</code>.
+    </p>
+    <p>Each specimen is a column Stack of two fields and a row Stack of two buttons.</p>
+
+    <div class="options">
+
+      <article class="option" data-option="direction-aware" data-label="Direction-aware default">
+        <div class="option-head">
+          <h3>Direction-aware default</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">column &rarr; stretch, row &rarr; center</p>
+        <div class="specimen block">
+          <div style="display:flex;flex-direction:column;gap:0.45rem;align-items:stretch;text-align:left">
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+          <div style="display:flex;gap:0.45rem;align-items:center;margin-top:0.9rem">
+            <div style="height:1.69rem;padding:0 0.72rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.201 260);color:oklch(0.937 0.031 251.1);font-size:0.79rem">Save</div>
+            <div style="height:2.41rem;padding:0 1.17rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.01 83);color:oklch(0.937 0.006 83);font-size:0.97rem">Cancel</div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);margin:0.8rem 0 0">fields fill &middot; buttons centre on each other</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Removes the most workarounds of any option here — both the <code>align="stretch"</code> and the <code>width:'stretch'</code> in the form.</li>
+          <li class="pro">Matches what each direction is almost always for: a column of fields wants full width, a row of controls wants a shared centre line.</li>
+          <li class="con">A default that changes with another prop is magic, and someone will be surprised by it once.</li>
+          <li class="con">Breaking. Existing column Stacks that relied on shrink-wrapping will widen.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="css-default" data-label="Return to the CSS default">
+        <div class="option-head">
+          <h3>Return to the CSS default</h3>
+        </div>
+
+        <p class="specimen-label">stretch in both directions</p>
+        <div class="specimen block">
+          <div style="display:flex;flex-direction:column;gap:0.45rem;align-items:stretch;text-align:left">
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+          <div style="display:flex;gap:0.45rem;align-items:stretch;margin-top:0.9rem">
+            <div style="padding:0 0.72rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.201 260);color:oklch(0.937 0.031 251.1);font-size:0.79rem">Save</div>
+            <div style="height:2.41rem;padding:0 1.17rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.01 83);color:oklch(0.937 0.006 83);font-size:0.97rem">Cancel</div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--no);margin:0.8rem 0 0">the small button is stretched to match the large one</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No magic. Stack stops overriding CSS and the default is the one the platform already has.</li>
+          <li class="pro">One rule to remember instead of two.</li>
+          <li class="con">Rows of mixed-size controls stretch to the tallest, as above — which is exactly why the override was added in the first place.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="keep-start" data-label="Keep start">
+        <div class="option-head">
+          <h3>Keep <code>start</code></h3>
+        </div>
+
+        <p class="specimen-label">Unchanged; Box's self-props absorb the difference</p>
+        <div class="specimen block">
+          <div style="display:flex;flex-direction:column;gap:0.45rem;align-items:flex-start;text-align:left">
+            <div style="width:9rem;height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+            <div style="width:9rem;height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+          <div style="display:flex;gap:0.45rem;align-items:flex-start;margin-top:0.9rem">
+            <div style="height:1.69rem;padding:0 0.72rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.201 260);color:oklch(0.937 0.031 251.1);font-size:0.79rem">Save</div>
+            <div style="height:2.41rem;padding:0 1.17rem;display:grid;place-items:center;border-radius:4.3px;background:oklch(0.532 0.01 83);color:oklch(0.937 0.006 83);font-size:0.97rem">Cancel</div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--no);margin:0.8rem 0 0">fields shrink-wrap &middot; buttons hang off the top</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing breaks, and no existing layout moves.</li>
+          <li class="con">Keeps the most common case — a column of full-width fields — as the one that needs an explicit prop.</li>
+          <li class="con">Neither specimen above is what anyone wanted, which is the argument against it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Keep <code>start</code>.</b> Stack's <code>align</code> default is unchanged, so
+      nothing existing moves and no layout is silently rewidened.
+      <p>
+        Chosen against the recommendation. Two consequences worth recording, because they
+        are what the proposal offered to remove and now stay:
+      </p>
+      <ul>
+        <li>
+          A column of full-width fields still needs an explicit
+          <code>align="stretch"</code>. The one in <code>App.tsx</code> line 35 stays.
+        </li>
+        <li>
+          <b><code>Box</code> must carry <code>alignSelf</code>.</b> With the parent
+          default at <code>start</code>, a single child that needs to fill has no other
+          way to say so &mdash; and this is what replaces the
+          <code>style={{ width: 'stretch' }}</code> workaround, rather than the default
+          change doing it.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The form, on the recommended set</h2>
+    <p>
+      The same markup as <code>App.tsx</code> lines 33&ndash;76. Note the ingredient row:
+      it has a content-width delete button, so by the settled rule it is a Stack
+      containing a Grid, not a Grid.
+    </p>
+    <figure>
+      <div class="scroller">
+<pre class="tree">&lt;Stack spacing="600"&gt;
+  &lt;Input label="Title" size="lg"/&gt;
+
+  &lt;Grid <b>columns={3}</b> <b>collapseBelow="sm"</b> spacing="300"&gt;
+    &lt;Input label="Servings"/&gt;
+    &lt;Input label="Total time"/&gt;
+    &lt;Input label="Active time"/&gt;
+  &lt;/Grid&gt;
+
+  &lt;Stack&gt;
+    &lt;Stack direction="row" spacing="300" align="end"&gt;
+      &lt;<b>Box grow</b>&gt;&lt;Input label="Step"/&gt;&lt;/Box&gt;
+      &lt;IconButton icon="trash"/&gt;
+    &lt;/Stack&gt;
+    &lt;<b>Box</b>&gt;&lt;Button icon="plus" variant="ghost" size="sm"&gt;Add step&lt;/Button&gt;&lt;/<b>Box</b>&gt;
+  &lt;/Stack&gt;
+
+  &lt;Stack&gt;
+    &lt;Stack direction="row" spacing="300" align="end"&gt;
+      &lt;<b>Box grow</b>&gt;
+        &lt;Grid <b>collapseBelow="md"</b> spacing="300"&gt;
+          &lt;<b>Box span={3}</b>&gt;&lt;Input label="Measure"/&gt;&lt;/Box&gt;
+          &lt;<b>Box span={3}</b>&gt;&lt;Input label="Quantity"/&gt;&lt;/Box&gt;
+          &lt;<b>Box span={9}</b>&gt;&lt;Input label="Ingredient"/&gt;&lt;/Box&gt;
+          &lt;<b>Box span={9}</b>&gt;&lt;Input label="Preparation"/&gt;&lt;/Box&gt;
+        &lt;/Grid&gt;
+      &lt;/Box&gt;
+      &lt;IconButton icon="trash"/&gt;
+    &lt;/Stack&gt;
+    &lt;<b>Box</b>&gt;&lt;Button icon="plus" variant="ghost" size="sm"&gt;Add ingredient&lt;/Button&gt;&lt;/<b>Box</b>&gt;
+  &lt;/Stack&gt;
+
+  &lt;Grid <b>collapseBelow="sm"</b> spacing="300"&gt;
+    &lt;<b>Box span={6}</b>&gt;&lt;Input label="Source"/&gt;&lt;/Box&gt;
+    &lt;<b>Box span={18}</b>&gt;&lt;Input label="Source URL"/&gt;&lt;/Box&gt;
+  &lt;/Grid&gt;
+&lt;/Stack&gt;</pre>
+      </div>
+      <figcaption>
+        Six wrapper <code>div</code>s and four inline overrides become typed
+        <code>Box</code>es, and every row now collapses on a phone &mdash; which none of
+        them did before. <code>3 + 3 + 9 + 9 = 24</code> and <code>6 + 18 = 24</code>, both
+        exact. The outer <code>maxWidth: '74rem'</code> stays an inline style,
+        deliberately.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A <code>FormRow</code> or <code>Field.Group</code> abstraction.</strong> Tempting after looking at the ingredient list, but it would bake one form shape into the system on a sample size of one. Revisit after a second real form.</li>
+      <li><strong>Container queries.</strong> The right answer for a field row that should collapse on its own width rather than the viewport's — which is exactly what the nested ingredient Grid wants, since it does not span the full page. A larger change, and its own document.</li>
+      <li><strong>Row spans.</strong> <code>grid-row</code> has no case in the evidence and doubles the span surface.</li>
+      <li><strong>A gutter scale distinct from <code>spacing</code>.</strong> Carbon separates them; nothing here yet needs it.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-16. <code>pnpm turbo typecheck test --force</code> passes &mdash; 12
+      tasks, 57 tests, 11 of them new for <code>Box</code> and <code>Grid</code> &mdash;
+      and the recipe form in the playground is migrated onto the new props.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>src/layout.ts</code> &mdash; <code>GridSpan</code> 1&ndash;24, <code>GridColumns</code> narrowed to the divisors of 24, and <code>GRID_COLUMNS</code> as the single source of the track count.</li>
+      <li><code>src/layout.css.ts</code> &mdash; the twelve <code>gridTemplateColumns</code> templates replaced by <code>gridColumn</code> spans; <code>alignSelf</code> and <code>flexGrow</code> added.</li>
+      <li><code>src/grid/grid.css.ts</code> &mdash; the fixed 24-track base class, and 40 distribution rules.</li>
+      <li><code>src/grid/grid.tsx</code> &mdash; <code>columns</code> distributes, <code>align</code> and <code>justify</code> added.</li>
+      <li><code>src/box/</code> &mdash; new. Component, styles, stories, tests, exported from <code>src/index.ts</code>.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; migrated.</li>
+    </ul>
+
+    <div class="outcome outcome-built">
+      <span class="tag">The CSS budget in D3 was measured wrong</span>
+      <b>Both the baseline and the projection were bad numbers, and the real growth is
+      much smaller.</b>
+      <p>
+        D3 argued from "756 declarations today, 856 after". That count came from counting
+        semicolons in the minified stylesheet &mdash; which misses every
+        single-declaration rule, because minified CSS drops the last semicolon in a
+        block. Utility classes are almost entirely single-declaration rules, so the
+        metric was blind to exactly the thing being measured.
+      </p>
+      <p>
+        Measured properly, by file size on the same artifact before and after:
+        <b>63,436 &rarr; 66,554 bytes, +3,118 (+4.9%)</b> &mdash; against a projection of
+        +13%. Retiring sixty long <code>repeat(n, minmax(0, 1fr))</code> templates
+        (~3,300 bytes) very nearly paid for the two hundred short
+        <code>grid-column: span n</code> and distribution rules (~6,400 bytes) that
+        replaced them.
+      </p>
+      <p>
+        This does not change the decision &mdash; deferring offsets still looks right on
+        its own merits &mdash; but the number it was argued from was not real. Future
+        proposals should quote bytes or rule counts, not semicolons.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">The precedence rule is enforced by the cascade, not by code</span>
+      <b>D1 said <code>columns</code> distributes but not how, and the mechanism turned
+      out to decide whether the precedence rule was real.</b>
+      <p>
+        Cloning children to inject a span breaks fragments, <code>map</code> and refs;
+        <code>:nth-child</code> breaks on fragments. Distribution is instead one
+        descendant rule per count per breakpoint:
+        <code>:where(.grid-3) &gt; * { grid-column: span 8 }</code>.
+      </p>
+      <p>
+        The <code>:where()</code> is the load-bearing part. It contributes zero
+        specificity, so a <code>Box</code> carrying its own span class always wins in the
+        cascade &mdash; the rule recorded in D1's outcome is a property of the
+        stylesheet rather than a convention the component has to remember. A plain child
+        of a distributing Grid carries no class at all, which is what the test asserts.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Gaps and surprises</span>
+      <ul>
+        <li>
+          <b>Stack and Grid still cannot position themselves.</b> The first draft's
+          option was "Box <em>plus self-props on containers</em>", and only the Box half
+          survived into the settled list. In the migration a nested Stack that needed to
+          fill had no <code>alignSelf</code> of its own, so its <em>parent</em> had to set
+          <code>align="stretch"</code> instead. That worked everywhere here, but it is a
+          real gap and the fix is small &mdash; worth a follow-up rather than a
+          rediscovery.
+        </li>
+        <li>
+          <b>The form has more elements, not fewer.</b> Three wrapper <code>div</code>s
+          and five inline overrides became <b>ten <code>Box</code> elements</b> and zero
+          inline layout styles. The win is that every one of them is typed and
+          responsive, and the DOM is deeper for it — worth stating plainly, since section
+          03 reads as though it were a reduction.
+        </li>
+        <li>
+          <b>D4's consequence landed exactly as recorded.</b> <code>alignSelf="start"</code>
+          on the two "Add…" buttons is what replaced <code>flex: 0</code>, and both
+          <code>width: 'stretch'</code> workarounds went away by moving
+          <code>align="stretch"</code> onto the parent Stacks.
+        </li>
+        <li>
+          <b>A cached typecheck was hiding a pre-existing error.</b>
+          <code>IconButton.label</code> is required and the form's two trash buttons
+          never had one; earlier full runs passed because the playground's typecheck was
+          cached from before those buttons existed. Fixed by adding labels. The lesson is
+          that "turbo typecheck test passes" is weaker evidence than it looks &mdash;
+          <code>--force</code> is what actually checks.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0003
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0003-layout-children",
+  "status": "built",
+  "follows": "0002-text-input",
+  "decided": "2026-08-16",
+  "built": "2026-08-16",
+  "evidence": "apps/playground/src/App.tsx lines 33-76",
+  "settled": {
+    "gridModel": "Fixed 24-column track; children declare span. Chosen over arbitrary weight arrays on review.",
+    "columnCount": 24,
+    "contentWidth": "Rows with a content-sized control use Stack, not Grid.",
+    "boxScope": "One Box carries span (Grid) and grow (Stack); inapplicable props are inert."
+  },
+  "decisions": [
+    { "id": "equal-shorthand", "options": ["distribute", "track-override", "spans-only"], "recommended": "distribute", "outcome": "distribute", "rule": "Box span always wins over the Grid distribution; columns accepts divisors of 24 only." },
+    { "id": "collapse",        "options": ["collapse-prop", "per-child"],                 "recommended": "collapse-prop", "outcome": "per-child", "againstRecommendation": true, "consequence": "No collapseBelow prop. span must be responsive from the first commit." },
+    { "id": "offsets",         "options": ["defer", "include"],                           "recommended": "defer", "outcome": "defer", "revisitTrigger": "A layout needing a responsive offset, which inline style cannot express." },
+    { "id": "align-default",   "options": ["direction-aware", "css-default", "keep-start"], "recommended": "direction-aware", "outcome": "keep-start", "againstRecommendation": true, "consequence": "Box must carry alignSelf; it replaces the width:stretch workaround rather than a changed default." }
+  ],
+  "revisions": [
+    {
+      "date": "2026-08-16",
+      "summary": "First draft proposed per-Grid weight arrays (columns={[1,1,4,4,'auto']}) and a CSS custom-property mechanism. Redirected on review to a fixed 24-column track with child spans, which made the mechanism decision unnecessary. 16 columns considered and rejected: not divisible by three."
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

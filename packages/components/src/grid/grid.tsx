@@ -1,10 +1,11 @@
 import type { ElementType } from 'react';
+import type { Breakpoint } from '../breakpoints';
 import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { layoutSprinkles } from '../layout.css';
-import type { GridColumns, LayoutSpacing } from '../layout';
+import type { GridColumns, LayoutAlign, LayoutJustify, LayoutSpacing } from '../layout';
 import type { PolymorphicProps } from '../polymorphic';
-import { base } from './grid.css';
+import { base, distribute } from './grid.css';
 
 /** The elements a Grid is willing to render as. See StackElement. */
 export type GridElement =
@@ -18,27 +19,43 @@ export type { GridColumns };
 export interface GridOwnProps extends SpacingProps {
   spacing?: Responsive<LayoutSpacing>;
   /**
-   * Twelve is the whole grid. Previously this also accepted `number`, which
-   * let `columns={13}` through to produce no class at all rather than a type
-   * error.
+   * Distributes children evenly across the fixed 24-column grid — every child
+   * that has not claimed a span of its own takes `24 / columns` tracks.
+   *
+   * Only the divisors of 24 are accepted, so the tracks always come out whole.
+   * A `Box` with an explicit `span` overrides the distribution, and the two can
+   * be mixed in one Grid.
+   *
+   * @example
+   * <Grid columns={3}>            // three equal fields
+   * <Grid columns={{ xs: 1, md: 3 }}>  // stacked on a phone
    */
   columns?: Responsive<GridColumns>;
+  align?: Responsive<LayoutAlign>;
+  justify?: Responsive<LayoutJustify>;
 }
 
 export type GridProps<E extends GridElement = 'div'> = PolymorphicProps<E, GridOwnProps>;
 
-/** Sprinkles keys its column values by string; the prop reads better as a number. */
-const toColumnKey = (value: Responsive<GridColumns>): Responsive<`${GridColumns}`> =>
-  typeof value === 'number'
-    ? (`${value}` as `${GridColumns}`)
-    : (Object.fromEntries(
-        Object.entries(value).map(([bp, v]) => [bp, `${v}`])
-      ) as Responsive<`${GridColumns}`>);
+/**
+ * Resolves the responsive `columns` value to the marker classes that carry the
+ * distribution rules. One class per breakpoint the caller named.
+ */
+const distributionClasses = (columns: Responsive<GridColumns>): string[] =>
+  typeof columns === 'number'
+    ? [distribute.xs[`${columns}`]]
+    : Object.entries(columns).map(
+        ([breakpoint, value]) => distribute[breakpoint as Breakpoint][`${value as GridColumns}`]
+      );
 
 export function Grid<E extends GridElement = 'div'>({
   as,
   spacing: spacingProp = '300',
+  // One column by default, so an unwrapped child fills the row rather than
+  // taking a single 24th of it.
   columns = 1,
+  align,
+  justify,
   className,
   children,
   ...props
@@ -51,9 +68,11 @@ export function Grid<E extends GridElement = 'div'>({
     <Component
       className={[
         base,
+        ...distributionClasses(columns),
         layoutSprinkles({
-          gridTemplateColumns: toColumnKey(columns),
           gap: spacingProp,
+          ...(align ? { alignItems: align } : {}),
+          ...(justify ? { justifyContent: justify } : {}),
         }),
         spacing,
         className,

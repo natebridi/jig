@@ -1,7 +1,7 @@
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { spacing } from '@jig-ui/styles/tokens';
 import { responsiveConditions, defaultCondition } from './breakpoints';
-import type { GridColumns } from './layout';
+import { GRID_COLUMNS, type GridSpan } from './layout';
 
 const gap = {
   '100': spacing['100'],
@@ -16,13 +16,17 @@ const gap = {
 };
 
 /**
- * Twelve is the whole grid, so the columns are enumerated rather than left
- * open — a value outside the set is a mistake worth a type error rather than a
- * class name that silently does not exist.
+ * How many of the grid's 24 tracks a child occupies.
+ *
+ * This replaced a `gridTemplateColumns` set that enumerated twelve track
+ * templates per breakpoint — sixty declarations for a prop that could only
+ * ever produce equal columns, and so could not describe a single row of the
+ * form that prompted the change. The track count is fixed now and lives on
+ * Grid's base class, so the only thing worth generating is the span.
  */
-const gridTemplateColumns = Object.fromEntries(
-  Array.from({ length: 12 }, (_, i) => [`${i + 1}`, `repeat(${i + 1}, minmax(0, 1fr))`])
-) as Record<`${GridColumns}`, string>;
+const gridColumn = Object.fromEntries(
+  Array.from({ length: GRID_COLUMNS }, (_, i) => [`${i + 1}`, `span ${i + 1}`])
+) as Record<`${GridSpan}`, string>;
 
 /**
  * The responsive layout properties Stack and Grid share. Previously each
@@ -50,7 +54,18 @@ const layoutProperties = defineProperties({
       around: 'space-around',
     },
     gap,
-    gridTemplateColumns,
+    gridColumn,
+    // Child-side props. `alignSelf` carries the weight that a changed Stack
+    // default would otherwise have — with `align` still defaulting to `start`,
+    // this is the only way a single child says it should fill.
+    alignSelf: {
+      start: 'flex-start',
+      center: 'center',
+      end: 'flex-end',
+      stretch: 'stretch',
+      baseline: 'baseline',
+    },
+    flexGrow: { '0': 0, '1': 1 },
   },
 });
 

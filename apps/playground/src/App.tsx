@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Typography, Adorn, Stack, Grid, Tooltip, CodeBlock, ToggleButton } from '@jig-ui/react'
+import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, Input } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -30,7 +30,60 @@ export function App() {
         <div id='debug-size' />
       </div>
 
-      <Stack px="500" py="800" spacing="800" align="start" style={{ maxWidth: '74rem', marginInline: 'auto' }}>
+      <Stack px="500" py="800" spacing="800" align="stretch" style={{ maxWidth: '74rem', marginInline: 'auto' }}>
+
+        <Stack spacing="600" align="stretch">
+          <Input label="Title" size="lg" />
+
+          {/* Equal children, so `columns` distributes and collapsing is one prop. */}
+          <Grid columns={{ xs: 1, sm: 3 }} spacing="300">
+            <Input label="Servings" />
+            <Input label="Total time" />
+            <Input label="Active time" />
+          </Grid>
+
+          <Stack align="stretch">
+            {/* Content-width trailing control, so this is a Stack rather than a Grid. */}
+            <Stack direction="row" spacing="300" align="end">
+              <Box grow>
+                <Input label="Step" />
+              </Box>
+              <IconButton icon="trash" label="Remove step" size="md" />
+            </Stack>
+            {/* Stack's align default is `start`, but this column is stretched — so
+                the button opts back out for itself rather than the row changing. */}
+            <Box alignSelf="start">
+              <Button icon="plus" variant="ghost" size="sm">Add step</Button>
+            </Box>
+          </Stack>
+
+          <Stack align="stretch">
+            {[0, 1].map((row) => (
+              <Stack key={row} direction="row" spacing="300" align="end">
+                <Box grow>
+                  {/* Uneven spans, so each child carries its own breakpoint.
+                      3 + 3 + 9 + 9 = 24. */}
+                  <Grid spacing="300">
+                    <Box span={{ xs: 24, md: 3 }}><Input label="Measure" /></Box>
+                    <Box span={{ xs: 24, md: 3 }}><Input label="Quantity" /></Box>
+                    <Box span={{ xs: 24, md: 9 }}><Input label="Ingredient" /></Box>
+                    <Box span={{ xs: 24, md: 9 }}><Input label="Preparation" /></Box>
+                  </Grid>
+                </Box>
+                <IconButton icon="trash" label="Remove ingredient" size="md" />
+              </Stack>
+            ))}
+            <Box alignSelf="start">
+              <Button icon="plus" variant="ghost" size="sm">Add ingredient</Button>
+            </Box>
+          </Stack>
+
+          <Grid spacing="300">
+            <Box span={{ xs: 24, md: 6 }}><Input label="Source" /></Box>
+            <Box span={{ xs: 24, md: 18 }}><Input label="Source URL" /></Box>
+          </Grid>
+        </Stack>
+
 
         <Stack spacing="400">
           <Typography as="h2" with="heading04">Buttons</Typography>

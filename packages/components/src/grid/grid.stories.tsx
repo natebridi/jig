@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Grid } from './grid';
+import { Box } from '../box';
 import { Typography } from '../typography';
 import { color, spacing } from '../tokens';
 
@@ -29,6 +30,69 @@ export const Responsive: Story = {
   args: { columns: { xs: 2, md: 4 } },
   parameters: {
     docs: { description: { story: 'Two columns below md, four from md up. Resize the canvas to see it.' } },
+  },
+};
+
+export const ExplicitSpans: Story = {
+  args: {
+    children: (
+      <>
+        <Box span={3}><Cell>3</Cell></Box>
+        <Box span={3}><Cell>3</Cell></Box>
+        <Box span={9}><Cell>9</Cell></Box>
+        <Box span={9}><Cell>9</Cell></Box>
+      </>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The grid is always 24 columns. A Box says how many of them a child takes, so unequal rows need no template — 3 + 3 + 9 + 9 = 24.',
+      },
+    },
+  },
+};
+
+export const SpanOverridesDistribution: Story = {
+  args: {
+    columns: 3,
+    children: (
+      <>
+        <Cell>8, distributed</Cell>
+        <Box span={16}><Cell>16, explicit</Cell></Box>
+        <Cell>8, distributed</Cell>
+      </>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A Box with its own span always beats the distribution `columns` set, so the two can be mixed in one Grid.',
+      },
+    },
+  },
+};
+
+export const CollapsingRow: Story = {
+  args: {
+    children: (
+      <>
+        <Box span={{ xs: 24, md: 3 }}><Cell>Measure</Cell></Box>
+        <Box span={{ xs: 24, md: 3 }}><Cell>Quantity</Cell></Box>
+        <Box span={{ xs: 24, md: 9 }}><Cell>Ingredient</Cell></Box>
+        <Box span={{ xs: 24, md: 9 }}><Cell>Preparation</Cell></Box>
+      </>
+    ),
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'An uneven row collapses by giving each child a responsive span. Rows with *equal* children collapse more cheaply through `columns={{ xs: 1, md: 3 }}` instead.',
+      },
+    },
   },
 };
 
