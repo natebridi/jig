@@ -15,6 +15,8 @@ export { IconButton } from './iconbutton';
 export type { IconButtonProps } from './iconbutton';
 export { Input } from './input';
 export type { InputProps, InputSize } from './input';
+export { Slider } from './slider';
+export type { SliderProps, SliderSize } from './slider';
 export { Typography } from './typography';
 export type { TypographyProps, TypographyElement, TypeStyles } from './typography';
 export { Adorn } from './adorn';

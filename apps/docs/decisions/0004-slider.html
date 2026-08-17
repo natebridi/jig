@@ -1,0 +1,1584 @@
+<title>0004 &middot; Slider</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes — real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option — a
+     measurement table, a diagram — sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way — dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose — localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0004</p>
+    <h1>Slider</h1>
+    <p class="standfirst">
+      The behaviour is settled &mdash; Base UI's slider, edge-aligned thumb, optional
+      stepper buttons, optional value bubble while dragging. What is open is how it
+      should look, and three of the four decisions below are visual.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-16</li>
+      <li>decided 2026-08-16</li>
+      <li>built 2026-08-16</li>
+      <li>4 decisions</li>
+      <li>follows <a href="0002-text-input.html">0002</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      A slider needs managed focus, keyboard stepping and a full ARIA range contract, so
+      0001&nbsp;D2's behaviour test puts it on Base UI. <code>@base-ui/react</code> 1.7.0
+      ships <code>Slider.Root</code>, <code>Label</code>, <code>Value</code>,
+      <code>Control</code>, <code>Track</code>, <code>Indicator</code> and
+      <code>Thumb</code>, which covers everything except the two things asked for on top:
+      stepper buttons and a value bubble. Both are ours to build.
+    </p>
+    <p>
+      Base UI sets <code>data-dragging</code> and <code>data-focused</code> on both the
+      root and the thumb, so the bubble in D2 is styled from state the library already
+      publishes rather than from React state of our own &mdash; the same rule 0002&nbsp;D3
+      settled for Input.
+    </p>
+
+    <h3>Why the thumb is edge-aligned</h3>
+    <p>
+      <code>thumbAlignment</code> is fixed at <code>edge</code> and is not a prop. The
+      difference only shows at the extremes, which is exactly where it matters:
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <div style="display:flex;gap:2.5rem;flex-wrap:wrap;padding:0.5rem 0">
+          <div style="flex:1;min-width:15rem">
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0 0 0.9rem">center &mdash; the default</p>
+            <div style="position:relative;height:1.1rem;display:flex;align-items:center;background:repeating-linear-gradient(90deg,transparent,transparent 3px,var(--line) 3px,var(--line) 4px);background-size:100% 1px;background-repeat:no-repeat;background-position:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;right:0;transform:translateX(50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <p style="font-size:0.8125rem;color:var(--muted);margin:1rem 0 0">Half the thumb hangs outside the track at both ends, so the control needs padding that the track does not, and it cannot sit flush in a grid cell.</p>
+          </div>
+          <div style="flex:1;min-width:15rem">
+            <p style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:0 0 0.9rem">edge &mdash; chosen</p>
+            <div style="position:relative;height:1.1rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;right:0;width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <p style="font-size:0.8125rem;color:var(--muted);margin:1rem 0 0">The thumb insets so its edge meets the track's. The whole control occupies exactly its declared width, which is what lets it align with an Input above it.</p>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        Both ends shown at once. <code>edge</code> ships a small pre-hydration script so
+        the thumb does not jump on load; Base UI also offers
+        <code>edge-client-only</code>, which drops that script and accepts the shift.
+        Taking <code>edge</code> as instructed &mdash; worth knowing the third value
+        exists.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled</h3>
+    <ul class="notes">
+      <li><strong>Built on Base UI</strong>, <code>@base-ui/react</code> at <code>~1.7.0</code>. 0001&nbsp;D1, D2, D4.</li>
+      <li><strong>Props, not compound parts.</strong> <code>label</code>, <code>description</code> and <code>error</code> are props, per 0002&nbsp;D2's standing rule: ease of use beats expressiveness at our layer, because the expressive layer already exists underneath.</li>
+      <li><strong>Validity comes from Base UI's data attributes</strong>, not our own state. 0002&nbsp;D3.</li>
+      <li><strong>All the standard range props pass through</strong> &mdash; <code>min</code>, <code>max</code>, <code>step</code>, <code>largeStep</code>, <code>value</code>, <code>defaultValue</code>, <code>onValueChange</code>, <code>onValueCommitted</code>, <code>disabled</code>, <code>name</code>, and <code>format</code>/<code>locale</code> for <code>Intl.NumberFormat</code>.</li>
+      <li><strong>Single value only.</strong> Range sliders change the prop type to an array and multiply every visual decision here by two thumbs; deferred rather than guessed at.</li>
+      <li><strong>The thumb takes <code>focusRing</code>.</strong> 0002&nbsp;D4's rule sends bordered controls to a highlighted border instead &mdash; but a thumb is a mark rather than a field boundary, and a colour change on a 2px ring around a 17px circle is not a perceivable focus indicator. Cheap to flip if it looks wrong in place.</li>
+      <li><strong>Stepper buttons are <code>IconButton</code>s</strong> with <code>minus</code> and <code>plus</code> from the curated set, and they carry required labels.</li>
+      <li><strong>No <code>as</code> prop, no spacing props.</strong> Slider is neither a layout nor a typography component.</li>
+    </ul>
+
+    <p style="font-size:0.875rem;color:var(--muted);margin-top:1.5rem">
+      Every slider below is rendered from real token values &mdash;
+      <code>color.button.primary.base-bg</code> for the fill,
+      <code>color.control.border</code> for the track, the radius and spacing ramps for
+      the rest &mdash; in the light theme regardless of this document's.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>D1 is the one that sets the character of the component; D2&ndash;D4 sit inside it.</p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="track-treatment" data-title="Track and thumb treatment">
+    <p class="decision-id">D1 &middot; track-treatment</p>
+    <h2>Track and thumb treatment</h2>
+    <p>
+      Three characters, each shown at 60%, then disabled, then at rest against an Input
+      so the visual weight can be compared to something already in the system.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="classic" data-label="Classic rail">
+        <div class="option-head">
+          <h3>Classic rail</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">4px track, 1.05rem hollow thumb</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center;margin-bottom:1.4rem">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260);box-shadow:0 1px 2px rgba(0,0,0,.14)"></div>
+            </div>
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center;margin-bottom:1.4rem;opacity:.9">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.891 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.753 0.008 83)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:oklch(0.943 0.005 83);border:2px solid oklch(0.753 0.008 83)"></div>
+            </div>
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Reads instantly as a slider at any size, and the hollow thumb keeps the fill colour meaning "amount" rather than "handle".</li>
+          <li class="pro">The thumb is the largest hit target of the three, which matters most on touch.</li>
+          <li class="con">The most conventional of the three — it looks like every other slider.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="inset" data-label="Inset rail">
+        <div class="option-head">
+          <h3>Inset rail</h3>
+        </div>
+
+        <p class="specimen-label">1.17rem track, thumb sits inside it</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="position:relative;height:1.17rem;display:flex;align-items:center;margin-bottom:1.4rem">
+              <div style="position:absolute;left:0;right:0;height:1.17rem;border-radius:999px;background:oklch(0.891 0.007 83);border:1px solid oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:1.17rem;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-100%);width:0.45rem;height:0.72rem;border-radius:999px;background:#fff;margin-left:-0.22rem"></div>
+            </div>
+            <div style="position:relative;height:1.17rem;display:flex;align-items:center;margin-bottom:1.4rem">
+              <div style="position:absolute;left:0;right:0;height:1.17rem;border-radius:999px;background:oklch(0.891 0.007 83);border:1px solid oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:1.17rem;border-radius:999px;background:oklch(0.753 0.008 83)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-100%);width:0.45rem;height:0.72rem;border-radius:999px;background:oklch(0.943 0.005 83);margin-left:-0.22rem"></div>
+            </div>
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Visual weight matches an Input, so a slider in a form column does not read as a hairline between two solid fields.</li>
+          <li class="pro">The filled portion is large enough to carry a value label inside it later if that is ever wanted.</li>
+          <li class="con">The grip is a small mark rather than a graspable handle, which reads as less obviously draggable.</li>
+          <li class="con">Nothing else in the system is this heavy yet, so it sets a tone the rest of the components would have to answer.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="hairline" data-label="Hairline">
+        <div class="option-head">
+          <h3>Hairline</h3>
+        </div>
+
+        <p class="specimen-label">2px track, small solid thumb</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center;margin-bottom:1.4rem">
+              <div style="position:absolute;left:0;right:0;height:2px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:2px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:0.72rem;height:0.72rem;border-radius:50%;background:oklch(0.532 0.201 260)"></div>
+            </div>
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center;margin-bottom:1.4rem">
+              <div style="position:absolute;left:0;right:0;height:2px;border-radius:999px;background:oklch(0.891 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:2px;border-radius:999px;background:oklch(0.753 0.008 83)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:0.72rem;height:0.72rem;border-radius:50%;background:oklch(0.753 0.008 83)"></div>
+            </div>
+            <div style="height:2.41rem;border:1px solid oklch(0.859 0.007 83);border-radius:4.3px;background:#fff"></div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Quietest of the three. Good for a settings panel with many sliders where the row rhythm matters more than any one control.</li>
+          <li class="pro">Least ink, so it sits comfortably beside dense text.</li>
+          <li class="con">A 0.72rem thumb is below the comfortable touch target and would need an invisible hit area, which is a thing to get wrong.</li>
+          <li class="con">Disabled and enabled are hard to tell apart at this weight, as the second row shows.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Hairline.</b> A 2px track with a 0.72rem solid thumb.
+      <p>
+        Chosen against the recommendation. The two objections raised against it were not
+        rejected on the merits &mdash; they become obligations on the build, recorded
+        here so they are solved rather than rediscovered:
+      </p>
+      <ul>
+        <li>
+          <b>The thumb needs a hit area larger than itself.</b> 0.72rem is 11.5&nbsp;px,
+          and WCAG&nbsp;2.2 SC&nbsp;2.5.8 sets a 24&times;24&nbsp;px minimum at AA. The
+          thumb ships with an invisible expanded target &mdash; a pseudo-element, not
+          padding, so the visual mark stays 0.72rem while the pointer target does not.
+          D4 makes this sharper at <code>sm</code>, where the thumb scales down further.
+        </li>
+        <li>
+          <b>Disabled needs more separation than the specimen had.</b> At 2px, a
+          lightness shift alone left enabled and disabled nearly identical. The disabled
+          state drops the indicator fill to the track colour entirely, so the difference
+          is the presence of the fill rather than its shade.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="value-display" data-title="When the value is visible">
+    <p class="decision-id">D2 &middot; value-display</p>
+    <h2>When the value is visible</h2>
+    <p>
+      A bubble while dragging was the ask. The open part is whether it also appears for
+      keyboard users, who change the value with arrow keys and never drag anything.
+      Base UI publishes <code>data-dragging</code> and <code>data-focused</code>
+      separately, so all three are equally easy to build.
+    </p>
+    <p>
+      The bubble is ours, not Base UI's, so it uses native CSS anchor positioning against
+      the thumb &mdash; the hand-rolled overlay rule from 0001&nbsp;D3.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="interaction" data-label="Drag and focus">
+        <div class="option-head">
+          <h3>Drag and focus</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">[data-dragging], [data-focused]</p>
+        <div class="specimen block">
+          <div style="width:100%;padding-top:1.6rem">
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:60%;transform:translateX(-50%);bottom:1.5rem;background:oklch(0.313 0.012 83);color:oklch(0.943 0.005 83);font-size:0.79rem;padding:0.17rem 0.45rem;border-radius:4.3px;white-space:nowrap">60</div>
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260);box-shadow:0 0 0 2px oklch(0 0 0 / 0.9)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);margin:1.1rem 0 0">shown here on keyboard focus &mdash; note the focus ring</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Keyboard and pointer users get the same information. Arrowing a slider with no readout is guesswork.</li>
+          <li class="pro">Costs nothing extra — it is one more attribute in the same selector.</li>
+          <li class="con">The bubble appears on tab-through, which is more motion on a form full of sliders.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="drag-only" data-label="Drag only">
+        <div class="option-head">
+          <h3>Drag only</h3>
+        </div>
+
+        <p class="specimen-label">[data-dragging]</p>
+        <div class="specimen block">
+          <div style="width:100%;padding-top:1.6rem">
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260);box-shadow:0 0 0 2px oklch(0 0 0 / 0.9)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--no);margin:1.1rem 0 0">same focused state &mdash; no value anywhere</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Quietest. The bubble only ever appears as a direct result of the pointer the user is already moving.</li>
+          <li class="pro">Literally what was asked for.</li>
+          <li class="con">A keyboard user arrowing from 60 to 65 has no way to know they did, as the specimen shows.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="always" data-label="Always, beside the label">
+        <div class="option-head">
+          <h3>Always, beside the label</h3>
+        </div>
+
+        <p class="specimen-label">A static readout; no bubble at all</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.45rem">
+              <span style="font-size:0.79rem;color:oklch(0.313 0.012 83)">Sweetness</span>
+              <span style="font-family:var(--mono);font-size:0.79rem;color:oklch(0.313 0.012 83)">60</span>
+            </div>
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin:1.1rem 0 0">no motion, no overlay, always readable</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No overlay, no anchor positioning, no appearing and disappearing. The simplest thing that works.</li>
+          <li class="pro">The value is readable before you touch the control, which a bubble never is.</li>
+          <li class="con">Not what was asked for, and the readout is far from the thumb — the eye has to travel while dragging.</li>
+          <li class="con">Needs a label to sit beside, so an unlabelled slider has nowhere to put it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Drag and focus.</b> The bubble appears on <code>[data-dragging]</code> and
+      <code>[data-focused]</code>, so keyboard users get the same readout as pointer
+      users. Positioned with native CSS anchor positioning against the thumb, per
+      0001&nbsp;D3's rule for hand-rolled overlays.
+      <p>
+        This pairs well with D1: with a hairline track and a small thumb, the bubble is
+        the main confirmation that anything is happening.
+      </p>
+      <p>
+        <b>Amended 2026-08-17, after the build.</b> The decision is unchanged; the
+        implementation did not deliver it. <code>[data-focused]</code> is derived from
+        <code>Field</code>, and Slider is deliberately not inside one, so it was never
+        set &mdash; the bubble appeared only while dragging, and keyboard users saw
+        nothing at all. Replaced with <code>:focus-within</code> on the root, which
+        depends on nothing but the DOM and also covers the stepper buttons &mdash; the
+        case that surfaced the bug, and one a thumb-only signal would never have caught.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="stepper-layout" data-title="Where the stepper buttons go">
+    <p class="decision-id">D3 &middot; stepper-layout</p>
+    <h2>Where the stepper buttons go</h2>
+    <p>
+      Off by default, on with a prop. The question is where they sit, which is a layout
+      decision with a real consequence: whichever arrangement is chosen, the track gets
+      shorter, and the buttons have to line up with the track's centre line rather than
+      its box.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="flanking" data-label="Flanking">
+        <div class="option-head">
+          <h3>Flanking</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">minus left, plus right</p>
+        <div class="specimen block">
+          <div style="width:100%;display:flex;align-items:center;gap:0.45rem">
+            <div style="flex:0 0 auto;width:1.69rem;height:1.69rem;border-radius:4.3px;border:1px solid oklch(0.859 0.007 83);background:#fff;display:grid;place-items:center;color:oklch(0.313 0.012 83)">
+              <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M5 12h14"/></svg>
+            </div>
+            <div style="position:relative;flex:1;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <div style="flex:0 0 auto;width:1.69rem;height:1.69rem;border-radius:4.3px;border:1px solid oklch(0.859 0.007 83);background:#fff;display:grid;place-items:center;color:oklch(0.313 0.012 83)">
+              <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Direction is unambiguous — decrease is on the side the value decreases toward.</li>
+          <li class="pro">Matches the mental model of the track as a number line.</li>
+          <li class="con">Costs width at both ends, so the track is shortest of the three options.</li>
+          <li class="con">The two buttons are far apart, so repeatedly nudging back and forth means crossing the whole control.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="trailing" data-label="Trailing pair">
+        <div class="option-head">
+          <h3>Trailing pair</h3>
+        </div>
+
+        <p class="specimen-label">both after the track</p>
+        <div class="specimen block">
+          <div style="width:100%;display:flex;align-items:center;gap:0.45rem">
+            <div style="position:relative;flex:1;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <div style="flex:0 0 auto;display:flex;gap:0.28rem">
+              <div style="width:1.69rem;height:1.69rem;border-radius:4.3px;border:1px solid oklch(0.859 0.007 83);background:#fff;display:grid;place-items:center;color:oklch(0.313 0.012 83)">
+                <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M5 12h14"/></svg>
+              </div>
+              <div style="width:1.69rem;height:1.69rem;border-radius:4.3px;border:1px solid oklch(0.859 0.007 83);background:#fff;display:grid;place-items:center;color:oklch(0.313 0.012 83)">
+                <svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The two buttons are adjacent, so fine adjustment needs no travel between them.</li>
+          <li class="pro">Track starts flush left, which lines it up with a label above and with fields in the same column.</li>
+          <li class="con">Neither button points anywhere — the pair has to be read rather than recognised.</li>
+          <li class="con">Reads as a number stepper bolted on rather than part of the control.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="none" data-label="No buttons">
+        <div class="option-head">
+          <h3>No buttons at all</h3>
+        </div>
+
+        <p class="specimen-label">Track only; arrow keys are the fine control</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="position:relative;height:1.05rem;display:flex;align-items:center">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin:1.1rem 0 0">the widest track, and one control to build</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Smallest component, longest track, nothing to align.</li>
+          <li class="con">Rules out the case that prompted the request — a pointer user who needs exactly 61, not roughly 60.</li>
+          <li class="con">Puts precise adjustment behind the keyboard, which touch users do not have.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Flanking.</b> Minus left, plus right, off by default and enabled with a prop.
+      The buttons align to the track's centre line rather than its box, and take their
+      size from the same ramp D4 sets.
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="size-ramp" data-title="Whether Slider has a size ramp">
+    <p class="decision-id">D4 &middot; size-ramp</p>
+    <h2>Whether Slider has a size ramp</h2>
+    <p>
+      Button and Input both take <code>sm | md | lg</code>, and 0002 gave the system a
+      <code>size.control</code> ramp of <code>1.69 / 2.41 / 2.65rem</code>. A slider has
+      no box, so the ramp would govern the row it occupies and the thumb inside it. The
+      question is whether it should participate at all.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="row-height" data-label="Ramp on the row">
+        <div class="option-head">
+          <h3>Ramp on the row</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">size.control sets the row; thumb and track scale within it</p>
+        <div class="specimen block">
+          <div style="width:100%;display:flex;flex-direction:column;gap:0.9rem">
+            <div style="height:1.69rem;display:flex;align-items:center;position:relative">
+              <div style="position:absolute;left:0;right:0;height:3px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:3px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:0.86rem;height:0.86rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <div style="height:2.41rem;display:flex;align-items:center;position:relative">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+            <div style="height:2.65rem;display:flex;align-items:center;position:relative">
+              <div style="position:absolute;left:0;right:0;height:5px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:5px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.25rem;height:1.25rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);margin:1rem 0 0">1.69 / 2.41 / 2.65rem &mdash; same ramp as Button and Input</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A slider in a form row lines up with the Input above it and the Button beside it, which is the whole reason <code>size.control</code> exists.</li>
+          <li class="pro">The stepper buttons in D3 get their size from the same ramp rather than a separate choice.</li>
+          <li class="con">Inherits 0002's irregular ramp — md to lg is only 3.8px, so md and lg sliders look nearly identical.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="single" data-label="One size">
+        <div class="option-head">
+          <h3>One size</h3>
+        </div>
+
+        <p class="specimen-label">No size prop</p>
+        <div class="specimen block">
+          <div style="width:100%">
+            <div style="height:2.41rem;display:flex;align-items:center;position:relative">
+              <div style="position:absolute;left:0;right:0;height:4px;border-radius:999px;background:oklch(0.859 0.007 83)"></div>
+              <div style="position:absolute;left:0;width:60%;height:4px;border-radius:999px;background:oklch(0.532 0.201 260)"></div>
+              <div style="position:absolute;left:60%;transform:translateX(-50%);width:1.05rem;height:1.05rem;border-radius:50%;background:#fff;border:2px solid oklch(0.532 0.201 260)"></div>
+            </div>
+          </div>
+          <p style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin:1rem 0 0">one row height, one thumb, nothing to choose</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A slider's thumb is a touch target, and shrinking it to <code>sm</code> makes it worse for the users who most need it big.</li>
+          <li class="pro">Three fewer variants to build, test and document, and no ramp irregularity to inherit.</li>
+          <li class="con">Breaks the <code>sm | md | lg</code> convention that every other interactive component follows, so a form with mixed <code>sm</code> controls has one that will not follow.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-16</span>
+      <b>Ramp on the row.</b> <code>sm | md | lg</code> drives the row height from
+      <code>size.control</code> &mdash; <code>1.69 / 2.41 / 2.65rem</code> &mdash; with
+      the track and thumb scaling inside it.
+      <p>
+        Two known consequences carried in deliberately: the ramp's irregular
+        md&nbsp;&rarr;&nbsp;lg step from 0002&nbsp;D1, and the interaction with D1 above
+        &mdash; a hairline thumb at <code>sm</code> is the smallest mark in the system,
+        which is what makes the expanded hit area non-optional rather than a nicety.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, on the recommended set</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree">&lt;Slider
+  label="Sweetness"
+  description="How sweet the result should be"
+  min={0} max={100} step={1} largeStep={10}
+  defaultValue={60}
+  <b>steppers</b>                  <i>// D3 — off by default</i>
+  size="md"                  <i>// D4</i>
+  onValueChange={setValue}
+/&gt;
+
+<i>everything Base UI's Slider.Root takes passes through:</i>
+value  defaultValue  min  max  step  largeStep  disabled
+name  form  format  locale  onValueChange  onValueCommitted</pre>
+      </div>
+      <figcaption>
+        <code>thumbAlignment</code> is not in the list &mdash; it is fixed at
+        <code>edge</code> internally. The value bubble has no prop either: under
+        D2's recommendation it appears whenever the thumb is dragged or focused, which
+        is not a thing a caller should have to ask for.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>Range sliders.</strong> Base UI supports them by passing an array, but two thumbs multiply every decision above — which thumb owns the bubble, what the steppers do, how the thumbs behave on collision. A separate document once single-value is in use.</li>
+      <li><strong>Vertical orientation.</strong> Base UI takes <code>orientation="vertical"</code> for free, but every specimen here assumes a horizontal row and the layout props in 0003 do not describe a fixed-height control well.</li>
+      <li><strong>Marks and tick labels.</strong> No case yet, and they interact with the value bubble in ways worth designing rather than discovering.</li>
+      <li><strong>A slider inside <code>Field</code>.</strong> Slider carries its own label; whether it should share Input's <code>Field</code> wiring is a consistency question better answered when a third form control lands.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-16. <code>pnpm turbo typecheck test --force</code> passes &mdash; 12
+      tasks, 68 tests, 11 of them new for <code>Slider</code> &mdash; the packed-consumer
+      test resolves the tarball in isolation, and two sliders are in the playground form.
+      <code>styles.css</code> grew 66,554&nbsp;&rarr;&nbsp;68,945 bytes.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>src/slider/</code> &mdash; new. <code>slider.tsx</code>, <code>slider.css.ts</code>, <code>slider.stories.tsx</code>, <code>slider.test.tsx</code>, <code>index.ts</code>; exported from <code>src/index.ts</code>.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; two sliders added to the recipe form.</li>
+      <li><b>No new tokens.</b> The whole component is drawn from the existing <code>color.control.*</code> set and the <code>size.control</code> ramp.</li>
+    </ul>
+
+    <div class="outcome outcome-built">
+      <span class="tag">thumbAlignment="edge" has a testing cost nobody anticipated</span>
+      <b>Base UI keeps the thumb at <code>visibility: hidden</code> until it can measure
+      the control, and jsdom performs no layout &mdash; so under test it never becomes
+      visible.</b>
+      <p>
+        The effects compound. <code>getByRole('slider')</code> finds nothing at all by
+        default. Adding <code>{ hidden: true }</code> recovers the role, but the
+        accessible <em>name</em> computes to empty inside a hidden subtree, so a
+        <code>{ name }</code> filter still never matches. Confirmed by swapping the
+        single prop to <code>center</code>, where every query passes unchanged.
+      </p>
+      <p>
+        Resolved by querying <code>getByLabelText(name, { selector: 'input[type="range"]'
+        })</code>, which asserts the same label-to-input association without depending on
+        layout the environment does not do; one test still asserts the role directly.
+        <b>This is not slider-specific</b> &mdash; every Base UI component that measures
+        before painting will do the same thing to its tests, so Select, Menu and Popover
+        should expect it.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Both D1 obligations are in the code and verified in the output</span>
+      <ul>
+        <li>
+          <b>Hit target.</b> <code>.thumb::after</code> emits
+          <code>width:1.5rem;height:1.5rem</code> centred on the mark &mdash; 24&nbsp;px,
+          the WCAG&nbsp;2.2 SC&nbsp;2.5.8 minimum &mdash; while the visible thumb stays
+          0.58/0.72/0.86&nbsp;rem across the three sizes. A pseudo-element rather than
+          padding, so the mark's size is untouched.
+        </li>
+        <li>
+          <b>Disabled.</b> The indicator's background switches to
+          <code>color.control.disabled-bg</code>, which is the track's own disabled
+          colour &mdash; so the fill disappears rather than dimming, exactly as the
+          obligation required.
+        </li>
+      </ul>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Smaller findings</span>
+      <ul>
+        <li>
+          <b>A token name is now doing double duty.</b> The indicator and thumb are
+          filled with <code>color.control.active-border</code>. The value is right
+          &mdash; it aliases the primary button's blue, so the slider's fill and the
+          primary action cannot drift apart &mdash; but the name says "border" and it is
+          being used as a fill. Worth renaming to <code>color.control.active</code> the
+          next time the control set is touched.
+        </li>
+        <li>
+          <b>"The thumb takes <code>focusRing</code>" needed a detail the settled item
+          did not have.</b> The thumb is a <code>div</code>; the focusable element is an
+          <code>input</code> Base UI nests inside it. The ring is applied with
+          <code>.thumb:has(:focus-visible)</code> rather than to the thumb directly.
+        </li>
+        <li>
+          <b>The description needed an imperative escape hatch.</b> Thumb's props land on
+          the wrapping div, so <code>aria-describedby</code> cannot reach the input
+          declaratively. It is set through <code>inputRef</code> in an effect, with a
+          comment pointing at the Field integration that 0004&nbsp;&sect;04 deferred and
+          that would replace it.
+        </li>
+        <li>
+          <b>Stepper arithmetic snaps to the grid measured from <code>min</code>.</b> A
+          slider with <code>min={1} step={3}</code> steps 1, 4, 7, 10 rather than 3, 6, 9.
+          The component is always value-controlled internally so the steppers and drags
+          share one code path.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+
+    <div class="outcome outcome-built">
+      <span class="tag">Correction &mdash; 2026-08-17 &middot; the bubble never worked for keyboard</span>
+      <b>D2 was implemented against an attribute that does not exist in this
+      configuration.</b>
+      <p>
+        The stylesheet showed the bubble on <code>[data-dragging]</code> and
+        <code>[data-focused]</code>. Base UI publishes <code>data-focused</code> from
+        <b>Field</b>, alongside <code>valid</code>, <code>invalid</code>,
+        <code>touched</code> and <code>dirty</code> &mdash; and 0004 &sect;04
+        deliberately kept Slider out of a <code>Field</code>. So it was never set on the
+        root or the thumb, and the "and focus" half of D2 silently did nothing. Only
+        dragging ever showed a value.
+      </p>
+      <p>
+        Fixed with <code>:focus-within</code> on the root. It covers the thumb, and it
+        covers the stepper buttons, which was the reported case &mdash;
+        <code>data-focused</code> could not have covered those even had it worked, since
+        pressing a stepper never focuses the thumb.
+      </p>
+      <p>
+        Three tests now pin it. They assert the DOM condition that drives the CSS rather
+        than a computed style, since jsdom applies no stylesheet. One wrinkle worth
+        knowing for the next component: jsdom's selector engine caches dynamic
+        pseudo-classes, so asking <code>matches(':focus-within')</code> before and after
+        a focus change in one test returns the first answer twice. Each case renders
+        fresh and asks once.
+      </p>
+      <p>
+        <b>The general lesson:</b> Base UI's state attributes are not all published by
+        the component you are using. The Field-derived set &mdash;
+        <code>focused</code>, <code>touched</code>, <code>dirty</code>,
+        <code>valid</code>, <code>invalid</code> &mdash; is inert outside a
+        <code>Field</code>, and nothing warns you. Styling against one is worth an
+        explicit check that it is set.
+      </p>
+    </div>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0004
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0004-slider",
+  "status": "built",
+  "follows": "0002-text-input",
+  "decided": "2026-08-16",
+  "built": "2026-08-16",
+  "settled": {
+    "foundation": "@base-ui/react Slider, per 0001 D2.",
+    "thumbAlignment": "edge, fixed, not a prop. edge-client-only exists and drops the pre-hydration script.",
+    "api": "label/description/error as props, per 0002 D2.",
+    "validity": "Base UI data attributes, per 0002 D3.",
+    "scope": "Single value only; range deferred.",
+    "focus": "The thumb takes focusRing rather than a border highlight — a mark, not a field boundary."
+  },
+  "decisions": [
+    { "id": "track-treatment", "options": ["classic", "inset", "hairline"],        "recommended": "classic", "outcome": "hairline", "againstRecommendation": true,
+      "obligations": ["Thumb ships an invisible >=24x24px hit target (WCAG 2.2 SC 2.5.8); the visual mark stays 0.72rem.", "Disabled drops the indicator fill entirely rather than shifting its lightness."] },
+    { "id": "value-display",   "options": ["interaction", "drag-only", "always"],  "recommended": "interaction", "outcome": "interaction",
+      "amended": {
+        "date": "2026-08-17",
+        "what": "Implementation only; the decision stands.",
+        "from": "[data-dragging], [data-focused]",
+        "to": "[data-dragging], :focus-within",
+        "why": "data-focused is Field-derived and Slider is not inside a Field, so it was never set — the bubble never appeared for keyboard users. :focus-within also covers the stepper buttons, which data-focused could not have."
+      } },
+    { "id": "stepper-layout",  "options": ["flanking", "trailing", "none"],        "recommended": "flanking", "outcome": "flanking" },
+    { "id": "size-ramp",       "options": ["row-height", "single"],                "recommended": "row-height", "outcome": "row-height", "consequence": "A hairline thumb at sm is the smallest mark in the system, which makes the expanded hit target mandatory." }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

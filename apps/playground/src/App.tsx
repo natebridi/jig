@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, Input } from '@jig-ui/react'
+import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, Input, Slider } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -77,6 +77,15 @@ export function App() {
               <Button icon="plus" variant="ghost" size="sm">Add ingredient</Button>
             </Box>
           </Stack>
+
+          <Grid spacing="300">
+            <Box span={{ xs: 24, md: 12 }}>
+              <Slider label="Sweetness" description="Adjusts the sugar in the final mix." steppers />
+            </Box>
+            <Box span={{ xs: 24, md: 12 }}>
+              <Slider label="Spice" min={0} max={1} step={.01} defaultValue={0.5} format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }} />
+            </Box>
+          </Grid>
 
           <Grid spacing="300">
             <Box span={{ xs: 24, md: 6 }}><Input label="Source" /></Box>

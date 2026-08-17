@@ -5,5 +5,6 @@ import react from '@vitejs/plugin-react';
 // package the same way an outside project does, which keeps that path tested.
 export default defineConfig({
   plugins: [react()],
-  resolve: { dedupe: ['react', 'react-dom'] }
+  resolve: { dedupe: ['react', 'react-dom'] },
+  server: { host: true }
 });
