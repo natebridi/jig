@@ -25,7 +25,7 @@ describe('ToggleButton', () => {
     await user.click(button);
 
     // The owner decides; the button only reports.
-    expect(onPressedChange).toHaveBeenCalledWith(true);
+    expect(onPressedChange).toHaveBeenCalledWith(true, expect.objectContaining({ cancel: expect.any(Function) }));
     expect(button).toHaveAttribute('aria-pressed', 'false');
   });
 
@@ -46,22 +46,34 @@ describe('ToggleButton', () => {
     expect(button).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('lets a handler cancel the toggle with preventDefault', async () => {
+  // Replaced the earlier `onClick` + `preventDefault` contract, which Base UI
+  // does not read. Decision 0005 D2 — kept as a test rather than deleted, so the
+  // veto behaviour stays pinned under its new mechanism.
+  it('lets a handler cancel the toggle with details.cancel()', async () => {
     const user = userEvent.setup();
-    const onPressedChange = vi.fn();
     render(
-      <ToggleButton
-        onClick={(event) => event.preventDefault()}
-        onPressedChange={onPressedChange}
-      >
+      <ToggleButton onPressedChange={(_pressed, details) => details.cancel()}>
         Bold
       </ToggleButton>
     );
 
     await user.click(screen.getByRole('button', { name: 'Bold' }));
 
-    expect(onPressedChange).not.toHaveBeenCalled();
     expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  // The bug this caught: consumer props were being spread onto the element
+  // after Base UI's, which replaced its onClick and stopped the toggle working
+  // for anyone who passed one.
+  it('still toggles when a consumer passes its own onClick', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    render(<ToggleButton onClick={onClick}>Bold</ToggleButton>);
+
+    await user.click(screen.getByRole('button', { name: 'Bold' }));
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('names an icon-only toggle from its label', () => {

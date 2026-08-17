@@ -1,0 +1,1355 @@
+<title>0005 &middot; Toggle Button Group</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes — real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option — a
+     measurement table, a diagram — sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way — dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose — localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0005</p>
+    <h1>Toggle Button Group</h1>
+    <p class="standfirst">
+      Ported directly from Base UI. No new item component and no group styling &mdash;
+      <code>ToggleButton</code> itself becomes the child, which means rewriting it over
+      Base UI's <code>Toggle</code>. That is a refactor of a shipped component, and the
+      decisions below are about what it costs.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-17</li>
+      <li>decided 2026-08-17</li>
+      <li>built 2026-08-17</li>
+      <li>3 decisions</li>
+      <li>follows <a href="0004-slider.html">0004</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      A group of toggles needs roving <code>tabindex</code>, arrow-key navigation and a
+      shared value &mdash; behaviour <code>ToggleButton</code> cannot coordinate across
+      siblings. That clears 0001&nbsp;D2's behaviour test, so the group is
+      <code>@base-ui/react</code>'s <code>ToggleGroup</code> at the <code>~1.7.0</code>
+      range 0001&nbsp;D4 pinned.
+    </p>
+
+    <div class="outcome">
+      <span class="tag">Revised before decision &mdash; 2026-08-17</span>
+      <b>The first draft proposed a separate <code>ToggleButtonGroup.Item</code>, on the
+      grounds that <code>ToggleButton</code> could not be the child. Two claims behind
+      that were wrong.</b>
+      <p>
+        <b>First:</b> it said Base UI's <code>Toggle</code> throws outside a group.
+        It does not. <code>useToggleGroupContext()</code> is a bare
+        <code>useContext</code> returning <code>undefined</code> with no guard, and
+        <code>Toggle</code> branches on it &mdash; standalone it runs
+        <code>useControlled</code> over <code>pressed</code>/<code>defaultPressed</code>,
+        which is exactly <code>ToggleButton</code>'s current semantics; in a group it
+        derives pressed from <code>groupValue.indexOf(value) &gt; -1</code> and calls
+        <code>setGroupValue</code>. One component, both modes, already built.
+      </p>
+      <p>
+        <b>Second:</b> D3 claimed a generic <code>Value</code> would type-check each
+        item's <code>value</code> prop. It cannot. React children are opaque
+        <code>ReactNode</code>, so a parent's type argument never reaches them &mdash;
+        no arrangement of these components can catch a typo'd item value at compile
+        time. That claim is removed from D3 below, which changes its argument
+        substantially.
+      </p>
+      <p>
+        So <code>ToggleButton</code> is rewritten over Base UI's <code>Toggle</code> and
+        becomes the group child directly. Confirmed against
+        <code>package/toggle/Toggle.js</code> in the installed 1.7.0.
+      </p>
+    </div>
+
+    <h3>Already settled</h3>
+    <ul class="notes">
+      <li><strong>No new item component.</strong> Direct instruction. <code>ToggleButton</code> is the child of <code>ToggleButtonGroup</code>.</li>
+      <li><strong><code>ToggleButton</code> is rewritten over Base UI's <code>Toggle</code></strong>, which is what makes one component serve both modes. Authorised explicitly: "I'm open to changes in ToggleButton if that is what is required."</li>
+      <li><strong>No dedicated group styling.</strong> The group is an unstyled <code>ToggleGroup</code> div; items keep the exact <code>button({ color: 'ghost', pressed, size })</code> class they render today, shared with <code>IconButton</code>.</li>
+      <li><strong>The icon still swaps weight on press</strong> &mdash; <code>regular</code> to <code>fill</code>, and <code>pressedIcon</code> where given. Inside a group the pressed state lives in Base UI, so this reads it through <code>Toggle</code>'s <code>render</code> prop rather than local state. A CSS-only approach cannot do it: the two weights are different SVG paths, not a style.</li>
+      <li><strong><code>value</code> is added to <code>ToggleButton</code>, optional in the type.</strong> It is required in practice inside a group, and Base UI logs a development error when it is missing — but the type cannot express "required only when nested", so the runtime warning is the check.</li>
+      <li><strong><code>disabled</code> merges</strong>: the group's disabled state ORs with the item's, which Base UI already does.</li>
+      <li><strong>Orientation and <code>loopFocus</code> pass through</strong> unchanged from Base UI's defaults.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>All three are API questions. Specimens are code, not renders.</p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="select-mode" data-title="Single- vs multi-select as an API">
+    <p class="decision-id">D1 &middot; select-mode</p>
+    <h2>Single- vs multi-select as an API</h2>
+    <p>
+      Base UI expresses both through one component and a <code>multiple</code> boolean,
+      with the value always an array. The value's <em>meaning</em> changes shape
+      underneath that boolean, which a boolean cannot reflect in the type.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="one-component" data-label="One component, multiple prop">
+        <div class="option-head">
+          <h3>One component, <code>multiple</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Mirrors Base UI exactly</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ToggleButtonGroup defaultValue={['bold']}&gt;
+  &lt;ToggleButton value="bold"&gt;Bold&lt;/ToggleButton&gt;
+  &lt;ToggleButton value="italic"&gt;Italic&lt;/ToggleButton&gt;
+&lt;/ToggleButtonGroup&gt;
+
+&lt;ToggleButtonGroup <b>multiple</b> defaultValue={['bold']}&gt;
+  …
+
+<i>value is always Value[] — single-select
+is "an array of at most one"</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Literally the port that was asked for — same shape as Base UI's docs, so their examples transfer.</li>
+          <li class="pro">Switching a group from single to multi-select is one prop.</li>
+          <li class="con"><code>onValueChange</code> always hands back an array, so the common "which one is selected" case reads <code>value[0]</code> at every call site.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="two-components" data-label="Two components">
+        <div class="option-head">
+          <h3>Two components</h3>
+        </div>
+
+        <p class="specimen-label">Value type matches the mode</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ToggleButtonGroup defaultValue="bold"&gt;
+  <i>// value: string | undefined</i>
+  &lt;ToggleButton value="bold"&gt;Bold&lt;/ToggleButton&gt;
+&lt;/ToggleButtonGroup&gt;
+
+&lt;MultiToggleButtonGroup defaultValue={['bold']}&gt;
+  <i>// value: string[]</i>
+  &lt;ToggleButton value="bold"&gt;Bold&lt;/ToggleButton&gt;
+&lt;/MultiToggleButtonGroup&gt;
+
+<i>same child either way</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The type at each call site matches what is being modelled; single-select stays a single value.</li>
+          <li class="pro">Costs less than it did in the first draft — the item is shared now, so this is two wrappers, not two wrappers and two items.</li>
+          <li class="con">Two components to export, test and document for what Base UI treats as one prop, and a name to invent for the second.</li>
+          <li class="con">A redesign of Base UI's API rather than the port that was asked for.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-17</span>
+      <b>One component, <code>multiple</code>.</b> <code>ToggleButtonGroup</code> takes
+      the boolean and the value is always an array, matching Base UI exactly. Callers
+      reading a single selection take <code>value[0]</code>.
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="cancel-contract" data-title="How a handler vetoes a toggle">
+    <p class="decision-id">D2 &middot; cancel-contract</p>
+    <h2>How a handler vetoes a toggle</h2>
+    <p>
+      This is the one real casualty of the rewrite. <code>ToggleButton</code> today
+      documents and tests that an <code>onClick</code> handler calling
+      <code>preventDefault()</code> cancels the toggle
+      (<code>togglebutton.test.tsx</code>, "lets a handler cancel the toggle with
+      preventDefault"). Base UI's <code>Toggle</code> does not read
+      <code>defaultPrevented</code> at all &mdash; it calls
+      <code>onPressedChange(next, details)</code> first and checks
+      <code>details.isCanceled</code>.
+    </p>
+    <p>
+      Left alone, that test fails and every existing <code>preventDefault</code> call
+      site silently starts toggling.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="details-cancel" data-label="Adopt details.cancel()">
+        <div class="option-head">
+          <h3>Adopt <code>details.cancel()</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Base UI's own mechanism, surfaced on our prop</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ToggleButton
+  onPressedChange={(pressed, <b>details</b>) =&gt; {
+    if (!allowed) <b>details.cancel()</b>;
+  }}
+&gt;Bold&lt;/ToggleButton&gt;
+
+<i>works identically inside a group —
+cancelling also vetoes the group commit</i>
+
+<span class="no">// breaking: this no longer cancels</span>
+<span class="no">onClick={(e) =&gt; e.preventDefault()}</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The mechanism designed for the job, and the only one that also vetoes the <em>group</em> value commit — <code>preventDefault</code> could never do that.</li>
+          <li class="pro">No dependence on the order Base UI merges a consumer's <code>onClick</code> against its own, which is internal behaviour that could change in a minor.</li>
+          <li class="con">Breaking. A documented, tested contract changes, and the failure mode is silent — the toggle just starts moving.</li>
+          <li class="con">Migration is mechanical but must be found by hand; nothing type-errors.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="preserve" data-label="Preserve preventDefault">
+        <div class="option-head">
+          <h3>Preserve <code>preventDefault</code></h3>
+        </div>
+
+        <p class="specimen-label">Bridge it onto details.cancel() internally</p>
+        <div class="specimen block">
+<pre class="tree"><i>// inside ToggleButton</i>
+onPressedChange={(next, details) =&gt; {
+  if (details.event.<b>defaultPrevented</b>) {
+    details.cancel();
+    return;
+  }
+  onPressedChange?.(next);
+}}
+
+<i>consumer code is unchanged:</i>
+onClick={(e) =&gt; e.preventDefault()}</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing breaks. The existing test passes untouched and no call site moves.</li>
+          <li class="pro">Keeps our public surface free of Base UI's <code>details</code> object, which 0001 settled consumers should not have to know about.</li>
+          <li class="con">Depends on Base UI merging the consumer's <code>onClick</code> <em>before</em> its own, so that <code>defaultPrevented</code> is already set when it reads it. That ordering is undocumented, and a silent break if it changes.</li>
+          <li class="con">Leaves no way to veto a group commit, since <code>preventDefault</code> carries no signal Base UI reads.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="both" data-label="Support both">
+        <div class="option-head">
+          <h3>Support both</h3>
+        </div>
+
+        <p class="specimen-label">Bridge preventDefault, and pass details through</p>
+        <div class="specimen block">
+<pre class="tree">onPressedChange?: (
+  pressed: boolean,
+  details: ToggleChangeDetails
+) =&gt; void
+
+<i>preventDefault still cancels,</i>
+<i>details.cancel() also cancels</i>
+
+<span class="no">two ways to do one thing,
+both documented forever</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No break, and the group-veto case is reachable for anyone who needs it.</li>
+          <li class="con">Two mechanisms for one job, and the weaker one silently does less inside a group than outside it.</li>
+          <li class="con">Carries both of the other options' costs: the ordering dependency <em>and</em> Base UI's object on our surface.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-17</span>
+      <b>Adopt <code>details.cancel()</code>.</b> <code>onPressedChange</code> gains a
+      second argument and <code>preventDefault</code> on <code>onClick</code> no longer
+      vetoes a toggle.
+      <p>
+        <b>This is a breaking change with a silent failure mode</b>, which is the reason
+        it is recorded rather than left to the implementation. Obligations on the build:
+      </p>
+      <ul>
+        <li>
+          The existing test — "lets a handler cancel the toggle with preventDefault" —
+          is rewritten against <code>details.cancel()</code> rather than deleted, so the
+          veto behaviour stays pinned under its new mechanism.
+        </li>
+        <li>
+          The repository is swept for <code>onClick</code> handlers on
+          <code>ToggleButton</code> that call <code>preventDefault</code>; nothing
+          type-errors, so they have to be found by reading.
+        </li>
+        <li>
+          The gain is recorded too: cancelling now also vetoes the <em>group</em> value
+          commit, which <code>preventDefault</code> could never reach.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="value-typing" data-title="How strictly the group's value is typed">
+    <p class="decision-id">D3 &middot; value-typing</p>
+    <h2>How strictly the group's value is typed</h2>
+    <p>
+      Base UI's <code>ToggleGroup&lt;Value extends string&gt;</code> is generic, so
+      <code>value</code>, <code>defaultValue</code> and <code>onValueChange</code> can be
+      narrowed to a union.
+    </p>
+    <p>
+      <strong>What it cannot do</strong> — corrected from the first draft — is check the
+      items. React children are opaque <code>ReactNode</code>, so a
+      <code>ToggleButton</code>'s <code>value</code> is never compared against the
+      group's union no matter how this is arranged. A typo'd item value is a runtime
+      mismatch under either option, which removes the main argument for the generic.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="generic" data-label="Stay generic">
+        <div class="option-head">
+          <h3>Stay generic</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">&lt;Value extends string = string&gt;, same as Base UI</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ToggleButtonGroup
+  defaultValue={['bold']}
+  onValueChange={(v) =&gt; { <i>// v: ('bold'|'italic')[]</i> }}
+&gt;
+
+<i>inferred from defaultValue —
+rarely written by hand</i>
+
+<span class="no">// still not checked, either way:</span>
+<span class="no">&lt;ToggleButton value="blod" /&gt;</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The handler and any state fed from it are narrowed, so a <code>switch</code> over the value is exhaustively checked.</li>
+          <li class="pro">Adding it later is a breaking type change; adding it now costs nothing at call sites, since it is inferred.</li>
+          <li class="con">A generic in the props table for a benefit that stops at the group's own boundary.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="plain-string" data-label="Plain string">
+        <div class="option-head">
+          <h3>Plain string</h3>
+        </div>
+
+        <p class="specimen-label">value: string throughout</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ToggleButtonGroup
+  defaultValue={['bold']}
+  onValueChange={(v: string[]) =&gt; { … }}
+&gt;
+
+<i>simplest possible surface</i>
+
+<span class="no">// not checked here either:</span>
+<span class="no">&lt;ToggleButton value="blod" /&gt;</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing generic to read or explain, which matters more now that the item-checking benefit turned out not to exist.</li>
+          <li class="pro">Consumers who want narrowing can still assert at their own boundary.</li>
+          <li class="con">A <code>switch</code> over the returned value is never exhaustive, and adding the generic later breaks anyone who wrote an explicit annotation.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-17</span>
+      <b>Stay generic.</b> <code>&lt;Value extends string = string&gt;</code> on the
+      group, inferred from <code>defaultValue</code> in the common case.
+      <p>
+        Accepted on the narrower case that survived the correction: it narrows
+        <code>onValueChange</code> and anything fed from it, so a <code>switch</code> over
+        the value is exhaustive. It does <em>not</em> check item values, and the
+        component's documentation should not imply that it does.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, on the recommended set</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree">&lt;ToggleButtonGroup aria-label="Filters" multiple defaultValue={['starred']}
+                   onValueChange={setFilters}&gt;
+  &lt;ToggleButton value="starred" isIconOnly icon="star" label="Starred" /&gt;
+  &lt;ToggleButton value="unread" isIconOnly icon="eye" pressedIcon="eye-slash" label="Unread" /&gt;
+&lt;/ToggleButtonGroup&gt;
+
+<i>and unchanged, standalone — the same component:</i>
+&lt;ToggleButton icon="star" pressedIcon="star" defaultPressed&gt;Favourite&lt;/ToggleButton&gt;
+
+<b>ToggleButtonGroup</b>  value  defaultValue  onValueChange  multiple
+                    disabled  orientation  loopFocus
+
+<b>ToggleButton</b>       + value        <i>new — identifies it within a group</i>
+                    pressed  defaultPressed  onPressedChange
+                    size  icon  pressedIcon  iconPosition  isIconOnly  label</pre>
+      </div>
+      <figcaption>
+        The group renders a bare <code>ToggleGroup</code> div with no styling; layout is
+        whatever the caller wraps it in, typically a
+        <code>Stack direction="row"</code>. Items render the same ghost/pressed button
+        class they do today, so a grouped and an ungrouped toggle are visually
+        identical.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A segmented or connected visual treatment.</strong> Out of scope by instruction — items keep their normal radius and spacing, with no shared border or overlap. A future proposal once a real toolbar exists to design against.</li>
+      <li><strong>Vertical orientation styling.</strong> <code>orientation="vertical"</code> passes through for free, but nothing here designs for a column.</li>
+      <li><strong>Requiring <code>value</code> by type inside a group.</strong> Not expressible — the type cannot know it is nested. Base UI's development-mode error is the check.</li>
+      <li><strong>Applying the same treatment to <code>Button</code>.</strong> <code>ToggleButton</code> moves onto Base UI here; <code>Button</code>, <code>IconButton</code> and the shared recipe are untouched.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-17. <code>pnpm turbo typecheck test --force</code> passes &mdash; 12
+      tasks, 82 tests across 10 files, 12 of them new &mdash; the packed-consumer test
+      resolves the tarball in isolation, and two groups are in the playground.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>src/togglebutton/togglebutton.tsx</code> &mdash; rewritten over Base UI's <code>Toggle</code>; gains <code>value</code>, and <code>onPressedChange</code> gains the details argument.</li>
+      <li><code>src/togglebuttongroup/</code> &mdash; new. Component, styles, stories, tests, exported from <code>src/index.ts</code> alongside <code>ToggleChangeDetails</code>.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; a single-select and a multi-select group.</li>
+      <li><b>No new tokens</b>, and no change to <code>button.css.ts</code>. A grouped and an ungrouped toggle render the identical class.</li>
+    </ul>
+
+    <div class="outcome outcome-built">
+      <span class="tag">A test passed for the wrong reason, and hid a real bug</span>
+      <b>The first rewrite spread consumer props onto the element inside
+      <code>render</code>, after Base UI's own — which replaced its
+      <code>onClick</code> outright.</b>
+      <p>
+        Any consumer passing <code>onClick</code> would have got a button that no longer
+        toggled at all. It went unnoticed at first because the old
+        <code>preventDefault</code> test still passed &mdash; not because the veto worked,
+        but because Base UI's handler had been discarded and nothing happened either way.
+        A green test asserting the absence of an effect cannot tell "correctly cancelled"
+        from "completely broken".
+      </p>
+      <p>
+        Fixed by passing consumer props to <code>Toggle</code> instead, so Base UI merges
+        handlers rather than being overwritten by them. A regression test now presses a
+        button that carries its own <code>onClick</code> and asserts both that the
+        handler ran and that the toggle moved.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">"No group styling" needed one line of layout after all</span>
+      <b>Read literally, it produced a bare <code>div</code> whose buttons flowed as
+      inline boxes with whitespace between them.</b>
+      <p>
+        The group carries <code>display: inline-flex</code> and a
+        <code>flex-direction</code> taken from <code>orientation</code> &mdash; the same
+        axis it already declares to assistive technology. Nothing decorative: no gap, no
+        border, no radius, no background. Callers wanting spacing pass a
+        <code>className</code>, which is also how a segmented treatment would arrive
+        later without changing this file's contract.
+      </p>
+      <p>
+        Flagged rather than assumed: this is a judgment call inside a settled item, and
+        if "no styling" was meant to include layout, deleting the file is the change.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Smaller findings</span>
+      <ul>
+        <li>
+          <b><code>ToggleChangeDetails</code> is declared locally, not re-exported.</b>
+          It names the two members worth calling &mdash; <code>cancel()</code> and
+          <code>event</code> &mdash; while the object passed at runtime is Base UI's
+          richer one. That keeps 0001's rule that consumers never import Base UI types,
+          and it costs nothing because the structural subset satisfies the callback
+          position.
+        </li>
+        <li>
+          <b><code>value</code> had to be omitted from the inherited button attributes.</b>
+          <code>ButtonHTMLAttributes</code> already declares a native <code>value</code>,
+          which would have silently merged with the group identity of the same name.
+        </li>
+        <li>
+          <b>The migration surface was exactly one file.</b> A sweep for
+          <code>preventDefault</code> on <code>ToggleButton</code> found only the test
+          itself &mdash; no playground or story call sites &mdash; so D2's breaking change
+          cost one rewritten test in practice.
+        </li>
+        <li>
+          <b>The proposal's API sketch used icons that do not exist.</b> Section 03 showed
+          <code>icon="text-b"</code> and <code>icon="text-italic"</code>; the curated set
+          has neither. Corrected above to <code>star</code> and <code>eye</code>.
+        </li>
+        <li>
+          <b><code>exactOptionalPropertyTypes</code> is on repo-wide</b>, so an optional
+          prop rejects an explicitly-passed <code>undefined</code>. It surfaced spreading
+          Storybook <code>args</code> into a component with an explicit type argument, and
+          it is worth knowing before writing the next generic component.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0005
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 3 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0005-toggle-button-group",
+  "status": "built",
+  "follows": "0004-slider",
+  "decided": "2026-08-17",
+  "built": "2026-08-17",
+  "settled": {
+    "foundation": "@base-ui/react ToggleGroup, per 0001 D2, at ~1.7.0 per 0001 D4.",
+    "item": "ToggleButton itself is the child. No new item component.",
+    "toggleButtonRewrite": "ToggleButton is rewritten over Base UI's Toggle, which serves standalone and grouped modes from one component. Authorised by the reviewer.",
+    "styling": "No group style. Items keep button({ color: 'ghost', pressed, size }), shared with IconButton.",
+    "iconWeight": "Pressed-state icon weight is read through Toggle's render prop; CSS cannot swap SVG paths.",
+    "valueProp": "value is added to ToggleButton, optional in the type; Base UI dev-errors when it is missing inside a group."
+  },
+  "decisions": [
+    { "id": "select-mode",     "options": ["one-component", "two-components"],       "recommended": "one-component", "outcome": "one-component" },
+    { "id": "cancel-contract", "options": ["details-cancel", "preserve", "both"],    "recommended": "details-cancel", "outcome": "details-cancel", "breaking": true,
+      "obligations": ["Rewrite the preventDefault cancel test against details.cancel() rather than deleting it.", "Sweep the repo for ToggleButton onClick handlers calling preventDefault — nothing type-errors."] },
+    { "id": "value-typing",    "options": ["generic", "plain-string"],               "recommended": "generic", "outcome": "generic", "note": "Narrows onValueChange only; item values are not checked and docs must not imply otherwise." }
+  ],
+  "revisions": [
+    {
+      "date": "2026-08-17",
+      "summary": "First draft proposed a separate ToggleButtonGroup.Item on two false premises: that Base UI's Toggle throws outside a group (it does not — useToggleGroupContext is an unguarded useContext), and that a generic Value would type-check item values (it cannot — React children are opaque to a parent's type argument). Reviewer directed that ToggleButton be the item; it is rewritten over Base UI's Toggle instead."
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

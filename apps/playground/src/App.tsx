@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, Input, Slider } from '@jig-ui/react'
+import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -209,6 +209,20 @@ export function App() {
 
       <Stack spacing="400">
         <Typography as="h2" with="heading03">ToggleButton</Typography>
+
+        <Stack direction="row" spacing="400" align="center">
+          <ToggleButtonGroup aria-label="View" defaultValue={['week']}>
+            <ToggleButton value="day">Day</ToggleButton>
+            <ToggleButton value="week">Week</ToggleButton>
+            <ToggleButton value="month">Month</ToggleButton>
+          </ToggleButtonGroup>
+
+          <ToggleButtonGroup aria-label="Filters" multiple defaultValue={['starred']}>
+            <ToggleButton value="starred" isIconOnly icon="star" label="Starred" />
+            <ToggleButton value="unread" isIconOnly icon="eye" pressedIcon="eye-slash" label="Unread" />
+            <ToggleButton value="liked" isIconOnly icon="heart" label="Liked" />
+          </ToggleButtonGroup>
+        </Stack>
 
         <Stack direction="row" spacing="300" align="center">
           <ToggleButton size="sm">Small</ToggleButton>

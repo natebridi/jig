@@ -1,18 +1,55 @@
-import { useState, type ButtonHTMLAttributes, type MouseEvent, type Ref } from 'react';
+import { Toggle } from '@base-ui/react/toggle';
+import type { ButtonHTMLAttributes, Ref } from 'react';
 import { Icon, type IconName } from '../icon';
 import { button, buttonIconSize } from '../button/button.css';
 
 type ToggleButtonSize = 'sm' | 'md' | 'lg';
 
+/**
+ * What a handler receives alongside the new pressed state.
+ *
+ * Declared here rather than re-exported from Base UI: 0001 settled that
+ * consumers import from `@jig-ui/react` and should not need to know Base UI
+ * exists. This is the subset of its change details that is useful to call —
+ * the object passed at runtime carries more, and passing it through unchanged
+ * is what makes the cancellation reach Base UI.
+ */
+export interface ToggleChangeDetails {
+  /**
+   * Cancels the change. The button does not move, and inside a
+   * `ToggleButtonGroup` the group's value is not committed either.
+   */
+  cancel: () => void;
+  /** The native event behind the change. */
+  readonly event: Event;
+  /** Whether something has already cancelled this change. */
+  readonly isCanceled: boolean;
+}
+
 interface ToggleButtonBaseProps
   // `aria-pressed` *is* the pressed state and `aria-label` is owned by `label`
-  // — accepting either would let the DOM contradict the component.
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-pressed' | 'aria-label'> {
+  // — accepting either would let the DOM contradict the component. `value` is
+  // the group identity below, not the native button attribute of that name.
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-pressed' | 'aria-label' | 'value'> {
   size?: ToggleButtonSize;
   /** Controlled pressed state. Leave undefined to let the button manage its own. */
   pressed?: boolean;
   defaultPressed?: boolean;
-  onPressedChange?: (pressed: boolean) => void;
+  /**
+   * Fires before the change is applied. Call `details.cancel()` to veto it.
+   *
+   * This replaced an earlier contract where an `onClick` handler calling
+   * `preventDefault()` cancelled the toggle. Base UI does not read
+   * `defaultPrevented`, and only this route can also veto a group's value
+   * commit. See apps/docs/decisions/0005-toggle-button-group.html (D2).
+   */
+  onPressedChange?: (pressed: boolean, details: ToggleChangeDetails) => void;
+  /**
+   * Identifies this button within a `ToggleButtonGroup`. Required in practice
+   * when nested in one — the type cannot express "only when nested", so Base
+   * UI logs a development error if it is missing.
+   */
+  value?: string;
   /** Shown while unpressed, at the regular weight. */
   icon?: IconName;
   /**
@@ -48,63 +85,83 @@ export type ToggleButtonProps = ToggleButtonBaseProps &
       }
   );
 
+/**
+ * A button that stays pressed.
+ *
+ * Built on Base UI's `Toggle`, which serves both modes from one component:
+ * standalone it holds its own pressed state, and inside a `ToggleButtonGroup`
+ * it derives that state from the group's value and writes back to it. That is
+ * why there is no separate group-item component.
+ */
 export function ToggleButton({
   size = 'md',
-  pressed: pressedProp,
-  defaultPressed = false,
+  pressed,
+  defaultPressed,
   onPressedChange,
+  value,
   icon,
   pressedIcon,
   iconPosition = 'start',
   isIconOnly = false,
   label,
+  disabled,
   // Buttons default to type="submit", which would post the form a toggle
   // happens to sit in.
   type = 'button',
   className,
-  onClick,
   children,
+  ref,
   ...props
 }: ToggleButtonProps) {
-  const isControlled = pressedProp !== undefined;
-  const [uncontrolledPressed, setUncontrolledPressed] = useState(defaultPressed);
-  const pressed = isControlled ? pressedProp : uncontrolledPressed;
-
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    onClick?.(event);
-    // A handler that cancelled the click gets to cancel the toggle with it.
-    if (event.defaultPrevented) return;
-
-    const next = !pressed;
-    if (!isControlled) setUncontrolledPressed(next);
-    onPressedChange?.(next);
+  // Read from the rendered state rather than a local variable: inside a group
+  // the pressed state belongs to Base UI, and this is the only way to see it.
+  // The two icon weights are different SVG paths, so CSS cannot do this.
+  const glyph = (isPressed: boolean) => {
+    const name = isPressed ? pressedIcon ?? icon : icon;
+    return name ? (
+      <Icon icon={name} weight={isPressed ? 'fill' : 'regular'} size={buttonIconSize} />
+    ) : null;
   };
 
-  const name = pressed ? pressedIcon ?? icon : icon;
-  const glyph = name ? (
-    <Icon icon={name} weight={pressed ? 'fill' : 'regular'} size={buttonIconSize} />
-  ) : null;
-
   return (
-    <button
+    <Toggle
+      // Consumer props go to Base UI rather than onto the element inside
+      // `render`, so that it *merges* handlers with its own instead of being
+      // overwritten by them. Spreading these after `renderProps` below silently
+      // replaced Base UI's `onClick`, which stopped the button toggling at all
+      // for anyone who passed one.
       {...props}
+      ref={ref}
       type={type}
-      // Everything the component owns is set after the spread, so consumer
-      // props can add to the button but cannot contradict its state.
-      aria-pressed={pressed}
+      value={value}
+      pressed={pressed}
+      defaultPressed={defaultPressed}
+      disabled={disabled}
+      onPressedChange={onPressedChange}
       // Same recipe and the same iconOnly variant IconButton uses, so the two
       // resolve to identical padding at every size rather than to two
       // definitions that have to be kept in step.
-      className={[
-        button({ color: 'ghost', size, pressed, iconOnly: isIconOnly }),
-        className,
-      ].filter(Boolean).join(' ')}
-      {...(label ? { 'aria-label': label } : {})}
-      onClick={handleClick}
-    >
-      {iconPosition === 'start' && glyph}
-      {!isIconOnly && children}
-      {iconPosition === 'end' && glyph}
-    </button>
+      className={(state) =>
+        [
+          button({ color: 'ghost', size, pressed: state.pressed, iconOnly: isIconOnly }),
+          className,
+        ]
+          .filter(Boolean)
+          .join(' ')
+      }
+      render={(renderProps, state) => (
+        <button
+          {...renderProps}
+          // Everything the component owns is set after the spread, so consumer
+          // props can add to the button but cannot contradict its state.
+          aria-pressed={state.pressed}
+          {...(label ? { 'aria-label': label } : {})}
+        >
+          {iconPosition === 'start' && glyph(state.pressed)}
+          {!isIconOnly && children}
+          {iconPosition === 'end' && glyph(state.pressed)}
+        </button>
+      )}
+    />
   );
 }
