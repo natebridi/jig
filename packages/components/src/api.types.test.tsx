@@ -38,6 +38,9 @@ describe('public API types', () => {
       <Button size="xl">no</Button>
       {/* @ts-expect-error not an icon in the curated set */}
       <Button icon="not-an-icon">no</Button>
+      <Typography with="heading01" balance />
+      {/* @ts-expect-error balance is a boolean, not a wrap mode */}
+      <Typography balance="pretty" />
     </>;
     expect(true).toBe(true);
   });

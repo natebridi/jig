@@ -71,3 +71,19 @@ export const ResponsiveSpacing: Story = {
     </>
   ),
 };
+
+export const Balance: Story = {
+  render: () => (
+    <div style={{ maxWidth: '26rem' }}>
+      <Typography as="h3" with="heading04" mb="500">
+        A heading long enough to wrap, left to fill each line before it breaks
+      </Typography>
+      <Typography as="h3" with="heading04" balance>
+        A heading long enough to wrap, with its line lengths evened out instead
+      </Typography>
+    </div>
+  ),
+  parameters: {
+    docs: { description: { story: 'The same heading twice, at the same width. `balance` stops the last line being a single orphaned word. It is for short text that wraps to a few lines — browsers cap the effect at a handful of lines, so it does nothing to a paragraph.' } },
+  },
+};

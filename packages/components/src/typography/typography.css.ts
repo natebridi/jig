@@ -106,6 +106,19 @@ export const typography = recipe({
         lineHeight: type.caption02.lineHeight,
       },
     },
+    /**
+     * Lets the browser even out the line lengths instead of filling each line
+     * before it breaks. Off by default: `balance` is capped at a handful of
+     * lines in every engine that implements it, and applying it to running
+     * body text either does nothing or costs a layout pass for no visible
+     * gain. Headings, standfirsts and captions are what it is for.
+     */
+    balance: {
+      true: {
+        textWrap: "balance",
+      },
+      false: {},
+    },
   },
   defaultVariants: {
     style: "body01",

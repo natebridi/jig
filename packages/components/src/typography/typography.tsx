@@ -22,6 +22,14 @@ export type TypeStyles =
 /** Typography's own props. The element's own attributes are added by PolymorphicProps. */
 export interface TypographyOwnProps extends SpacingProps {
   with?: TypeStyles;
+  /**
+   * Evens out the line lengths rather than filling each line before breaking,
+   * so a heading does not end on a single orphaned word. Meant for short text
+   * that wraps to a few lines — headings, standfirsts, captions; browsers cap
+   * `text-wrap: balance` at a handful of lines, so it does nothing for a
+   * paragraph.
+   */
+  balance?: boolean;
 }
 
 export type TypographyProps<E extends TypographyElement = 'div'> =
@@ -29,6 +37,7 @@ export type TypographyProps<E extends TypographyElement = 'div'> =
 
 export function Typography<E extends TypographyElement = 'div'>({
   with: typeStyle = 'body01',
+  balance = false,
   as,
   className,
   children,
@@ -41,7 +50,7 @@ export function Typography<E extends TypographyElement = 'div'>({
   return (
     <Component
       className={[
-        typography({ style: typeStyle }),
+        typography({ style: typeStyle, balance }),
         spacing,
         className,
       ].filter(Boolean).join(' ')}

@@ -32,6 +32,21 @@ export function App() {
 
       <Stack px="500" py="800" spacing="800" align="stretch" style={{ maxWidth: '74rem', marginInline: 'auto' }}>
 
+        <Grid columns={24}>
+          <Box span={{ xs: 24, md: 8 }} alignSelf='center' mb="600">
+            <Typography as="h1" with="display01" mb="300">Guilloche</Typography>
+            <Typography as="p" with="display05" pl="300" balance>Shader for patterns etched in metal</Typography>
+          </Box>
+          <Box span={{ xs: 24, md: 16 }} style={{ height: '20rem', backgroundColor: color.surfaces.card }}>
+            <Box style={{ aspectRatio: '5/3', width: '30rem', backgroundColor: color.surfaces.inverse }} />
+            <ToggleButtonGroup>
+              <ToggleButton value="style1" pressedIcon='eye'>Golden sun</ToggleButton>
+              <ToggleButton value="style2" pressedIcon='eye'>Silver burst</ToggleButton>
+              <ToggleButton value="style3" pressedIcon='eye'>Ocean drop</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        </Grid>
+
         <Stack spacing="600" align="stretch">
           <Input label="Title" size="lg" />
 
