@@ -22,7 +22,7 @@ export function App() {
     <div
         style={{
           minHeight: '100vh',
-          backgroundColor: color.surfaces.body,
+        backgroundColor: `light-dark(${color.warm[0]}, ${color.green[750]})`,
         }}
       >
       <div className="style-debug">
@@ -37,14 +37,14 @@ export function App() {
             <Typography as="h1" with="display01" mb="300">Guilloche</Typography>
             <Typography as="p" with="display05" pl="300" balance>Shader for patterns etched in metal</Typography>
           </Box>
-          <Box span={{ xs: 24, md: 16 }} style={{ height: '20rem', backgroundColor: color.surfaces.card }}>
+          <Stack spacing="500" py="600" align="center" span={{ xs: 24, md: 16 }}>
             <Box style={{ aspectRatio: '5/3', width: '30rem', backgroundColor: color.surfaces.inverse }} />
             <ToggleButtonGroup>
               <ToggleButton value="style1" pressedIcon='eye'>Golden sun</ToggleButton>
               <ToggleButton value="style2" pressedIcon='eye'>Silver burst</ToggleButton>
               <ToggleButton value="style3" pressedIcon='eye'>Ocean drop</ToggleButton>
             </ToggleButtonGroup>
-          </Box>
+          </Stack>
         </Grid>
 
         <Stack spacing="600" align="stretch">
@@ -105,6 +105,31 @@ export function App() {
           <Grid spacing="300">
             <Box span={{ xs: 24, md: 6 }}><Input label="Source" /></Box>
             <Box span={{ xs: 24, md: 18 }}><Input label="Source URL" /></Box>
+          </Grid>
+
+          {/* Every layout primitive is also a layout child: a Grid nested in a
+              Grid claims a span of the outer one, and a Stack inside a Stack
+              grows, with no Box in between to carry the number. */}
+          <Grid spacing="300">
+            <Grid span={{ xs: 24, md: 16 }} columns={2} spacing="200" data-testid="grid-span-16">
+              <Input label="Nested A" />
+              <Input label="Nested B" />
+            </Grid>
+            <Stack span={{ xs: 24, md: 8 }} direction="row" spacing="200" align="stretch" data-testid="stack-grow-row">
+              <Input label="Grows" style={{ flexGrow: 1 }} />
+            </Stack>
+          </Grid>
+
+          {/* A Stack spanning directly, with no Box around it to carry the number. */}
+          <Grid spacing="300">
+            <Stack span={{ xs: 24, md: 16 }} spacing="200" align="stretch" data-testid="stack-span-16">
+              <Input label="Notes" />
+              <Input label="More notes" />
+            </Stack>
+            <Stack span={{ xs: 24, md: 8 }} spacing="200" align="stretch" data-testid="stack-span-8">
+              <Input label="Yield" />
+              <Input label="Time" />
+            </Stack>
           </Grid>
         </Stack>
 

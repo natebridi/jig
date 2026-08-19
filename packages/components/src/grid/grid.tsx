@@ -3,7 +3,7 @@ import type { Breakpoint } from '../breakpoints';
 import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { layoutSprinkles } from '../layout.css';
-import type { GridColumns, LayoutAlign, LayoutJustify, LayoutSpacing } from '../layout';
+import { childLayout, type GridColumns, type LayoutAlign, type LayoutChildProps, type LayoutJustify, type LayoutSpacing } from '../layout';
 import type { PolymorphicProps } from '../polymorphic';
 import { base, distribute } from './grid.css';
 
@@ -15,8 +15,13 @@ export type GridElement =
 
 export type { GridColumns };
 
-/** Grid's own props. The element's own attributes are added by PolymorphicProps. */
-export interface GridOwnProps extends SpacingProps {
+/**
+ * Grid's own props: how it arranges its children, plus the shared child-side
+ * set describing how it sits in whatever contains it — a Grid nested in a Grid
+ * claims a `span` of the outer one exactly as a Box does. The element's own
+ * attributes are added by PolymorphicProps.
+ */
+export interface GridOwnProps extends SpacingProps, LayoutChildProps {
   spacing?: Responsive<LayoutSpacing>;
   /**
    * Distributes children evenly across the fixed 24-column grid — every child
@@ -56,6 +61,9 @@ export function Grid<E extends GridElement = 'div'>({
   columns = 1,
   align,
   justify,
+  span,
+  grow,
+  alignSelf,
   className,
   children,
   ...props
@@ -73,6 +81,7 @@ export function Grid<E extends GridElement = 'div'>({
           gap: spacingProp,
           ...(align ? { alignItems: align } : {}),
           ...(justify ? { justifyContent: justify } : {}),
+          ...childLayout({ span, grow, alignSelf }),
         }),
         spacing,
         className,

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Box } from './box';
 import { Grid } from '../grid';
+import { Stack } from '../stack';
 
 /**
  * jsdom does not lay anything out, so these assert what the components emit
@@ -129,5 +130,140 @@ describe('Grid', () => {
     );
 
     expect(screen.getByTestId('aligned').className).not.toBe(screen.getByTestId('plain').className);
+  });
+});
+
+describe('layout children', () => {
+  /**
+   * Box, Stack and Grid all carry the same three child-side props, so the
+   * thing worth asserting is that they are the *same* props — one class per
+   * value, shared across the three — rather than three parallel
+   * implementations that happen to agree today.
+   *
+   * Written out rather than parameterised over the components: they are
+   * generic in their element, which makes them awkward to hold in a variable
+   * and use as a JSX tag.
+   */
+  const classesOf = (id: string) =>
+    new Set(screen.getByTestId(id).className.trim().split(/\s+/));
+
+  const sharedByAllThree = () => {
+    const box = classesOf('Box');
+    const stack = classesOf('Stack');
+    const grid = classesOf('Grid');
+    return [...box].filter((c) => stack.has(c) && grid.has(c));
+  };
+
+  it.each([
+    [
+      'span',
+      <>
+        <Box data-testid="Box" span={8}>x</Box>
+        <Stack data-testid="Stack" span={8}>x</Stack>
+        <Grid data-testid="Grid" span={8}>x</Grid>
+      </>,
+    ],
+    [
+      'grow',
+      <>
+        <Box data-testid="Box" grow>x</Box>
+        <Stack data-testid="Stack" grow>x</Stack>
+        <Grid data-testid="Grid" grow>x</Grid>
+      </>,
+    ],
+    [
+      'alignSelf',
+      <>
+        <Box data-testid="Box" alignSelf="center">x</Box>
+        <Stack data-testid="Stack" alignSelf="center">x</Stack>
+        <Grid data-testid="Grid" alignSelf="center">x</Grid>
+      </>,
+    ],
+  ])('resolves %s to one class shared by all three primitives', (_prop, tree) => {
+    render(tree);
+
+    // Exactly one: the sprinkle for this prop. The base classes differ.
+    expect(sharedByAllThree()).toHaveLength(1);
+  });
+
+  it.each([
+    [
+      'Box',
+      <>
+        <Box data-testid="plain">a</Box>
+        <Box data-testid="spanned" span={8}>b</Box>
+      </>,
+    ],
+    [
+      'Stack',
+      <>
+        <Stack data-testid="plain">a</Stack>
+        <Stack data-testid="spanned" span={8}>b</Stack>
+      </>,
+    ],
+    [
+      'Grid',
+      <>
+        <Grid data-testid="plain">a</Grid>
+        <Grid data-testid="spanned" span={8}>b</Grid>
+      </>,
+    ],
+  ])('adds nothing to %s when no child props are given', (_name, tree) => {
+    render(tree);
+
+    const count = (id: string) => classesOf(id).size;
+
+    expect(count('spanned')).toBe(count('plain') + 1);
+  });
+
+  it.each([
+    ['Box', <Box data-testid="explicit" span={16}>b</Box>],
+    ['Stack', <Stack data-testid="explicit" span={16}>b</Stack>],
+    ['Grid', <Grid data-testid="explicit" span={16}>b</Grid>],
+  ])('lets %s outrank a parent Grid distribution', (_name, child) => {
+    render(
+      <Grid columns={3}>
+        <div data-testid="distributed">a</div>
+        {child}
+      </Grid>
+    );
+
+    // The distribution is a zero-specificity descendant rule, so the plain
+    // child carries no class of its own while the layout child carries a real
+    // one — which is what makes it win in the cascade.
+    expect(screen.getByTestId('distributed').className).toBe('');
+    expect(screen.getByTestId('explicit').className).not.toBe('');
+  });
+
+  it('does not leak an outer Grid distribution past a nested Grid', () => {
+    render(
+      <Grid columns={3}>
+        <Grid data-testid="inner" span={12}>
+          <div data-testid="grandchild">a</div>
+        </Grid>
+      </Grid>
+    );
+
+    // `:where(.marker) > *` is a direct-child rule, so the outer Grid reaches
+    // the inner one and stops. A descendant selector would silently give the
+    // grandchild a span of the *outer* grid's tracks.
+    expect(screen.getByTestId('grandchild').className).toBe('');
+    expect(screen.getByTestId('inner').className).not.toBe('');
+  });
+
+  it('keeps align and alignSelf apart on a container', () => {
+    render(
+      <>
+        <Stack data-testid="children" align="center">a</Stack>
+        <Stack data-testid="self" alignSelf="center">b</Stack>
+      </>
+    );
+
+    // One is what the Stack does to its children, the other what it does to
+    // itself. Collapsing them onto one class would make a spanning Stack
+    // silently restyle its contents.
+    expect(screen.getByTestId('children').className).not.toBe(
+      screen.getByTestId('self').className
+    );
   });
 });

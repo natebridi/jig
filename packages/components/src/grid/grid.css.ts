@@ -12,6 +12,13 @@ import type { Breakpoint } from '../breakpoints';
 export const base = style({
   display: 'grid',
   gridTemplateColumns: `repeat(${GRID_COLUMNS}, minmax(0, 1fr))`,
+  // `minmax(0, 1fr)` above caps this Grid's own children. This caps the Grid
+  // itself once it is a child of a *Stack* — a flex item's automatic minimum
+  // size is its content, so a Grid holding a long unbroken string would refuse
+  // to shrink and take the whole row. Inside another Grid it is redundant,
+  // since the parent's own `minmax(0, 1fr)` already caps it; it is cheap
+  // enough to carry unconditionally rather than to reason about per parent.
+  minWidth: 0,
 });
 
 /** The divisors of 24. See `GridColumns`. */

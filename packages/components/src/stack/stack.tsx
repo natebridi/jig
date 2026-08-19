@@ -2,7 +2,7 @@ import type { ElementType } from 'react';
 import type { Responsive } from '../responsive';
 import { splitSpacing, type SpacingProps } from '../spacing';
 import { layoutSprinkles } from '../layout.css';
-import type { LayoutAlign, LayoutDirection, LayoutJustify, LayoutSpacing } from '../layout';
+import { childLayout, type LayoutChildProps, type LayoutAlign, type LayoutDirection, type LayoutJustify, type LayoutSpacing } from '../layout';
 import type { PolymorphicProps } from '../polymorphic';
 import { base } from './stack.css';
 
@@ -16,8 +16,18 @@ export type StackElement =
   | 'nav' | 'header' | 'footer' | 'main'
   | 'ul' | 'ol' | 'li';
 
-/** Stack's own props. The element's own attributes are added by PolymorphicProps. */
-export interface StackOwnProps extends SpacingProps {
+/**
+ * Stack's own props: how it arranges its children, plus the shared child-side
+ * set describing how it sits in whatever contains it. The element's own
+ * attributes are added by PolymorphicProps.
+ *
+ * Note `align` and `alignSelf` are both here and are not the same prop —
+ * `align` is what the Stack does to its children, `alignSelf` is what it does
+ * to itself inside its parent. Spanning changes how wide a Stack is, not how
+ * its children fill it: `align` still defaults to `start`, so a spanning Stack
+ * whose children should fill the column wants `align="stretch"` as well.
+ */
+export interface StackOwnProps extends SpacingProps, LayoutChildProps {
   direction?: Responsive<LayoutDirection>;
   spacing?: Responsive<LayoutSpacing>;
   align?: Responsive<LayoutAlign>;
@@ -32,6 +42,9 @@ export function Stack<E extends StackElement = 'div'>({
   spacing: spacingProp = '300',
   align = 'start',
   justify,
+  span,
+  grow,
+  alignSelf,
   className,
   children,
   ...props
@@ -51,6 +64,7 @@ export function Stack<E extends StackElement = 'div'>({
           gap: spacingProp,
           alignItems: align,
           ...(justify ? { justifyContent: justify } : {}),
+          ...childLayout({ span, grow, alignSelf }),
         }),
         spacing,
         className,

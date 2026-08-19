@@ -31,7 +31,7 @@ export { Box } from './box';
 export type { BoxProps, BoxElement } from './box';
 export { Grid } from './grid';
 export type { GridProps, GridElement, GridColumns } from './grid';
-export type { GridSpan } from './layout';
+export type { GridSpan, LayoutChildProps } from './layout';
 export { Tooltip } from './tooltip';
 export type { TooltipProps, TooltipPlacement } from './tooltip';
 export { CodeBlock } from './codeblock';

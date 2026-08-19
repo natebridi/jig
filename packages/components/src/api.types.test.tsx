@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Button, Grid, IconButton, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Grid, IconButton, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -78,6 +78,21 @@ describe('public API types', () => {
       <Grid columns={{ xs: 1, md: 6 }} />
       {/* @ts-expect-error thirteen columns used to silently produce no class */}
       <Grid columns={13} />
+      {/* Every layout primitive is a layout child too: the same three props on
+          all three, so a container nested in a container needs no wrapper. */}
+      <Box span={16} grow alignSelf="center" />
+      <Stack span={16} grow alignSelf="center" />
+      <Grid span={16} grow alignSelf="center" />
+      <Stack span={{ xs: 24, md: 8 }} />
+      <Grid span={{ xs: 24, md: 8 }} />
+      {/* @ts-expect-error the grid is 24 tracks wide, so 25 is not a span */}
+      <Stack span={25} />
+      {/* @ts-expect-error and the same ceiling holds for a nested Grid */}
+      <Grid span={25} />
+      {/* @ts-expect-error grow is a boolean, not a flex-grow number */}
+      <Grid grow={2} />
+      {/* @ts-expect-error alignSelf takes the layout align vocabulary */}
+      <Stack alignSelf="space-between" />
       {/* @ts-expect-error and so did an arbitrary number */}
       <Grid columns={0} />
     </>;
