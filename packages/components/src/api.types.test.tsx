@@ -1,6 +1,6 @@
-import type { RefObject } from 'react';
+import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Button, Grid, IconButton, Stack, ToggleButton, Typography } from './index';
+import { Adorn, Button, Grid, IconButton, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -38,6 +38,33 @@ describe('public API types', () => {
       <Button size="xl">no</Button>
       {/* @ts-expect-error not an icon in the curated set */}
       <Button icon="not-an-icon">no</Button>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("constrains a Token's colour to a hue on the ramp", () => {
+    <>
+      <Token color="fuschia" size="lg">ok</Token>
+      {/* @ts-expect-error the colour axis names a hue, not an emphasis */}
+      <Token color="primary">no</Token>
+      {/* @ts-expect-error and not an arbitrary one either */}
+      <Token color="magenta">no</Token>
+      {/* @ts-expect-error not a size */}
+      <Token size="xl">no</Token>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('lets a Token be a link and removable at once, and points the ref at what renders', () => {
+    <>
+      {/* Both together is the case 0006 D4 decided to support rather than
+          forbid — the anchor shrinks to the label and the button sits beside
+          it. This asserts the type does not refuse it. */}
+      <Token href="/tags/design" onRemove={() => {}}>Design</Token>
+      <Token href="/tags/design" ref={createRef<HTMLAnchorElement>()}>Design</Token>
+      <Token onRemove={() => {}} ref={createRef<HTMLSpanElement>()}>Design</Token>
+      {/* @ts-expect-error a link-only Token renders an anchor, not a span */}
+      <Token href="/tags/design" ref={createRef<HTMLSpanElement>()}>Design</Token>
     </>;
     expect(true).toBe(true);
   });

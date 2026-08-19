@@ -87,3 +87,43 @@ export const ghostButtonSet = (lightOrDark: string) => {
 
   return toColorTokens(colors);
 }
+
+/**
+ * The hues a Token can be coloured with, and the order they are generated in.
+ *
+ * A Token's colour carries meaning rather than emphasis — a red token is not a
+ * more important token, it is a different kind of thing — so `color` names a
+ * hue instead of reusing the button vocabulary. Decided in
+ * apps/docs/decisions/0006-token.html (D2).
+ */
+export const TOKEN_HUES = [
+  'warm', 'cool', 'blue', 'teal', 'green', 'lime',
+  'yellow', 'orange', 'red', 'fuschia', 'purple', 'gray'
+] as const;
+
+/**
+ * One Token's soft fill, for one hue in one theme.
+ *
+ * Three tokens rather than a button set's six: a Token is a rendered value, not
+ * a control, so there is no active or disabled state to paint (0006 D3 shipped
+ * a single visual weight). `hover-bg` is one step in on the ramp and belongs to
+ * the interactive parts only — the whole-pill link takes it as a fill, and the
+ * remove button takes it behind itself (0006 D4).
+ */
+export const tokenSet = (c: string, lightOrDark: string) => {
+  const colors: Record<string, string> = (lightOrDark == 'light') ? {
+    'base-bg': `{color.${c}.100}`,
+    'hover-bg': `{color.${c}.150}`,
+    'text': `{color.${c}.550}`
+  } : {
+    'base-bg': `{color.${c}.650}`,
+    'hover-bg': `{color.${c}.600}`,
+    'text': `{color.${c}.200}`
+  };
+
+  return toColorTokens(colors);
+}
+
+/** Every hue's set, keyed by hue name. */
+export const tokenSets = (lightOrDark: string) =>
+  Object.fromEntries(TOKEN_HUES.map((hue) => [hue, tokenSet(hue, lightOrDark)]));

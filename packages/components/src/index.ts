@@ -17,6 +17,8 @@ export { IconButton } from './iconbutton';
 export type { IconButtonProps } from './iconbutton';
 export { Input } from './input';
 export type { InputProps, InputSize } from './input';
+export { Token } from './token';
+export type { TokenProps, TokenColor, TokenSize } from './token';
 export { Slider } from './slider';
 export type { SliderProps, SliderSize } from './slider';
 export { Typography } from './typography';

@@ -1,0 +1,2063 @@
+<title>0006 &middot; Token</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---------------------------------------------------------------
+     Specimen palette &mdash; real Jig token values, copied out of
+     packages/styles/dist/tokens.css and the primitive ramps in
+     packages/tokens/src/primitives/. Scoped to .jig so the document's
+     own chrome is untouched. Specimens use the document's system sans
+     rather than Work Sans, which cannot be embedded in a file:// page.
+     --------------------------------------------------------------- */
+
+  .jig {
+    /* spacing ramp &mdash; 1.618, rem */
+    --j-sp-100: 0.17rem;
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+
+    /* type scale &mdash; 1.33, rem */
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+
+    --j-rad: 4.3px;      /* radius.400 */
+    --j-rad-sm: 2.7px;   /* radius.300 */
+
+    /* size.control.* as shipped */
+    --j-ctrl-sm: 1.69rem;
+    --j-ctrl-md: 2.41rem;
+    --j-ctrl-lg: 2.65rem;
+
+    /* size.token.* as proposed in D1 */
+    --j-tok-sm: 1.23rem;
+    --j-tok-md: 1.95rem;
+    --j-tok-lg: 2.19rem;
+
+    /* the ramp one step down, for D1 option C */
+    --j-tok-step-sm: 1.23rem;
+    --j-tok-step-md: 1.69rem;
+    --j-tok-step-lg: 2.41rem;
+
+    /* color.control.* &mdash; light */
+    --j-ctrl-bg: #ffffff;
+    --j-ctrl-bd: #d3d0cb;
+    --j-ctrl-tx: #34312a;
+    --j-ctrl-ph: #838383;
+    --j-focus: #000000;
+    --j-ghost-hover: rgba(52, 49, 42, 0.10);
+
+    /* proposed color.token.* &mdash; soft, light */
+    --j-neutral-bg: #e7e5e1;  --j-neutral-tx: #34312a;  --j-neutral-bd: #c2bfba;
+    /* hover-bg, one ramp step in - {hue}.150 light, {hue}.600 dark */
+    --j-hov-neutral: #dddbd6; --j-hov-accent: #c3deff; --j-hov-success: #b3f9b4;
+    --j-hov-warning: #ffe28d; --j-hov-danger: #ffcec6;
+    --j-accent-bg:  #d4e8ff;  --j-accent-tx:  #0136a0;  --j-accent-bd:  #95c3ff;
+    --j-danger-bg:  #ffddd7;  --j-danger-tx:  #820114;  --j-danger-bd:  #ffa499;
+    --j-success-bg: #ceffca;  --j-success-tx: #015433;  --j-success-bd: #74e48a;
+    --j-warning-bg: #ffefbc;  --j-warning-tx: #5b4101;  --j-warning-bd: #efc238;
+
+    /* color.button.* &mdash; light, for the reuse option */
+    --j-btn-primary-bg:   #1563de; --j-btn-primary-tx:   #dbecff;
+    --j-btn-secondary-bg: #6f6c66; --j-btn-secondary-tx: #eceae6;
+    --j-btn-danger-bg:    #ca0c23; --j-btn-danger-tx:    #ffe3de;
+
+    /* solid fills, for the emphasis option */
+    --j-neutral-solid-bg: #6f6c66; --j-neutral-solid-tx: #eceae6;
+    --j-accent-solid-bg:  #1563de; --j-accent-solid-tx:  #dbecff;
+    --j-danger-solid-bg:  #ca0c23; --j-danger-solid-tx:  #ffe3de;
+    --j-success-solid-bg: #04874c; --j-success-solid-tx: #deffd9;
+    --j-warning-solid-bg: #8e6a03; --j-warning-solid-tx: #fff4ce;
+
+    /* the full hue set, for the categorical option &mdash; h.100 / h.550 / h.250 */
+    --j-h-warm-bg:    #e7e5e1; --j-h-warm-tx:    #46433d;
+    --j-h-cool-bg:    #dfe6f2; --j-h-cool-tx:    #3a4355;
+    --j-h-blue-bg:    #d4e8ff; --j-h-blue-tx:    #0136a0;
+    --j-h-teal-bg:    #d1f7ff; --j-h-teal-tx:    #014f5e;
+    --j-h-green-bg:   #ceffca; --j-h-green-tx:   #015433;
+    --j-h-lime-bg:    #ddff94; --j-h-lime-tx:    #444b00;
+    --j-h-yellow-bg:  #ffefbc; --j-h-yellow-tx:  #5b4101;
+    --j-h-orange-bg:  #ffdfc1; --j-h-orange-tx:  #702c01;
+    --j-h-red-bg:     #ffddd7; --j-h-red-tx:     #820114;
+    --j-h-fuschia-bg: #ffd9ee; --j-h-fuschia-tx: #6a027e;
+    --j-h-purple-bg:  #e8e0ff; --j-h-purple-tx:  #4803ad;
+    --j-h-gray-bg:    #e5e5e5; --j-h-gray-tx:    #434343;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-ctrl-bg: #313131;
+      --j-ctrl-bd: #565656;
+      --j-ctrl-tx: #e5e5e5;
+      --j-ctrl-ph: #afafaf;
+      --j-focus: #ffffff;
+      --j-ghost-hover: rgba(229, 229, 229, 0.14);
+
+      --j-neutral-bg: #434343;  --j-neutral-tx: #e5e5e5;  --j-neutral-bd: #6c6c6c;
+      --j-hov-neutral: #565656; --j-hov-accent: #002281; --j-hov-success: #013e26;
+      --j-hov-warning: #442f00; --j-hov-danger: #62010e;
+      --j-accent-bg:  #01126c;  --j-accent-tx:  #b2d4ff;  --j-accent-bd:  #002281;
+      --j-danger-bg:  #4b0109;  --j-danger-tx:  #ffbeb5;  --j-danger-bd:  #62010e;
+      --j-success-bg: #002e1c;  --j-success-tx: #94f49e;  --j-success-bd: #013e26;
+      --j-warning-bg: #332200;  --j-warning-tx: #ffd555;  --j-warning-bd: #442f00;
+
+      --j-btn-primary-bg:   #024ac0; --j-btn-primary-tx:   #d4e8ff;
+      --j-btn-secondary-bg: #565656; --j-btn-secondary-tx: #e5e5e5;
+      --j-btn-danger-bg:    #a4001a; --j-btn-danger-tx:    #ffddd7;
+
+      --j-neutral-solid-bg: #565656; --j-neutral-solid-tx: #e5e5e5;
+      --j-accent-solid-bg:  #024ac0; --j-accent-solid-tx:  #d4e8ff;
+      --j-danger-solid-bg:  #a4001a; --j-danger-solid-tx:  #ffddd7;
+      --j-success-solid-bg: #006c3f; --j-success-solid-tx: #ceffca;
+      --j-warning-solid-bg: #735402; --j-warning-solid-tx: #ffefbc;
+
+      --j-h-warm-bg:    #27241e; --j-h-warm-tx:    #d3d0cb;
+      --j-h-cool-bg:    #1b2436; --j-h-cool-tx:    #c9d1df;
+      --j-h-blue-bg:    #01126c; --j-h-blue-tx:    #b2d4ff;
+      --j-h-teal-bg:    #002b34; --j-h-teal-tx:    #88ebff;
+      --j-h-green-bg:   #002e1c; --j-h-green-tx:   #94f49e;
+      --j-h-lime-bg:    #252800; --j-h-lime-tx:    #c4ed07;
+      --j-h-yellow-bg:  #332200; --j-h-yellow-tx:  #ffd555;
+      --j-h-orange-bg:  #421300; --j-h-orange-tx:  #ffc390;
+      --j-h-red-bg:     #4b0109; --j-h-red-tx:     #ffbeb5;
+      --j-h-fuschia-bg: #39014e; --j-h-fuschia-tx: #ffb6e8;
+      --j-h-purple-bg:  #250168; --j-h-purple-tx:  #d4c7ff;
+      --j-h-gray-bg:    #242424; --j-h-gray-tx:    #d0d0d0;
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-ctrl-bg: #313131;
+    --j-ctrl-bd: #565656;
+    --j-ctrl-tx: #e5e5e5;
+    --j-ctrl-ph: #afafaf;
+    --j-focus: #ffffff;
+    --j-ghost-hover: rgba(229, 229, 229, 0.14);
+
+    --j-neutral-bg: #434343;  --j-neutral-tx: #e5e5e5;  --j-neutral-bd: #6c6c6c;
+    --j-hov-neutral: #565656; --j-hov-accent: #002281; --j-hov-success: #013e26;
+    --j-hov-warning: #442f00; --j-hov-danger: #62010e;
+    --j-accent-bg:  #01126c;  --j-accent-tx:  #b2d4ff;  --j-accent-bd:  #002281;
+    --j-danger-bg:  #4b0109;  --j-danger-tx:  #ffbeb5;  --j-danger-bd:  #62010e;
+    --j-success-bg: #002e1c;  --j-success-tx: #94f49e;  --j-success-bd: #013e26;
+    --j-warning-bg: #332200;  --j-warning-tx: #ffd555;  --j-warning-bd: #442f00;
+
+    --j-btn-primary-bg:   #024ac0; --j-btn-primary-tx:   #d4e8ff;
+    --j-btn-secondary-bg: #565656; --j-btn-secondary-tx: #e5e5e5;
+    --j-btn-danger-bg:    #a4001a; --j-btn-danger-tx:    #ffddd7;
+
+    --j-neutral-solid-bg: #565656; --j-neutral-solid-tx: #e5e5e5;
+    --j-accent-solid-bg:  #024ac0; --j-accent-solid-tx:  #d4e8ff;
+    --j-danger-solid-bg:  #a4001a; --j-danger-solid-tx:  #ffddd7;
+    --j-success-solid-bg: #006c3f; --j-success-solid-tx: #ceffca;
+    --j-warning-solid-bg: #735402; --j-warning-solid-tx: #ffefbc;
+
+    --j-h-warm-bg:    #27241e; --j-h-warm-tx:    #d3d0cb;
+    --j-h-cool-bg:    #1b2436; --j-h-cool-tx:    #c9d1df;
+    --j-h-blue-bg:    #01126c; --j-h-blue-tx:    #b2d4ff;
+    --j-h-teal-bg:    #002b34; --j-h-teal-tx:    #88ebff;
+    --j-h-green-bg:   #002e1c; --j-h-green-tx:   #94f49e;
+    --j-h-lime-bg:    #252800; --j-h-lime-tx:    #c4ed07;
+    --j-h-yellow-bg:  #332200; --j-h-yellow-tx:  #ffd555;
+    --j-h-orange-bg:  #421300; --j-h-orange-tx:  #ffc390;
+    --j-h-red-bg:     #4b0109; --j-h-red-tx:     #ffbeb5;
+    --j-h-fuschia-bg: #39014e; --j-h-fuschia-tx: #ffb6e8;
+    --j-h-purple-bg:  #250168; --j-h-purple-tx:  #d4c7ff;
+    --j-h-gray-bg:    #242424; --j-h-gray-tx:    #d0d0d0;
+  }
+
+  /* ---- the Token itself, as proposed ---- */
+
+  .jig .tk {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    gap: var(--j-sp-200);
+    height: var(--j-tok-md);
+    padding: 0 var(--j-sp-400);
+    border: 1px solid transparent;
+    border-radius: var(--j-rad);
+    font-family: var(--sans);
+    font-size: var(--j-ts-200);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: nowrap;
+    max-width: 100%;
+    text-decoration: none;
+    background: var(--j-neutral-bg);
+    color: var(--j-neutral-tx);
+  }
+
+  .jig a.tk,
+  .jig .tk a { color: inherit; text-decoration: none; }
+  /* Decided in D4's note: a link token must show a hover state. The whole-pill
+     link takes the fill; the inner label link underlines, because only part of
+     the pill is the anchor. */
+  .jig a.tk:hover,
+  .jig a.tk.is-hover { background: var(--j-hov); }
+  .jig .tk a.tk-label:hover,
+  .jig .tk a.tk-label.is-hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .jig .tk .lbl { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .jig .tk > svg { width: 1.15em; height: 1.15em; flex: none; fill: currentColor; }
+
+  .jig .tk-sm { height: var(--j-tok-sm); font-size: var(--j-ts-100); padding: 0 var(--j-sp-300); gap: var(--j-sp-100); }
+  .jig .tk-lg { height: var(--j-tok-lg); font-size: var(--j-ts-300); }
+
+  .jig .c-neutral { background: var(--j-neutral-bg); color: var(--j-neutral-tx); --j-hov: var(--j-hov-neutral); }
+  .jig .c-accent  { background: var(--j-accent-bg);  color: var(--j-accent-tx);  --j-hov: var(--j-hov-accent); }
+  .jig .c-danger  { background: var(--j-danger-bg);  color: var(--j-danger-tx);  --j-hov: var(--j-hov-danger); }
+  .jig .c-success { background: var(--j-success-bg); color: var(--j-success-tx); --j-hov: var(--j-hov-success); }
+  .jig .c-warning { background: var(--j-warning-bg); color: var(--j-warning-tx); --j-hov: var(--j-hov-warning); }
+
+  .jig .e-outline { background: transparent; }
+  .jig .e-outline.c-neutral { border-color: var(--j-neutral-bd); }
+  .jig .e-outline.c-accent  { border-color: var(--j-accent-bd); }
+  .jig .e-outline.c-danger  { border-color: var(--j-danger-bd); }
+  .jig .e-outline.c-success { border-color: var(--j-success-bd); }
+  .jig .e-outline.c-warning { border-color: var(--j-warning-bd); }
+
+  .jig .e-solid.c-neutral { background: var(--j-neutral-solid-bg); color: var(--j-neutral-solid-tx); }
+  .jig .e-solid.c-accent  { background: var(--j-accent-solid-bg);  color: var(--j-accent-solid-tx); }
+  .jig .e-solid.c-danger  { background: var(--j-danger-solid-bg);  color: var(--j-danger-solid-tx); }
+  .jig .e-solid.c-success { background: var(--j-success-solid-bg); color: var(--j-success-solid-tx); }
+  .jig .e-solid.c-warning { background: var(--j-warning-solid-bg); color: var(--j-warning-solid-tx); }
+
+  .jig .v-primary   { background: var(--j-btn-primary-bg);   color: var(--j-btn-primary-tx); }
+  .jig .v-secondary { background: var(--j-btn-secondary-bg); color: var(--j-btn-secondary-tx); }
+  .jig .v-danger    { background: var(--j-btn-danger-bg);    color: var(--j-btn-danger-tx); }
+  .jig .v-ghost     { background: transparent; color: var(--j-ctrl-tx); }
+
+  /* Overrides the document's global button styling, which would otherwise
+     make the remove control uppercase mono with a border. */
+  /* Decided in D4's note: the hit area runs to the pill's top, right and bottom
+     edges. `align-self: stretch` with a -1px block margin clears the transparent
+     border; the negative inline-end margin cancels the pill's own padding, which
+     the button re-pays as its own, so the glyph does not move. */
+  .jig .tk-x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    box-sizing: content-box;
+    width: 1.15em;
+    flex: none;
+    padding: 0 var(--j-sp-400) 0 var(--j-sp-200);
+    margin: -1px calc(var(--j-sp-400) * -1) -1px 0;
+    border: none;
+    border-radius: 0 var(--j-rad) var(--j-rad) 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    cursor: pointer;
+  }
+
+  .jig .tk-sm .tk-x { padding: 0 var(--j-sp-300) 0 var(--j-sp-100); margin-right: calc(var(--j-sp-300) * -1); }
+
+  .jig .tk-x:hover,
+  .jig .tk-x.is-hover { background: var(--j-hov); color: inherit; border-color: transparent; }
+
+  /* Paints the hit area so a static specimen can show its extent. */
+  .jig .tk-x.reveal { background: var(--gate-wash); box-shadow: inset 0 0 0 1px var(--gate); }
+  .jig .tk-x:focus-visible { outline: 2px solid var(--j-focus); outline-offset: 2px; }
+  .jig .tk-x svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+
+  .jig .tk-label:focus-visible { outline: 2px solid var(--j-focus); outline-offset: 2px; border-radius: 1px; }
+  .jig .tk:focus-visible { outline: 2px solid var(--j-focus); outline-offset: 2px; }
+
+  /* ---- a mock text field, matching input.css.ts exactly ---- */
+
+  .jig .fld {
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-200);
+    box-sizing: border-box;
+    height: var(--j-ctrl-md);
+    padding: 0 var(--j-sp-400);
+    min-width: 0;
+    background: var(--j-ctrl-bg);
+    border: 1px solid var(--j-ctrl-bd);
+    border-radius: var(--j-rad);
+    font-family: var(--sans);
+    font-size: var(--j-ts-300);
+    line-height: 1;
+    color: var(--j-ctrl-tx);
+  }
+
+  .jig .fld-sm { height: var(--j-ctrl-sm); font-size: var(--j-ts-200); padding: 0 var(--j-sp-300); }
+  .jig .fld-lg { height: var(--j-ctrl-lg); font-size: var(--j-ts-400); }
+  .jig .fld .ph { color: var(--j-ctrl-ph); }
+  .jig .fld .caret { width: 1px; height: 1.2em; background: var(--j-ctrl-tx); flex: none; }
+
+  .jig .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--j-sp-300); }
+  .jig .col { display: flex; flex-direction: column; align-items: flex-start; gap: 0.55rem; width: 100%; }
+
+  .meas {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .meas b { color: var(--ink-2); font-weight: 600; }
+  .meas .no { color: var(--no); }
+  .meas .ok { color: var(--ok); }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0006</p>
+    <h1>Token</h1>
+    <p class="standfirst">
+      A small labelled pill &mdash; a chip &mdash; that carries a value: a filter, a tag,
+      a selected entry in a multi-value field. Hand-rolled, because Base UI 1.7.0 ships
+      no chip that works outside a <code>Combobox</code>. The interesting part is that it
+      has to nest inside a text field, which turns "how tall is it" into a question about
+      the token layer.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-18</li>
+      <li>decided 2026-08-18</li>
+      <li>built 2026-08-18</li>
+      <li>4 decisions</li>
+      <li>builds on <a href="0002-text-input.html">0002</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Nothing in the system today is a static labelled value. <code>Button</code> and
+      <code>ToggleButton</code> are actions; <code>Input</code> is a field. A Token is
+      neither &mdash; it is a rendered value that may optionally link somewhere or be
+      dismissed. That makes it mostly a styling problem, with one hard constraint
+      attached: it has to sit <em>inside</em> a text field with a stated 3px of air
+      around it.
+    </p>
+    <p>
+      That constraint lands on the token layer rather than on the component.
+      <code>0002 D1</code> established <code>size.control.{sm,md,lg}</code> because a
+      bordered control cannot derive its height from padding the way
+      <code>Button</code> does. A Token nested in that control inherits the same
+      problem one level down: its height is the field's height minus the field's
+      border minus the air. Every term in that subtraction is already a token.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <svg viewBox="0 0 760 215" role="img" aria-label="Cross-section of a medium Input with a Token nested inside it, drawn at four times vertical scale. The 38.56 pixel field has a 1 pixel border, then 2.68 pixels of buffer, then the 31.2 pixel token, then 2.68 pixels of buffer and the lower border.">
+          <text x="30" y="18" font-size="10" fill="var(--muted)">1px border &mdash; color.control.border</text>
+          <line x1="30" y1="22" x2="30" y2="30" stroke="var(--line-2)" stroke-width="1"/>
+
+          <rect x="32" y="32" width="396" height="150.24" rx="17.2"
+                fill="var(--surface)" stroke="var(--line-2)" stroke-width="4"/>
+
+          <rect x="50" y="34" width="200" height="10.72" fill="var(--gate-wash)"/>
+          <rect x="50" y="169.52" width="200" height="10.72" fill="var(--gate-wash)"/>
+
+          <rect x="50" y="44.72" width="200" height="124.8" rx="17.2" fill="var(--accent-wash)"/>
+          <text x="72" y="112" font-size="13" fill="var(--accent)" font-family="var(--sans)">Design</text>
+
+          <text x="262" y="43" font-size="10" fill="var(--gate)">2.68px buffer &mdash; spacing.100</text>
+          <text x="262" y="178" font-size="10" fill="var(--gate)">2.68px buffer &mdash; spacing.100</text>
+
+          <line x1="460" y1="30" x2="460" y2="184.24" stroke="var(--line-2)" stroke-width="1"/>
+          <line x1="455" y1="30" x2="465" y2="30" stroke="var(--line-2)" stroke-width="1"/>
+          <line x1="455" y1="184.24" x2="465" y2="184.24" stroke="var(--line-2)" stroke-width="1"/>
+          <line x1="428" y1="30" x2="460" y2="30" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3"/>
+          <line x1="428" y1="184.24" x2="460" y2="184.24" stroke="var(--line)" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="472" y="104" font-size="11" fill="var(--ink-2)">size.control.md</text>
+          <text x="472" y="118" font-size="11" fill="var(--muted)">2.41rem &mdash; 38.56px</text>
+
+          <line x1="640" y1="44.72" x2="640" y2="169.52" stroke="var(--accent)" stroke-width="1"/>
+          <line x1="635" y1="44.72" x2="645" y2="44.72" stroke="var(--accent)" stroke-width="1"/>
+          <line x1="635" y1="169.52" x2="645" y2="169.52" stroke="var(--accent)" stroke-width="1"/>
+          <text x="652" y="104" font-size="11" fill="var(--ink-2)">size.token.md</text>
+          <text x="652" y="118" font-size="11" fill="var(--muted)">1.95rem &mdash; 31.2px</text>
+
+          <text x="30" y="205" font-size="10" fill="var(--muted)">vertical scale 4&times; &middot; root font-size 16px</text>
+        </svg>
+      </div>
+      <figcaption>
+        The arithmetic, drawn. The requested 3px turns out to be
+        <code>spacing.100</code> &mdash; <code>0.17rem</code>, 2.72px &mdash; to within a
+        third of a pixel, so the buffer can come off the ratio ramp instead of being an
+        off-ramp constant. Which layer performs the subtraction is D1.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr><th>size</th><th>field height</th><th>&minus; 2 borders</th><th>&minus; 2 &times; spacing.100</th><th>token height</th><th>buffer</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>sm</td><td>1.69rem / 27.04px</td><td>25.04px</td><td>19.6px</td><td>1.23rem / 19.68px</td><td>2.68px</td></tr>
+            <tr><td>md</td><td>2.41rem / 38.56px</td><td>36.56px</td><td>31.12px</td><td>1.95rem / 31.2px</td><td>2.68px</td></tr>
+            <tr><td>lg</td><td>2.65rem / 42.4px</td><td>40.4px</td><td>34.96px</td><td>2.19rem / 35.04px</td><td>2.68px</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        Rounding to two decimal places &mdash; which is what
+        <code>semantics/size.ts</code> already does &mdash; costs 0.04px of buffer, so all
+        three sizes land on the same 2.68px rather than drifting apart. Values read from
+        <code>packages/styles/dist/tokens.css</code>.
+        <br><br>
+        <b>As built:</b> that rounding is a property of the token-layer option, which is
+        not the one D1 chose. A <code>calc()</code> does not round, so the shipped
+        heights are 19.6 / 31.12 / 34.96px and the buffer is the full
+        <code>spacing.100</code> &mdash; 2.72px, marginally closer to the 3px asked for.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li><strong>Hand-rolled, not Base UI.</strong> 0001&nbsp;D2's behaviour test: a Token on its own coordinates nothing. Base UI 1.7.0 ships no <code>Chip</code> or <code>Tag</code> &mdash; its only chip parts are <code>Combobox.Chip</code> and <code>Combobox.ChipRemove</code>, and both open with <code>useComboboxRootContext()</code>, which <em>throws</em> outside a <code>Combobox.Root</code>. Checked in the installed <code>combobox/root/ComboboxRootContext.js</code>.</li>
+      <li><strong>The recipe is what gets shared, not the component.</strong> When Combobox lands, its chips render Base UI's <code>Combobox.Chip</code> carrying <code>token.css.ts</code>'s class &mdash; exactly the move <code>IconButton</code> and <code>ToggleButton</code> make against <code>button.css.ts</code>. That keeps the roving-<code>tabindex</code> behaviour with Base UI and the pixels with Jig.</li>
+      <li><strong><code>size</code> is <code>sm | md | lg</code></strong>, matching <code>ButtonSize</code> and <code>InputSize</code>. What the values <em>are</em> is D1; the vocabulary is not open.</li>
+      <li><strong>No <code>as</code> prop.</strong> Polymorphism stays on layout and typography components via <code>polymorphic.ts</code>. <code>href</code> swapping the element is a fixed two-way branch the component owns, not a caller-chosen tag.</li>
+      <li><strong>No spacing props.</strong> Tokens get their gaps from the parent &mdash; typically a <code>Stack direction="row" wrap</code>. Width, including <code>max-width</code> for truncation, goes through <code>style</code>.</li>
+      <li><strong>Labels truncate, they do not wrap.</strong> <code>white-space: nowrap</code> with <code>text-overflow: ellipsis</code> on the label span, unconditionally &mdash; a two-line token cannot fit a field of fixed height. The caller caps the width.</li>
+      <li><strong><code>icon</code> is an <code>IconName</code> from the curated set</strong>, sized by the component in <code>em</code> the way <code>buttonIconSize</code> is, and decorative &mdash; the label names the token, so the icon stays <code>aria-hidden</code>. Custom artwork goes through <code>Icon</code>'s own <code>children</code> escape hatch, not through Token.</li>
+      <li><strong>The remove control uses the <code>x</code> icon</strong>, which is already in the curated set (<code>src/icon/generated/x.ts</code>).</li>
+      <li><strong>The remove button's accessible name is derived.</strong> <code>Remove {label}</code> when <code>children</code> is a string, with a <code>removeLabel</code> prop to override and to cover the case where it is not. Follows <code>IconButton</code>'s rule that a control with no visible text of its own must carry a name &mdash; but unlike <code>IconButton</code> there <em>is</em> a visible label to borrow, so it is not required of the caller.</li>
+      <li><strong>Focus is <code>focusRing</code>, not a highlighted border.</strong> 0002&nbsp;D4's border rule is scoped to field-like controls that match <code>:focus-visible</code> on click. Token's interactive parts are a link and a button, which do not.</li>
+      <li><strong>Corner radius is <code>radius.400</code></strong> (4.3px), the same value <code>Button</code> and <code>Input</code> use, so a token inside a field echoes the field's corner rather than introducing a pill shape the system has nowhere else.</li>
+      <li><strong>Root-only theming</strong>, and the standard file set: <code>token.tsx</code>, <code>token.css.ts</code>, <code>token.stories.tsx</code>, <code>token.test.tsx</code>, <code>index.ts</code>, plus the export from <code>src/index.ts</code>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Two are about the token layer, two about the API. Accept one option per decision, or
+      reject the set and leave a note.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="control-fit" data-title="Where the field-fit height lives">
+    <p class="decision-id">D1 &middot; control-fit</p>
+    <h2>Where the field-fit height lives</h2>
+    <p>
+      "Fits inside a text field with a 3px buffer" is a number derived from three
+      existing tokens. The question is which layer performs the subtraction: the token
+      layer, so the result is a named value other components can reach for; or the
+      component's stylesheet, so nothing new enters the token file. A third answer avoids
+      the subtraction entirely by reusing the ramp one step down &mdash; cheapest, but it
+      does not hit the brief.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="derived-token-ramp" data-label="New size.token ramp">
+        <div class="option-head">
+          <h3>New <code>size.token</code> ramp</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">md token in an md field &mdash; 2.68px each side</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="col">
+              <div class="fld" style="width:min(100%,300px)">
+                <span class="tk c-accent"><span class="lbl">Design</span></span>
+                <span class="tk c-neutral"><span class="lbl">Research</span></span>
+                <span class="caret"></span>
+              </div>
+              <p class="meas"><b>1.95rem</b> &middot; 31.2px in 36.56px &middot; buffer <span class="ok">2.68px</span></p>
+            </div>
+          </div>
+<pre class="tree" style="margin-top:1rem">semantics/size.ts
+
+<i>// same helper shape as size.control</i>
+const nested = (ctrl, pad) =&gt;
+  round(rem(ctrl)
+        - <b>2 * BORDER</b>
+        - <b>2 * rem(spacing[pad])</b>)
+
+token.sm = nested(control.sm, 100)
+token.md = nested(control.md, 100)
+token.lg = nested(control.lg, 100)
+
+<i>// 1.23rem   1.95rem   2.19rem</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The relationship is written down where the other derived heights live, next to the comment in <code>semantics/size.ts</code> that already explains why <code>size.control</code> exists. Retuning the control ramp moves the token ramp with it, automatically.</li>
+          <li class="pro">The 3px becomes <code>spacing.100</code> &mdash; a ramp value, not a constant, so nothing off-ramp enters the system.</li>
+          <li class="pro">Reachable by name from the multi-value field, from Combobox's chip row, and from anything else that later needs "the thing that nests in a control".</li>
+          <li class="con">Three new semantic tokens shipped for one component, before a second consumer exists to justify them.</li>
+          <li class="con">Bakes a 1px border width into the token layer, which is currently only ever written in <code>input.css.ts</code>.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="component-calc" data-label="calc() in token.css.ts">
+        <div class="option-head">
+          <h3><code>calc()</code> in <code>token.css.ts</code></h3>
+        </div>
+
+        <p class="specimen-label">Identical pixels &mdash; the fork is where the number lives</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="col">
+              <div class="fld" style="width:min(100%,300px)">
+                <span class="tk c-accent"><span class="lbl">Design</span></span>
+                <span class="tk c-neutral"><span class="lbl">Research</span></span>
+                <span class="caret"></span>
+              </div>
+              <p class="meas"><b>calc()</b> &middot; 31.2px in 36.56px &middot; buffer <span class="ok">2.68px</span></p>
+            </div>
+          </div>
+<pre class="tree" style="margin-top:1rem">token.css.ts
+
+md: {
+  height: `calc(
+    ${size.control.md}
+    - 2px
+    - 2 * ${spacing[100]}
+  )`,
+}
+
+<i>// no change to packages/tokens</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No new tokens, and no border width leaking into the token layer. The subtraction stays where the border it subtracts is a styling fact.</li>
+          <li class="pro">Resolves in the browser, so it tracks a themed override of <code>--size-control-md</code> that a build-time constant would miss.</li>
+          <li class="con">The relationship is invisible from the token package &mdash; someone retuning <code>size.control</code> has no signal that a second ramp depends on it.</li>
+          <li class="con">The next component that nests in a field copies the <code>calc()</code> rather than importing a value, which is how two subtly different heights start.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="one-step-down" data-label="Reuse the ramp one step down">
+        <div class="option-head">
+          <h3>Reuse the ramp, one step down</h3>
+        </div>
+
+        <p class="specimen-label">Token md renders at <code>size.control.sm</code></p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="col">
+              <div class="fld" style="width:min(100%,300px)">
+                <span class="tk c-accent" style="height:var(--j-tok-step-md)"><span class="lbl">Design</span></span>
+                <span class="tk c-neutral" style="height:var(--j-tok-step-md)"><span class="lbl">Research</span></span>
+                <span class="caret"></span>
+              </div>
+              <p class="meas"><b>1.69rem</b> &middot; 27.04px in 36.56px &middot; buffer <span class="no">4.76px</span></p>
+            </div>
+          </div>
+<pre class="tree" style="margin-top:1rem">token.css.ts
+
+sm: { height: ??? }
+  <i>// nothing below control.sm</i>
+md: { height: size.control.sm }
+  <i>// 4.76px buffer</i>
+lg: { height: size.control.md }
+  <i>// 4.76px buffer</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Zero new values anywhere, and a token is guaranteed to be a height the system already renders.</li>
+          <li class="con">Misses the brief by 1.8px a side, and the miss is uneven because the control ramp is uneven &mdash; <code>md</code> and <code>lg</code> share a padding step, so shifting by one puts <code>lg</code>'s buffer somewhere else again.</li>
+          <li class="con">There is no step below <code>control.sm</code>, so <code>Token size="sm"</code> has nothing to point at.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-18</span>
+      <b><code>calc()</code> in <code>token.css.ts</code>.</b> No new semantic tokens.
+      The height is composed in the component's own stylesheet from
+      <code>size.control.*</code>, a literal <code>2px</code> for the two borders, and
+      <code>spacing[100]</code>. Pixels are identical to the derived ramp &mdash;
+      1.95rem at <code>md</code>, 2.68px of buffer &mdash; and the 3px still resolves to
+      a value on the ratio ramp rather than a constant.
+      <p>
+        This accepts the cost the option names: <code>semantics/size.ts</code> carries no
+        signal that a second height depends on <code>size.control</code>. Build
+        obligation &mdash; extend the comment already in that file to say that
+        <code>token.css.ts</code> subtracts from these values, so retuning the control
+        ramp is known to move the token with it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="colour-vocabulary" data-title="What the color prop selects">
+    <p class="decision-id">D2 &middot; colour-vocabulary</p>
+    <h2>What the <code>color</code> prop selects</h2>
+    <p>
+      Every existing coloured component names an <em>emphasis</em>:
+      <code>primary | secondary | danger | ghost</code>. Tokens are the first thing in
+      the system where colour carries meaning rather than weight &mdash; a red token is
+      not a more important token, it is a different kind of thing. So the vocabulary is
+      genuinely open, and the three answers below differ in how much freedom they hand
+      the caller.
+    </p>
+    <p>
+      All three are semantic sets built in <code>color-light.ts</code> /
+      <code>color-dark.ts</code> from the existing hue ramps &mdash; no new primitives
+      either way.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="status-set" data-label="Five semantic statuses">
+        <div class="option-head">
+          <h3>Five semantic statuses</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Five sets under <code>color.token.*</code></p>
+        <div class="specimen">
+          <div class="jig row">
+            <span class="tk c-neutral"><span class="lbl">neutral</span></span>
+            <span class="tk c-accent"><span class="lbl">accent</span></span>
+            <span class="tk c-success"><span class="lbl">success</span></span>
+            <span class="tk c-warning"><span class="lbl">warning</span></span>
+            <span class="tk c-danger"><span class="lbl">danger</span></span>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Extends the vocabulary the system already has rather than replacing it &mdash; <code>danger</code> keeps meaning what it means on a button, and <code>accent</code> tracks <code>color.text.accent</code>.</li>
+          <li class="pro">Five sets to define, review for contrast, and keep honest in both themes. <code>success</code> and <code>warning</code> are new to the system and arrive with a use.</li>
+          <li class="pro">A caller cannot make a page of eleven-colour confetti by accident.</li>
+          <li class="con">Colour-coded categories &mdash; the actual reason people reach for chips &mdash; have to be mapped onto five buckets, or they escape into <code>className</code>.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="hue-palette" data-label="The hue ramp by name">
+        <div class="option-head">
+          <h3>The hue ramp by name</h3>
+        </div>
+
+        <p class="specimen-label">All twelve hues, soft fill at <code>{hue}.100</code> / <code>{hue}.550</code></p>
+        <div class="specimen">
+          <div class="jig row">
+            <span class="tk" style="background:var(--j-h-warm-bg);color:var(--j-h-warm-tx)"><span class="lbl">warm</span></span>
+            <span class="tk" style="background:var(--j-h-cool-bg);color:var(--j-h-cool-tx)"><span class="lbl">cool</span></span>
+            <span class="tk" style="background:var(--j-h-blue-bg);color:var(--j-h-blue-tx)"><span class="lbl">blue</span></span>
+            <span class="tk" style="background:var(--j-h-teal-bg);color:var(--j-h-teal-tx)"><span class="lbl">teal</span></span>
+            <span class="tk" style="background:var(--j-h-green-bg);color:var(--j-h-green-tx)"><span class="lbl">green</span></span>
+            <span class="tk" style="background:var(--j-h-lime-bg);color:var(--j-h-lime-tx)"><span class="lbl">lime</span></span>
+            <span class="tk" style="background:var(--j-h-yellow-bg);color:var(--j-h-yellow-tx)"><span class="lbl">yellow</span></span>
+            <span class="tk" style="background:var(--j-h-orange-bg);color:var(--j-h-orange-tx)"><span class="lbl">orange</span></span>
+            <span class="tk" style="background:var(--j-h-red-bg);color:var(--j-h-red-tx)"><span class="lbl">red</span></span>
+            <span class="tk" style="background:var(--j-h-fuschia-bg);color:var(--j-h-fuschia-tx)"><span class="lbl">fuschia</span></span>
+            <span class="tk" style="background:var(--j-h-purple-bg);color:var(--j-h-purple-tx)"><span class="lbl">purple</span></span>
+            <span class="tk" style="background:var(--j-h-gray-bg);color:var(--j-h-gray-tx)"><span class="lbl">gray</span></span>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Matches what chips are actually for: labels, categories and user-assigned colours, where "which one" matters and "how urgent" does not.</li>
+          <li class="pro">One generated <code>tokenSet(hue, theme)</code> util covers all twelve, the way <code>buttonSet</code> already covers three &mdash; the cost is a loop, not twelve hand-written sets.</li>
+          <li class="con">The first component in the system whose colour prop names a hue rather than a meaning. Restyling the palette later changes what every existing token looks like, with no semantic layer in between to absorb it.</li>
+          <li class="con">Twelve foreground/background pairs to hold to contrast in both themes, and the darker hues (lime, yellow) are the hardest.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="button-variants" data-label="Reuse the button vocabulary">
+        <div class="option-head">
+          <h3>Reuse the button vocabulary</h3>
+        </div>
+
+        <p class="specimen-label"><code>variant</code>, <code>color.button.*</code>, no new tokens at all</p>
+        <div class="specimen">
+          <div class="jig row">
+            <span class="tk v-primary"><span class="lbl">primary</span></span>
+            <span class="tk v-secondary"><span class="lbl">secondary</span></span>
+            <span class="tk v-danger"><span class="lbl">danger</span></span>
+            <span class="tk v-ghost" style="border-color:var(--j-ctrl-bd)"><span class="lbl">ghost</span></span>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Zero new tokens, and the checklist's own instruction &mdash; reuse the existing vocabulary before inventing one.</li>
+          <li class="con">The names do not mean anything here. A "primary" tag and a "secondary" tag is not a distinction anyone is trying to draw.</li>
+          <li class="con">Button fills are sized for a button. At 31px with a 12.6px label they read as four loud buttons in a row, which is the opposite of what a value chip should do &mdash; visible above.</li>
+          <li class="con">A token would then inherit button hover and active fills it has no interaction to justify.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-18</span>
+      <b>The hue ramp by name.</b> <code>color</code> takes a hue:
+      <code>warm</code>, <code>cool</code>, <code>blue</code>, <code>teal</code>,
+      <code>green</code>, <code>lime</code>, <code>yellow</code>, <code>orange</code>,
+      <code>red</code>, <code>fuschia</code>, <code>purple</code>, <code>gray</code>.
+      Generated by one <code>tokenSet(hue, theme)</code> in
+      <code>packages/tokens/src/utils.ts</code> beside <code>buttonSet</code> and
+      <code>controlSet</code>, producing
+      <code>color.token.{hue}.{base-bg, hover-bg, text}</code> &mdash; three tokens
+      across twelve hues and two themes.
+      <p>
+        Two things this settles that the option did not spell out, flagged here so they
+        can be corrected before the build rather than after:
+      </p>
+      <ul>
+        <li>The default <code>color</code> is <code>warm</code> &mdash; the system's
+        neutral family, and the one <code>color.text.primary</code> is already drawn
+        from. Not <code>gray</code>, which would read cold against every other surface.</li>
+        <li>The twelve foreground/background pairs need a contrast pass at token scale
+        before they ship. <code>lime</code> and <code>yellow</code> are the two most
+        likely to move off <code>{hue}.550</code>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="emphasis" data-title="One visual weight, or a second axis">
+    <p class="decision-id">D3 &middot; emphasis</p>
+    <h2>One visual weight, or a second axis</h2>
+    <p>
+      <code>Button</code> folds colour and weight into one prop: <code>primary</code> is
+      both "blue" and "loud". Whichever way D2 goes, a Token's colour axis carries
+      meaning, which leaves weight unclaimed &mdash; so it is either fixed by the
+      component or exposed as a second prop. The cost is multiplicative: every emphasis
+      is another full set of colour tokens.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="soft-only" data-label="Soft fill only">
+        <div class="option-head">
+          <h3>Soft fill only</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">One weight &mdash; no <code>emphasis</code> prop</p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <span class="tk c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk c-accent"><span class="lbl">In review</span></span>
+              <span class="tk c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <div class="fld" style="width:min(100%,320px)">
+              <span class="tk c-accent"><span class="lbl">Design</span></span>
+              <span class="tk c-neutral"><span class="lbl">Research</span></span>
+              <span class="caret"></span>
+            </div>
+            <p class="meas">5 colour sets &middot; 1 weight</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A token is a value, not an action &mdash; a whole row of them should sit quietly under the text they annotate, and soft fill is the only weight that does at this size.</li>
+          <li class="pro">One set of colour tokens per colour. Nothing to hold to contrast twice.</li>
+          <li class="pro">Reads correctly nested in a field, where a solid fill competes with the field's own text.</li>
+          <li class="con">No way to mark one token in a row as the selected or active one without reaching for <code>className</code>.</li>
+          <li class="con">On a coloured surface, a soft fill can lose its edge &mdash; there is no outline weight to fall back on.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="soft-and-outline" data-label="Soft and outline">
+        <div class="option-head">
+          <h3>Soft and outline</h3>
+        </div>
+
+        <p class="specimen-label"><code>emphasis="soft" | "outline"</code></p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <span class="tk c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk c-accent"><span class="lbl">In review</span></span>
+              <span class="tk c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <div class="row">
+              <span class="tk e-outline c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk e-outline c-accent"><span class="lbl">In review</span></span>
+              <span class="tk e-outline c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk e-outline c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <p class="meas">5 colour sets &middot; 2 weights &middot; + 1 border token each</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Gives "unselected vs selected" a real treatment, which filter chips need and soft-only cannot express.</li>
+          <li class="pro">Cheap: the border colour is one more token per set, and the text colour is shared.</li>
+          <li class="con">The outline weight already exists as a 1px border, which reintroduces exactly the border-vs-height arithmetic D1 spends its effort removing &mdash; <code>box-sizing: border-box</code> handles it, but the two weights must be checked against each other.</li>
+          <li class="con">A second prop on a component whose whole job is to be small.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="three-weights" data-label="Soft, solid and outline">
+        <div class="option-head">
+          <h3>Soft, solid and outline</h3>
+        </div>
+
+        <p class="specimen-label"><code>emphasis="soft" | "solid" | "outline"</code></p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <span class="tk c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk c-accent"><span class="lbl">In review</span></span>
+              <span class="tk c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <div class="row">
+              <span class="tk e-solid c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk e-solid c-accent"><span class="lbl">In review</span></span>
+              <span class="tk e-solid c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk e-solid c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <div class="row">
+              <span class="tk e-outline c-neutral"><span class="lbl">Draft</span></span>
+              <span class="tk e-outline c-accent"><span class="lbl">In review</span></span>
+              <span class="tk e-outline c-success"><span class="lbl">Shipped</span></span>
+              <span class="tk e-outline c-danger"><span class="lbl">Blocked</span></span>
+            </div>
+            <p class="meas">5 colour sets &times; 3 weights &middot; 15 combinations to hold in both themes</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Covers every treatment a chip is asked for, including a solid weight that survives on a coloured or image surface.</li>
+          <li class="con">Fifteen fill/text pairs per theme, thirty in total, each needing a contrast check &mdash; and the solid weight duplicates <code>color.button.*</code> almost exactly, at a size where the difference between them is invisible.</li>
+          <li class="con">Ships a lot of surface before a single call site asks for it. Adding a weight later is additive; removing one is not.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-18</span>
+      <b>Soft fill only.</b> No <code>emphasis</code> prop. One weight per hue, so
+      <code>tokenSet</code> stays at three tokens per hue and nothing duplicates
+      <code>color.button.*</code>. Adding a weight later is additive; this ships none
+      before a call site asks.
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="link-and-remove" data-title="Anatomy when a token is both a link and removable">
+    <p class="decision-id">D4 &middot; link-and-remove</p>
+    <h2>Anatomy when a token is both a link and removable</h2>
+    <p>
+      <code>href</code> alone is easy: the whole pill is an <code>&lt;a&gt;</code>.
+      <code>onRemove</code> alone is easy: a <code>&lt;span&gt;</code> with a
+      <code>&lt;button&gt;</code> in it. Both together is not, because
+      <code>&lt;a&gt;</code> may not contain a <code>&lt;button&gt;</code> and a
+      <code>&lt;button&gt;</code> may not contain an <code>&lt;a&gt;</code> &mdash;
+      interactive content cannot nest. Something has to give, and what gives determines
+      how many tab stops a row of tokens costs.
+    </p>
+    <p>
+      The reference point is Base UI's own answer for the same problem inside a
+      combobox: <code>Combobox.Chip</code> is a focusable <code>&lt;div&gt;</code> in a
+      roving-<code>tabindex</code> list that handles <kbd>Backspace</kbd> and
+      <kbd>Delete</kbd> itself, with <code>Combobox.ChipRemove</code> as a real
+      <code>&lt;button&gt;</code> inside it. That works because the roving is coordinated
+      by the combobox &mdash; a standalone Token has no such coordinator.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="container-parts" data-label="Container plus parts">
+        <div class="option-head">
+          <h3>Container plus parts</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">The element degrades: pill-as-link until a button needs to sit beside it</p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <a class="tk c-accent" href="#0006-token" style="text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px"><span class="lbl">Whole pill is the link</span></a>
+              <span class="tk c-neutral"><span class="lbl">Removable only</span><button type="button" class="tk-x" aria-label="Remove Removable only"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+              <span class="tk c-success"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg><a href="#0006-token" style="text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px"><span class="lbl">Both</span></a><button type="button" class="tk-x" aria-label="Remove Both"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+            </div>
+            <p class="meas">tab through the specimen &mdash; 1 stop, 1 stop, then <b>2</b></p>
+          </div>
+<pre class="tree" style="margin-top:1rem"><i>href, no onRemove &mdash; nothing nests:</i>
+<b>&lt;a class="token" href&gt;</b>&hellip;<b>&lt;/a&gt;</b>
+
+<i>onRemove, with or without href:</i>
+<b>&lt;span class="token"&gt;</b>
+  &lt;svg aria-hidden /&gt;
+  <b>&lt;a</b> class="label" href&gt;Design<b>&lt;/a&gt;</b>
+      <i>&uarr; a plain span when no href</i>
+  <b>&lt;button</b> aria-label="Remove Design"&gt;
+  <b>&lt;/button&gt;</b>
+<b>&lt;/span&gt;</b></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Valid HTML in every combination, with no prop the type system has to forbid. Both affordances are reachable by keyboard and both announce correctly.</li>
+          <li class="pro">The common cases stay optimal &mdash; a link-only token is one element and the entire pill is the hit target; only the rare both-at-once case splits.</li>
+          <li class="pro">Drops straight into <code>Combobox.Chip</code> later: Base UI's chip is a container with a remove button inside, which is this shape exactly.</li>
+          <li class="con">Two tab stops per token when both are set, so eight tokens in a field is sixteen stops. Nothing standalone can fix that &mdash; roving needs a coordinator.</li>
+          <li class="con">With <code>href</code> and <code>onRemove</code> both set, the clickable area shrinks from the pill to the label, which is a smaller target than it looks.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="mutually-exclusive" data-label="Mutually exclusive by type">
+        <div class="option-head">
+          <h3>Mutually exclusive by type</h3>
+        </div>
+
+        <p class="specimen-label">A token is a link or it is removable, never both</p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <a class="tk c-accent" href="#0006-token" style="text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px"><span class="lbl">Whole pill is the link</span></a>
+              <span class="tk c-neutral"><span class="lbl">Removable only</span><button type="button" class="tk-x" aria-label="Remove Removable only"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+            </div>
+            <p class="meas">always exactly <b>1</b> tab stop</p>
+          </div>
+<pre class="tree" style="margin-top:1rem">type TokenProps = TokenBase &amp; (
+ | { href: string; onRemove?: never }
+ | { onRemove: Fn; href?: never }
+ | { href?: never; onRemove?: never }
+)
+
+<i>&lt;Token href="/t/x" onRemove={&hellip;}&gt;</i>
+<span class="no">  ^ Types of property 'onRemove'
+    are incompatible.</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One tab stop per token, always. The whole pill is the target in both modes, which is the better pointer affordance.</li>
+          <li class="pro">The invalid-nesting problem is deleted rather than worked around.</li>
+          <li class="con">A removable link chip is a real pattern &mdash; a selected filter that links to what it filtered &mdash; and this refuses it at compile time with no escape hatch short of composing by hand.</li>
+          <li class="con">The union makes <code>TokenProps</code> awkward to spread into and to extend, and <code>api.types.test.tsx</code> has nothing else shaped like it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="roving-chip" data-label="Focusable body, Base UI's model">
+        <div class="option-head">
+          <h3>Focusable body, Base UI's model</h3>
+        </div>
+
+        <p class="specimen-label">Token body takes focus; <kbd>Backspace</kbd>/<kbd>Delete</kbd> removes</p>
+        <div class="specimen block">
+          <div class="jig col">
+            <div class="row">
+              <span class="tk c-accent" tabindex="0" role="button"><span class="lbl">Design</span><button type="button" class="tk-x" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+              <span class="tk c-neutral" tabindex="0" role="button"><span class="lbl">Research</span><button type="button" class="tk-x" tabindex="-1" aria-hidden="true"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+            </div>
+            <p class="meas">1 stop per token &middot; the &times; is pointer-only</p>
+          </div>
+<pre class="tree" style="margin-top:1rem">ComboboxChip.js &mdash; Base UI 1.7.0
+
+else if (event.key === 'Backspace'
+      || event.key === 'Delete') {
+  nextIndex =
+    getIndexAfterChipRemoval(idx, &hellip;)
+  stopEvent(event)
+  store.state.setSelectedValue(&hellip;)
+}
+
+<i>the arrow-key roving beside it
+needs chipsRef and
+setHighlightedChipIndex &mdash; context
+a standalone Token does not have</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One tab stop per token even when removable, and it is the model Combobox will bring anyway, so the two would agree.</li>
+          <li class="con">Half the model is unimplementable standalone: <kbd>Backspace</kbd> works on a single token, arrow-key movement between tokens does not, so it ships a keyboard contract that is only complete inside a component that does not exist yet.</li>
+          <li class="con">A focusable <code>&lt;span&gt;</code> with <code>role="button"</code> that is not a button, hiding a real button from the accessibility tree to avoid a second stop &mdash; pointer users get an affordance keyboard users are never told about.</li>
+          <li class="con"><code>href</code> would make it a link that also responds to <kbd>Delete</kbd>, which no APG pattern describes.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-18</span>
+      <b>Container plus parts</b>, with two refinements from the note:
+      <p>
+        &ldquo;<i>I do want to make sure the button has as big a hitbox as possible.
+        Ideally right to the edge of the Token on top, right, and bottom. Make sure a
+        link tag has a hover state.</i>&rdquo;
+      </p>
+      <p>
+        <b>The hit area.</b> The remove button is <code>align-self: stretch</code> with
+        a &minus;1px block margin to clear the transparent border, and a negative
+        inline-end margin cancelling the pill's own padding &mdash; which the button
+        re-pays as its own, so the glyph does not move while the target grows. Its
+        right-hand corners take <code>radius.400</code> to match the pill. At
+        <code>md</code> that is a 20&times;31px target instead of 18&times;18px, running
+        to three of the four edges. The left edge stays inside, because the label &mdash;
+        which may be a link &mdash; is there.
+      </p>
+      <p>
+        <b>The hover state.</b> Adds a third token per hue,
+        <code>color.token.{hue}.hover-bg</code>, one step in on the ramp:
+        <code>{hue}.150</code> in light, <code>{hue}.600</code> in dark. A whole-pill
+        link takes that fill on hover. When the anchor is only the label &mdash; the
+        <code>href</code> plus <code>onRemove</code> case &mdash; the label underlines
+        instead, because filling the whole pill would misreport what is clickable. The
+        remove button uses the same <code>hover-bg</code> behind itself alone.
+      </p>
+
+      <p class="specimen-label" style="margin:1.25rem 0 0.6rem">As decided</p>
+      <div class="specimen block" style="background:var(--surface);margin-bottom:0">
+        <div class="jig col">
+          <div class="row">
+            <span class="tk c-neutral"><span class="lbl">Hit area</span><button type="button" class="tk-x reveal" aria-label="Remove Hit area"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+            <span class="tk c-accent"><span class="lbl">Design</span><button type="button" class="tk-x is-hover" aria-label="Remove Design"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+            <a class="tk c-success is-hover" href="#0006-token"><span class="lbl">Whole pill, hovered</span></a>
+            <span class="tk c-danger"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg><a class="tk-label is-hover" href="#0006-token"><span class="lbl">Label only, hovered</span></a><button type="button" class="tk-x" aria-label="Remove Label only"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button></span>
+          </div>
+          <p class="meas">hit area shaded on the first &middot; hover states forced on the next three &middot; hover the live ones to compare</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as decided</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>a removable, iconned value</i>
+&lt;Token color="blue" icon="user" onRemove={() =&gt; drop(id)}&gt;Nate Bridi&lt;/Token&gt;
+
+<i>a link &mdash; the whole pill is the anchor, because nothing nests</i>
+&lt;Token href="/tags/design" color="teal"&gt;Design&lt;/Token&gt;
+
+<i>a row of them, spaced by the parent</i>
+&lt;Stack direction="row" wrap spacing="200"&gt;
+  {tags.map((t) =&gt; (
+    &lt;Token key={t} size="sm" onRemove={() =&gt; drop(t)}&gt;{t}&lt;/Token&gt;
+  ))}
+&lt;/Stack&gt;
+
+<b>Token</b>  children      <i>the label &mdash; truncates with an ellipsis, never wraps</i>
+       color         <i>warm | cool | blue | teal | green | lime | yellow</i>
+                     <i>| orange | red | fuschia | purple | gray   (default warm)</i>
+       size          <i>sm | md | lg  &mdash; calc() over size.control        (default md)</i>
+       icon          <i>IconName, decorative, left of the label</i>
+       href          <i>renders as &lt;a&gt;; the whole pill unless onRemove is also set</i>
+       onRemove      <i>renders the &times; button, hit area to the pill's edge</i>
+       removeLabel   <i>overrides the derived "Remove {children}"</i>
+       className style ref</pre>
+      </div>
+      <figcaption>
+        <code>ref</code> is typed to what actually renders &mdash;
+        <code>HTMLAnchorElement</code> when <code>href</code> is set without
+        <code>onRemove</code>, <code>HTMLSpanElement</code> otherwise &mdash; which
+        <code>refs.test.tsx</code> checks. That correlation is the one place D4's
+        degrading element shows up in the type.
+      </figcaption>
+    </figure>
+
+    <figure>
+      <div class="scroller">
+        <div class="jig col">
+          <div class="fld fld-sm" style="width:min(100%,340px)">
+            <span class="tk tk-sm c-accent"><span class="lbl">Design</span></span>
+            <span class="tk tk-sm c-neutral"><span class="lbl">Research</span></span>
+            <span class="ph">sm</span>
+          </div>
+          <div class="fld" style="width:min(100%,340px)">
+            <span class="tk c-accent"><span class="lbl">Design</span></span>
+            <span class="tk c-neutral"><span class="lbl">Research</span></span>
+            <span class="ph">md</span>
+          </div>
+          <div class="fld fld-lg" style="width:min(100%,340px)">
+            <span class="tk tk-lg c-accent"><span class="lbl">Design</span></span>
+            <span class="tk tk-lg c-neutral"><span class="lbl">Research</span></span>
+            <span class="ph">lg</span>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        All three sizes nested in the matching field, at true scale. Standalone &mdash; in
+        a filter bar or beside body text &mdash; a Token is just this pill with nothing
+        around it; the field is where the height comes from, not where it has to live.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A <code>disabled</code> prop.</strong> A Token is a rendered value, not a control with a state to suppress. "Cannot be removed" is expressed by omitting <code>onRemove</code>, "cannot be followed" by omitting <code>href</code>. If a multi-value field later needs to grey its whole chip row, that is the field's disabled state reaching in, and it can be proposed then.</li>
+      <li><strong><code>onClick</code> as an alternative to <code>href</code>.</strong> A pill that toggles rather than navigates is <code>ToggleButton</code>, which already exists and already has the pressed vocabulary. Two components should not both own that.</li>
+      <li><strong>A <code>TokenGroup</code>, wrapping, or overflow collapse.</strong> "+3 more" needs a real dense field to design against. Rows come from <code>Stack direction="row" wrap</code> until then.</li>
+      <li><strong>The multi-value field itself.</strong> This doc ships the pill. The combobox that holds a row of them is a later proposal, and it is where roving <code>tabindex</code> arrives &mdash; from Base UI, not from Token.</li>
+      <li><strong>Avatars or images in the icon slot.</strong> <code>icon</code> stays an <code>IconName</code>, matching <code>Button</code>. Custom artwork goes through <code>Icon</code>'s own <code>children</code> escape hatch.</li>
+      <li><strong>A pill radius.</strong> <code>radius.900</code> would make a capsule, which nothing else in the system is.</li>
+      <li><strong>Hover and active fills.</strong> A non-interactive Token has no interaction to paint; the link and the remove button carry their own, and nothing else does.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-18. <code>pnpm turbo typecheck test</code> passes &mdash; 12 tasks,
+      119 tests across 14 files, 13 of the tests new. The Token section of the playground was
+      driven in a browser to check what jsdom cannot: the hit area, the two hover
+      states, and the heights against a real field.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/tokens/src/utils.ts</code> &mdash; new. <code>TOKEN_HUES</code>, <code>tokenSet(hue, theme)</code> and <code>tokenSets(theme)</code>, beside <code>buttonSet</code> and <code>controlSet</code>.</li>
+      <li><code>packages/tokens/src/semantics/color-light.ts</code>, <code>color-dark.ts</code> &mdash; <code>token: tokenSets(theme)</code>. 36 new tokens per theme; the resolver validates 422 across both.</li>
+      <li><code>packages/tokens/src/semantics/size.ts</code> &mdash; the back-reference D1 obliged: a note that <code>token.css.ts</code> subtracts from <code>size.control</code>, since nothing else in the token package would show it.</li>
+      <li><code>packages/components/src/token/</code> &mdash; new. <code>token.tsx</code>, <code>token.css.ts</code>, <code>token.stories.tsx</code>, <code>token.test.tsx</code>, <code>index.ts</code>, exported from <code>src/index.ts</code>.</li>
+      <li><code>packages/components/src/api.types.test.tsx</code>, <code>refs.test.tsx</code> &mdash; the hue union, the deliberately-legal <code>href</code> + <code>onRemove</code> pairing, and the ref following the element each branch renders.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; all twelve hues, the four anatomies, and each size beside the Input it is derived from.</li>
+    </ul>
+
+    <h3>What the proposal got wrong</h3>
+    <ul class="notes">
+      <li><strong>The transparent border never existed.</strong> D4's outcome described the hit area as needing a &minus;1px block margin &ldquo;to clear the transparent border&rdquo;. That border was an artefact of the proposal's own specimen CSS, left over from the outline weight D3 rejected &mdash; a soft-fill Token draws no border at all. <code>align-self: stretch</code> alone reaches the edges. Measured in the browser: 0px gap on top, right and bottom, at all three sizes.</li>
+      <li><strong>The buffer is 2.72px, not 2.68px.</strong> See the table above. The 0.04px was rounding in the option that was not chosen.</li>
+      <li><strong>The contrast worry was unfounded, and instructively so.</strong> D2's note predicted <code>lime</code> and <code>yellow</code> would be the pairs most likely to move off <code>{hue}.550</code>. They are the two <em>highest</em>-contrast pairs in light. All 24 pairs clear WCAG AAA &mdash; the lowest is <code>warm</code> at 7.83:1 in light, and every dark pair is above 10:1. The ramps are generated in OKLCH along one lightness curve, so equal steps give equal contrast whatever the hue; hue was never the variable. No pair needs to move.</li>
+      <li><strong><code>Stack</code> has no <code>wrap</code> prop.</strong> The API example in &sect;03 wrote <code>&lt;Stack direction="row" wrap&gt;</code>. It does not exist &mdash; a wrapping row is <code>style={{ flexWrap: 'wrap' }}</code> today, which is what the stories and the playground do.</li>
+    </ul>
+
+    <h3>What it taught</h3>
+    <ul class="notes">
+      <li><strong>The pill's padding had to become a custom property.</strong> The remove button cancels the pill's inline padding with a negative margin, and that padding changes per size &mdash; so it cannot be a constant in the button's rule. <code>createVar()</code> in <code>token.css.ts</code>, set by each size variant and read by the button. The hover fill uses the same trick across the twelve colour variants. Likely to recur wherever a part has to undo its parent's spacing.</li>
+      <li><strong>Worth its own proposal: should <code>Stack</code> own <code>wrap</code>?</strong> A row of Tokens is the first place it is clearly wanted, and it is a layout prop rather than a box dimension, so it would not breach the rule that sends sizing through <code>style</code>.</li>
+      <li><strong>Accurate everywhere else.</strong> The three-part anatomy, the derived remove-button name, the hue set, <code>focusRing</code> on the interactive parts and the truncation rule all went in as written, and the repo's guards caught nothing beyond the <code>wrap</code> slip.</li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0006
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0006-token",
+  "status": "built",
+  "follows": "0005-toggle-button-group",
+  "decided": "2026-08-18",
+  "built": "2026-08-18",
+  "settled": {
+    "foundation": "Hand-rolled per 0001 D2's behaviour test. Base UI 1.7.0 has no standalone chip; Combobox.Chip throws outside Combobox.Root (useComboboxRootContext).",
+    "recipeSharing": "token.css.ts is the shared artefact - a future Combobox renders Base UI's Combobox.Chip carrying Token's class, as IconButton does against button.css.ts.",
+    "sizeVocabulary": "sm | md | lg, matching ButtonSize and InputSize.",
+    "noPolymorphism": "No `as` prop; href is a fixed two-way element branch the component owns.",
+    "noSpacingProps": "Spacing comes from the parent; width and max-width go through style.",
+    "truncation": "Labels truncate with an ellipsis and never wrap.",
+    "icon": "icon is an IconName from the curated set, decorative, sized in em by the component.",
+    "removeName": "The remove button's name is derived as `Remove {children}` when children is a string, overridable via removeLabel.",
+    "focus": "focusRing on the interactive parts. 0002 D4's highlighted-border rule is scoped to field-like controls.",
+    "radius": "radius.400, matching Button and Input."
+  },
+  "decisions": [
+    {
+      "id": "control-fit",
+      "options": [
+        "derived-token-ramp",
+        "component-calc",
+        "one-step-down"
+      ],
+      "recommended": "derived-token-ramp",
+      "outcome": "component-calc",
+      "note": "Not the recommendation. Accepts that semantics/size.ts carries no signal that token.css.ts subtracts from size.control; the comment there must be extended to say so."
+    },
+    {
+      "id": "colour-vocabulary",
+      "options": [
+        "status-set",
+        "hue-palette",
+        "button-variants"
+      ],
+      "recommended": "status-set",
+      "outcome": "hue-palette",
+      "note": "Not the recommendation. Assumes default color = warm and a contrast pass over all twelve pairs before ship; lime and yellow most likely to move off {hue}.550."
+    },
+    {
+      "id": "emphasis",
+      "options": [
+        "soft-only",
+        "soft-and-outline",
+        "three-weights"
+      ],
+      "recommended": "soft-only",
+      "outcome": "soft-only"
+    },
+    {
+      "id": "link-and-remove",
+      "options": [
+        "container-parts",
+        "mutually-exclusive",
+        "roving-chip"
+      ],
+      "recommended": "container-parts",
+      "outcome": "container-parts",
+      "note": "I do want to make sure the button has as big a hitbox as possible. Ideally right to the edge of the Token on top, right, and bottom. Make sure a link tag has a hover state.",
+      "obligations": [
+        "Remove button: align-self stretch, -1px block margin, negative inline-end margin re-paid as padding; right corners at radius.400. Target runs to the top, right and bottom edges.",
+        "Add color.token.{hue}.hover-bg at {hue}.150 light / {hue}.600 dark. Whole-pill link takes the fill on hover; label-only link underlines; the remove button uses hover-bg behind itself."
+      ]
+    }
+  ],
+  "asBuilt": {
+    "verification": "pnpm turbo typecheck test - 12 tasks, 119 tests across 14 files, 13 new. Hit area, hover states and nested heights checked in a browser against the playground.",
+    "corrections": [
+      "D4's outcome described a -1px block margin to clear a transparent border. No such border exists - it was an artefact of the proposal's specimen CSS, left from the outline weight D3 rejected. align-self: stretch alone reaches the edges; measured 0px gap top, right and bottom at all three sizes.",
+      "The buffer is 2.72px, not 2.68px. The 0.04px was two-decimal rounding in semantics/size.ts, a property of the token-layer option D1 did not choose.",
+      "D2's note predicted lime and yellow would need to move off {hue}.550. They are the two highest-contrast pairs. All 24 pairs clear WCAG AAA; lowest is warm at 7.83:1 light, every dark pair above 10:1. The OKLCH ramps share one lightness curve, so hue was never the variable. No pair moves.",
+      "Stack has no `wrap` prop; the API example used one. A wrapping row is style={{ flexWrap: 'wrap' }}."
+    ],
+    "learned": [
+      "The pill's inline padding is published via createVar() so the remove button can cancel it with a negative margin - it changes per size, so it cannot be a constant in the button's rule. The hover fill uses the same mechanism across the twelve colour variants.",
+      "Open question for its own proposal: should Stack own `wrap`? A row of Tokens is the first clear want, and it is a layout prop rather than a box dimension."
+    ]
+  }
+}
+</script>
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

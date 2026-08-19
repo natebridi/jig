@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider } from '@jig-ui/react'
+import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -231,6 +231,42 @@ export function App() {
           <ToggleButton defaultPressed>Starts pressed</ToggleButton>
           <ToggleButton disabled>Disabled</ToggleButton>
           <ToggleButton defaultPressed disabled>Pressed + disabled</ToggleButton>
+        </Stack>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">Token</Typography>
+
+        <Stack direction="row" spacing="200" style={{ flexWrap: 'wrap' }}>
+          <Token color="warm">warm</Token>
+          <Token color="cool">cool</Token>
+          <Token color="blue">blue</Token>
+          <Token color="teal">teal</Token>
+          <Token color="green">green</Token>
+          <Token color="lime">lime</Token>
+          <Token color="yellow">yellow</Token>
+          <Token color="orange">orange</Token>
+          <Token color="red">red</Token>
+          <Token color="fuschia">fuschia</Token>
+          <Token color="purple">purple</Token>
+          <Token color="gray">gray</Token>
+        </Stack>
+
+        <Stack direction="row" spacing="300" align="center">
+          <Token color="blue" icon="user" onRemove={() => {}}>Nate Bridi</Token>
+          <Token color="teal" href="#token">Whole pill is the link</Token>
+          <Token color="purple" href="#token" onRemove={() => {}}>Link and removable</Token>
+          <Token color="red" style={{ maxWidth: '11rem' }}>A label long enough to be cut off</Token>
+        </Stack>
+
+        {/* Side by side with the field whose height they are derived from. */}
+        <Stack direction="row" spacing="300" align="center">
+          <Input size="sm" placeholder="Input sm" />
+          <Token size="sm" color="blue" onRemove={() => {}}>Design</Token>
+          <Input size="md" placeholder="Input md" />
+          <Token size="md" color="blue" onRemove={() => {}}>Design</Token>
+          <Input size="lg" placeholder="Input lg" />
+          <Token size="lg" color="blue" onRemove={() => {}}>Design</Token>
         </Stack>
       </Stack>
 

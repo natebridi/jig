@@ -22,6 +22,13 @@ const scale = (typePrimitives as TokenSet).scale as TokenSet;
  * Decided in apps/docs/decisions/0002-text-input.html (D1). Retuning these
  * values is the same piece of work as regularising Button's size ramp — they
  * have to move together, or Input and Button separate.
+ *
+ * A second consumer subtracts from these rather than declaring its own ramp:
+ * Token's height is `calc(size.control.X - 2px - 2 * spacing.100)`, composed in
+ * packages/components/src/token/token.css.ts so that it nests inside a field
+ * with the border and a spacing step of air on each side. That subtraction is
+ * deliberately *not* tokenised here — 0006 D1 chose the component layer — so
+ * this note is the only signal that moving these values moves Token too.
  */
 const height = (fontStep: number, padStep: number): Token => ({
     $type: 'dimension',

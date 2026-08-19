@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Grid, IconButton, Stack, ToggleButton, Typography } from './index';
+import { Adorn, Button, CodeBlock, Grid, IconButton, Stack, ToggleButton, Token, Typography } from './index';
 import { Icon } from './icons';
 
 /**
@@ -21,6 +21,11 @@ describe('refs', () => {
       ['Adorn', createRef<HTMLElement>(), (r: never) => <Adorn ref={r} />, 'SPAN'],
       ['Icon', createRef<SVGSVGElement>(), (r: never) => <Icon ref={r} icon="gear" />, 'svg'],
       ['CodeBlock', createRef<HTMLDivElement>(), (r: never) => <CodeBlock ref={r}>{'a'}</CodeBlock>, 'DIV'],
+      // Token's ref follows the element its props select, which is the one
+      // place 0006 D4's degrading element shows up in the type.
+      ['Token', createRef<HTMLSpanElement>(), (r: never) => <Token ref={r}>x</Token>, 'SPAN'],
+      ['Token as link', createRef<HTMLAnchorElement>(), (r: never) => <Token ref={r} href="/x">x</Token>, 'A'],
+      ['Token with both', createRef<HTMLSpanElement>(), (r: never) => <Token ref={r} href="/x" onRemove={() => {}}>x</Token>, 'SPAN'],
     ] as const;
 
     for (const [name, ref, renderCase, tag] of cases) {

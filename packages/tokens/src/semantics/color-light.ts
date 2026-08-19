@@ -1,5 +1,5 @@
 import { ThemeTokenSet } from '../types'
-import { buttonSet, controlSet, ghostButtonSet } from '../utils'
+import { buttonSet, controlSet, ghostButtonSet, tokenSets } from '../utils'
 
 export default {
     color: {
@@ -66,6 +66,10 @@ export default {
         },
         // Shared by every field-like control rather than scoped to one, so
         // Select and Combobox inherit this surface without another decision.
-        control: controlSet('light')
+        control: controlSet('light'),
+        // One soft-fill set per hue rather than a status vocabulary: a
+        // Token's colour says which kind of thing it is, not how loud it
+        // is. Decided in apps/docs/decisions/0006-token.html (D2).
+        token: tokenSets('light')
     }
 } as ThemeTokenSet;
