@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea } from '@jig-ui/react'
 import { color, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -22,7 +22,7 @@ export function App() {
     <div
         style={{
           minHeight: '100vh',
-        backgroundColor: `light-dark(${color.warm[0]}, ${color.green[750]})`,
+          backgroundColor: color.surfaces.body,
         }}
       >
       <div className="style-debug">
@@ -45,6 +45,23 @@ export function App() {
               <ToggleButton value="style3" pressedIcon='eye'>Ocean drop</ToggleButton>
             </ToggleButtonGroup>
           </Stack>
+        </Grid>
+
+        <Stack direction="row" align="center" justify="center">
+          <Typography with="body02">Build your guilloché <Icon icon="arrow-right" /></Typography>
+        </Stack>
+
+        <Grid>
+          <Stack span={{ xs: 24, sm: 8 }} alignSelf="center" spacing="400" mb={{ xs: '500', sm: '100' }}>
+            <Typography with="heading05"><Icon icon="check-circle" color={color.yellow[400]} /> Drop-in ready</Typography>
+            <Typography with="body01">Simple script import and a custom web component, no dependencies</Typography>
+          </Stack>
+          <Box span={{ xs: 24, sm: 16 }}>
+            <CodeBlock label="javascript">
+              {`const thing = 1;
+// here is some code;`}
+            </CodeBlock>
+          </Box>
         </Grid>
 
         <Stack spacing="600" align="stretch">
@@ -308,6 +325,47 @@ export function App() {
           <Input size="lg" placeholder="Input lg" />
           <Token size="lg" color="blue" onRemove={() => {}}>Design</Token>
         </Stack>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">ScrollArea</Typography>
+
+        <Stack direction="row" spacing="400" align="start">
+          <ScrollArea data-testid="sa-plain" style={{ maxHeight: '12rem', maxWidth: '22rem' }}>
+            <Stack spacing="300">
+              <Typography as="p" with="body01">At rest there is no chrome at all. Hover this, tab into it, or scroll it and the bar appears; the gutter it occupies is reserved either way, so nothing reflows.</Typography>
+              <Typography as="p" with="body01">The gradient mask at the two edges is what says the content is cropped in the meantime. It is clamped by the distance actually scrolled, so it collapses to nothing at either end.</Typography>
+              <Typography as="p" with="body01">Base UI puts the viewport in the tab order only while it overflows, so a keyboard user can land in here — and the focus ring is drawn on the root, outside the mask.</Typography>
+              <Typography as="p" with="body01">Scroll to the bottom and the lower fade disappears.</Typography>
+            </Stack>
+          </ScrollArea>
+
+          <ScrollArea data-testid="sa-short" style={{ maxHeight: '12rem', maxWidth: '18rem' }}>
+            <Typography as="p" with="body01">Short enough to fit — no bar, no mask, and out of the tab order.</Typography>
+          </ScrollArea>
+        </Stack>
+
+        {/* The arrangement Dialog will compose: title and actions pinned. */}
+        <div
+          data-testid="sa-shell"
+          style={{
+            display: 'flex', flexDirection: 'column', maxHeight: '16rem', maxWidth: '28rem',
+            background: color.surfaces.card, borderRadius: '4.3px', overflow: 'hidden',
+          }}
+        >
+          <Typography as="h3" with="heading05" style={{ padding: spacing[500], flex: 'none' }}>Terms of service</Typography>
+          <ScrollArea data-testid="sa-body" style={{ flex: 1, minHeight: 0, padding: `0 ${spacing[500]}` }}>
+            <Stack spacing="300">
+              <Typography as="p" with="body01">A scroll area scrolls because something constrains it. Here that is a flex parent with min-height zero.</Typography>
+              <Typography as="p" with="body01">The title and the action row stay put while this moves, which is the whole reason the component exists.</Typography>
+              <Typography as="p" with="body01">The mask marks the seam at both ends rather than a rule, per 0007 D2.</Typography>
+            </Stack>
+          </ScrollArea>
+          <Stack direction="row" spacing="300" justify="end" style={{ padding: spacing[500], flex: 'none' }}>
+            <Button variant="secondary">Decline</Button>
+            <Button variant="primary">Accept</Button>
+          </Stack>
+        </div>
       </Stack>
 
       <Stack spacing="400" align="stretch">

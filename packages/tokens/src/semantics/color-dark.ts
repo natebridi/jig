@@ -1,5 +1,5 @@
 import { ThemeTokenSet } from '../types'
-import { buttonSet, controlSet, ghostButtonSet, tokenSets } from '../utils'
+import { buttonSet, controlSet, ghostButtonSet, scrollbarSet, sliderSet, tokenSets } from '../utils'
 
 export default {
     color: {
@@ -71,6 +71,13 @@ export default {
         // One soft-fill set per hue rather than a status vocabulary: a
         // Token's colour says which kind of thing it is, not how loud it
         // is. Decided in apps/docs/decisions/0006-token.html (D2).
-        token: tokenSets('dark')
+        token: tokenSets('dark'),
+        // Two tokens: the reserved gutter stays empty at rest, so there is
+        // no rail to paint. Decided in 0007 D1 and D3.
+        scrollbar: scrollbarSet('dark'),
+        // The filled track and the thumb. Not `surfaces.inverse`, which the
+        // value bubble already uses as inverted chrome, and not `text.*` —
+        // a mark is neither.
+        slider: sliderSet('dark')
     }
 } as ThemeTokenSet;

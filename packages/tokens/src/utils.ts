@@ -127,3 +127,54 @@ export const tokenSet = (c: string, lightOrDark: string) => {
 /** Every hue's set, keyed by hue name. */
 export const tokenSets = (lightOrDark: string) =>
   Object.fromEntries(TOKEN_HUES.map((hue) => [hue, tokenSet(hue, lightOrDark)]));
+
+/**
+ * The drawn scrollbar.
+ *
+ * Two tokens, not three. A `track` was proposed alongside these and dropped:
+ * 0007 D1 chose to leave the reserved gutter empty at rest, so no rail is ever
+ * painted and nothing would have read it. Add one if a surface later needs a
+ * visible channel, rather than shipping a token with no consumer.
+ *
+ * A thumb is an object you drag, so it sits a step stronger than
+ * `color.control.border` — which is drawn to recede around an input, and was
+ * the alternative 0007 D3 weighed this against.
+ */
+export const scrollbarSet = (lightOrDark: string) => {
+  const colors: Record<string, string> = (lightOrDark == 'light') ? {
+    'thumb': `{color.warm.300}`,
+    'thumb-hover': `{color.warm.400}`
+  } : {
+    'thumb': `{color.gray.450}`,
+    'thumb-hover': `{color.gray.400}`
+  };
+
+  return toColorTokens(colors);
+}
+
+/**
+ * The slider's marks.
+ *
+ * `indicator` is the filled portion of the track and the thumb, which are one
+ * visual idea — the value, drawn. It reads as the page's ink rather than as an
+ * accent: dark on light, light on dark.
+ *
+ * Named rather than borrowed. The value matches `surfaces.inverse` and
+ * `text.primary` today, but a slider mark is neither a surface nor text — and
+ * `surfaces.inverse` is already spoken for in the same stylesheet, where the
+ * value bubble uses it correctly as inverted chrome. One token serving both
+ * meant that retuning tooltips would have moved the slider.
+ */
+export const sliderSet = (lightOrDark: string) => {
+  const colors: Record<string, string> = (lightOrDark == 'light') ? {
+    'indicator': `{color.warm.600}`,
+    'disabled-track': `{color.warm.150}`,
+    'disabled-thumb': `{color.warm.300}`
+  } : {
+    'indicator': `{color.gray.100}`,
+    'disabled-track': `{color.gray.650}`,
+    'disabled-thumb': `{color.gray.400}`
+  };
+
+  return toColorTokens(colors);
+}

@@ -72,9 +72,9 @@ export const track = style({
   width: "100%",
   height: trackSize,
   borderRadius: radius[900],
-  background: color.control.border,
+  background: `repeating-linear-gradient(90deg, ${color.control.hoverBorder}, ${color.control.hoverBorder} 1px, ${color.surfaces.body} 1px, ${color.surfaces.body} 4px)`,
   selectors: {
-    [`${root}[data-disabled] &`]: { background: color.control.disabledBg },
+    [`${root}[data-disabled] &`]: { background: color.slider.disabledTrack },
   },
 });
 
@@ -82,13 +82,16 @@ export const indicator = style({
   position: "absolute",
   height: "100%",
   borderRadius: radius[900],
-  background: color.control.activeBorder,
+  // The value, drawn — the page's ink rather than an accent. Its own semantic
+  // rather than `surfaces.inverse`, which `bubble` below uses for what that
+  // token actually means, or `text.primary`, which a mark is not.
+  background: color.slider.indicator,
   selectors: {
     // Disabled drops the fill to the track colour rather than dimming it. At a
     // 2px hairline a lightness shift left enabled and disabled nearly
     // indistinguishable, so the tell is the presence of the fill, not its
     // shade — recorded as an obligation in decision 0004 D1.
-    [`${root}[data-disabled] &`]: { background: color.control.disabledBg },
+    [`${root}[data-disabled] &`]: { background: color.slider.disabledTrack },
   },
 });
 
@@ -97,13 +100,15 @@ export const thumb = style({
   width: thumbSize,
   height: thumbSize,
   borderRadius: radius[900],
-  background: color.control.activeBorder,
+  // Shares the indicator's colour deliberately: the fill and the mark are one
+  // idea, so they are one token.
+  background: color.slider.indicator,
   // The thumb is a mark rather than a field boundary, so it takes the shared
   // ring rather than the border highlight bordered controls use. The focusable
   // element is the input Base UI nests inside, hence `:has`.
   selectors: {
     "&:has(:focus-visible)": focusRing[":focus-visible"],
-    [`${root}[data-disabled] &`]: { background: color.control.disabledText },
+    [`${root}[data-disabled] &`]: { background: color.slider.disabledThumb },
   },
   // A 0.72rem mark is 11.5px, well under the 24px minimum target. The pointer
   // area is grown with a pseudo-element rather than padding so the visible

@@ -1,0 +1,1851 @@
+<title>0008 &middot; Dialog</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---------------------------------------------------------------
+     Specimen palette and a mock dialog. Real token values, copied from
+     packages/styles/dist/tokens.css. The scrim specimens carry page
+     content behind them on purpose &mdash; a scrim can only be judged against
+     something it is covering.
+     --------------------------------------------------------------- */
+
+  .jig {
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-sp-600: 1.89rem;
+
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-500: 1.53rem;
+
+    --j-rad-400: 4.3px;
+    --j-rad-500: 7px;
+    --j-rad-600: 11.3px;
+
+    --j-body: #eeece8;      /* surfaces.body   warm.25 */
+    --j-card: #ffffff;      /* surfaces.card   white */
+    --j-text: #34312a;      /* text.primary    warm.600 */
+    --j-muted: #565656;     /* text.secondary  gray.500 */
+    --j-line: #d3d0cb;      /* control.border  warm.200 */
+    --j-thumb: #b1afa9;     /* scrollbar.thumb warm.300 */
+
+    --j-btn-bg: #1563de;    /* button.primary  blue.450 */
+    --j-btn-tx: #dbecff;
+    --j-btn2-bg: #6f6c66;   /* button.secondary warm.450 */
+    --j-btn2-tx: #eceae6;
+
+    /* the three scrims under consideration */
+    --j-scrim-token: oklch(0.12 0 0 / 0.5);
+    --j-scrim-mix: color-mix(in oklab, #34312a 50%, transparent);
+    --j-scrim-opaque: #34312a;   /* surfaces.inverse, worn at opacity */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body: #181818;
+      --j-card: #242424;
+      --j-text: #e5e5e5;
+      --j-muted: #d0d0d0;
+      --j-line: #565656;
+      --j-thumb: #6c6c6c;
+      --j-btn-bg: #024ac0;  --j-btn-tx: #d4e8ff;
+      --j-btn2-bg: #565656; --j-btn2-tx: #e5e5e5;
+      --j-scrim-token: oklch(0 0 0 / 0.65);
+      --j-scrim-mix: color-mix(in oklab, #000000 65%, transparent);
+      --j-scrim-opaque: #000000;
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body: #181818;
+    --j-card: #242424;
+    --j-text: #e5e5e5;
+    --j-muted: #d0d0d0;
+    --j-line: #565656;
+    --j-thumb: #6c6c6c;
+    --j-btn-bg: #024ac0;  --j-btn-tx: #d4e8ff;
+    --j-btn2-bg: #565656; --j-btn2-tx: #e5e5e5;
+    --j-scrim-token: oklch(0 0 0 / 0.65);
+    --j-scrim-mix: color-mix(in oklab, #000000 65%, transparent);
+    --j-scrim-opaque: #000000;
+  }
+
+  /* ---- the stage: a scrap of page, with a dialog over it ---- */
+
+  .jig .stage {
+    position: relative;
+    height: 250px;
+    --stage-h: 250px;
+    width: 100%;
+    border-radius: var(--j-rad-400);
+    overflow: hidden;
+    background: var(--j-body);
+    font-family: var(--sans);
+    color: var(--j-text);
+    isolation: isolate;
+  }
+
+  .jig .stage-page {
+    padding: var(--j-sp-500);
+    font-size: var(--j-ts-200);
+    line-height: 1.5;
+  }
+
+  .jig .stage-page h4 { margin: 0 0 0.5rem; font-size: var(--j-ts-300); font-weight: 620; }
+  .jig .stage-page p { margin: 0 0 0.5rem; max-width: none; color: inherit; font-size: inherit; }
+  .jig .stage-swatches { display: flex; gap: 0.4rem; margin-top: 0.6rem; }
+  .jig .stage-swatches i { display: block; width: 34px; height: 22px; border-radius: 3px; }
+
+  .jig .scrim { position: absolute; inset: 0; }
+  .jig .scrim-token { background: var(--j-scrim-token); }
+  .jig .scrim-mix { background: var(--j-scrim-mix); }
+  .jig .scrim-opaque { background: var(--j-scrim-opaque); opacity: 0.5; }
+
+  :root[data-theme="dark"] .jig .scrim-opaque,
+  .jig .scrim-opaque { opacity: 0.5; }
+
+  .jig .popup {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: min(88%, 22rem);
+    height: fit-content;
+    max-height: calc(100% - 2rem);
+    display: flex;
+    flex-direction: column;
+    background: var(--j-card);
+    border-radius: var(--j-rad-400);
+    box-shadow: 0 8px 28px oklch(0 0 0 / 0.18);
+    overflow: hidden;
+  }
+
+  .jig .popup-head {
+    flex: none;
+    padding: var(--j-sp-500) var(--j-sp-500) var(--j-sp-400);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--j-sp-400);
+  }
+
+  .jig .popup-title { font-size: var(--j-ts-300); font-weight: 620; line-height: 1.25; }
+  .jig .popup-desc { font-size: var(--j-ts-200); color: var(--j-muted); margin-top: 0.25rem; line-height: 1.45; }
+
+  .jig .popup-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: none;
+    padding: 0 var(--j-sp-500);
+    font-size: var(--j-ts-200);
+    line-height: 1.55;
+    position: relative;
+  }
+
+  .jig .popup-body::-webkit-scrollbar { display: none; }
+  .jig .popup-body p { margin: 0 0 0.6em; max-width: none; color: inherit; font-size: inherit; }
+
+  .jig .popup-foot {
+    flex: none;
+    padding: var(--j-sp-400) var(--j-sp-500) var(--j-sp-500);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--j-sp-300);
+  }
+
+  .jig .btn {
+    font-family: var(--sans);
+    font-size: var(--j-ts-200);
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1;
+    padding: var(--j-sp-400) var(--j-sp-500);
+    border: none;
+    border-radius: var(--j-rad-400);
+    background: var(--j-btn-bg);
+    color: var(--j-btn-tx);
+    cursor: default;
+  }
+
+  .jig .btn-2 { background: var(--j-btn2-bg); color: var(--j-btn2-tx); }
+  .jig .btn:hover { border-color: transparent; color: var(--j-btn-tx); }
+  .jig .btn-2:hover { color: var(--j-btn2-tx); }
+
+  .jig .x {
+    flex: none;
+    width: 1.6em; height: 1.6em;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; margin: -0.2em -0.35em 0 0;
+    border: none; border-radius: var(--j-rad-400);
+    background: transparent; color: var(--j-muted);
+    font: inherit; letter-spacing: normal; text-transform: none; cursor: default;
+  }
+
+  .jig .x:hover { background: color-mix(in srgb, currentColor 12%, transparent); color: var(--j-muted); border-color: transparent; }
+  .jig .x svg { width: 1em; height: 1em; fill: currentColor; display: block; }
+
+  /* the drawn scrollbar, from 0007 */
+  .jig .sb { position: absolute; top: 0; right: 2px; bottom: 0; width: var(--j-sp-300); opacity: 0; transition: opacity 160ms ease; }
+  .jig .popup:hover .sb { opacity: 1; }
+  .jig .sb-thumb { position: absolute; left: 0; width: 100%; border-radius: var(--j-rad-500); background: var(--j-thumb); }
+
+  /* 0007's mask, on the dialog body */
+  .jig .masked {
+    mask-image: linear-gradient(to bottom,
+      transparent 0,
+      black min(1.89rem, var(--overflow-y-start, 0px)),
+      black calc(100% - min(1.89rem, var(--overflow-y-end, 0px))),
+      transparent 100%);
+    mask-repeat: no-repeat;
+  }
+
+  /* --- D3: outside scroll &mdash; the whole popup moves within the viewport --- */
+  .jig .stage-outside { overflow: auto; scrollbar-width: none; }
+  .jig .stage-outside::-webkit-scrollbar { display: none; }
+  /* The scrim has to cover the whole scrollable area, not just the visible
+     slice — an absolutely-positioned child of a scroller is sized to the
+     padding box and would scroll away, and `fixed` escapes the stage entirely.
+     A relative wrapper that is at least as tall as the content gives the
+     scrim something to fill. */
+  .jig .outside-inner { position: relative; min-height: 100%; padding: 1rem 0; box-sizing: border-box; }
+  .jig .outside-inner > .stage-page { position: absolute; inset: 0 0 auto 0; }
+  .jig .outside-inner > .scrim { position: absolute; inset: 0; }
+  .jig .stage-outside .popup-outside {
+    position: relative;
+    inset: auto;
+    margin: 0 auto;
+    max-height: none;
+    height: auto;
+  }
+  .jig .stage-outside .popup-outside .popup-body { overflow: visible; }
+
+  /* --- D4: the width ramp --- */
+  .jig .w-rail { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; }
+  .jig .w-row { display: flex; align-items: center; gap: 0.6rem; }
+  .jig .w-bar { height: 26px; border-radius: var(--j-rad-400); background: var(--j-card); border: 1px solid var(--j-line); flex: none; }
+
+  .jig .col { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+  /* The scroll specimens need room for a head, a body worth scrolling and a
+     foot; at 250px the body is a couple of lines and proves nothing. */
+  .jig .stage-tall { height: 340px; }
+
+  .meas { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.03em; color: var(--muted); margin: 0; }
+  .meas b { color: var(--ink-2); font-weight: 600; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0008</p>
+    <h1>Dialog</h1>
+    <p class="standfirst">
+      A modal panel over a scrim. Base UI carries the behaviour that makes a dialog a
+      dialog &mdash; focus trap, scroll lock, an inert background, focus returned to the
+      trigger &mdash; so what is left is the shape of the API, what the scrim is made of,
+      and how a long one scrolls. <a href="0007-scroll-area.html">0007</a> was split out
+      of this and is built; Dialog is its first consumer.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-proposed" id="doc-status">Proposed</span></li>
+      <li>2026-08-25</li>
+      <li>4 decisions</li>
+      <li>consumes <a href="0007-scroll-area.html">0007</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Jig has one overlay today and it is not a precedent for this one.
+      <code>Tooltip</code> is hand-rolled over the Popover API and CSS anchor
+      positioning, because it is anchored to a trigger and coordinates nothing. A dialog
+      is the opposite case: it is centred rather than anchored, and it has to trap focus,
+      lock the page behind it, make that page inert, and hand focus back when it closes.
+      That is exactly the behaviour test <a href="0001-base-ui-foundation.html">0001&nbsp;D2</a>
+      wrote, so this is Base UI's <code>Dialog</code> at the <code>~1.7.0</code> pin.
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>Base UI's anatomy, from the installed 1.7.0</i>
+
+&lt;Dialog.Root&gt;                <i>state; renders nothing</i>
+  &lt;Dialog.Trigger /&gt;          <i>a &lt;button&gt;</i>
+  &lt;Dialog.Portal&gt;
+    &lt;Dialog.Backdrop /&gt;       <i>the scrim &mdash; D2</i>
+    &lt;Dialog.Viewport&gt;         <i>positioning, or the scroller &mdash; D3</i>
+      &lt;Dialog.Popup&gt;
+        &lt;Dialog.Title /&gt;      <i>wires aria-labelledby</i>
+        &lt;Dialog.Description /&gt;<i>wires aria-describedby</i>
+        &lt;Dialog.Close /&gt;      <i>a &lt;button&gt;</i>
+      &lt;/Dialog.Popup&gt;
+    &lt;/Dialog.Viewport&gt;
+  &lt;/Dialog.Portal&gt;
+&lt;/Dialog.Root&gt;
+
+<i>AlertDialog re-exports Backdrop, Close, Description,
+Popup, Portal, Title and Viewport unchanged. Only Root
+and Trigger differ, and AlertDialogRoot is DialogRoot's
+props minus `modal` and `disablePointerDismissal`.</i></pre>
+      </div>
+      <figcaption>
+        Checked against <code>alert-dialog/index.parts.d.ts</code> in the installed
+        package. That is why Alert can be deferred without risk: it is a second Root and
+        Trigger over the same stylesheet, the way <code>IconButton</code> sits on
+        <code>button.css.ts</code>. Nothing decided here should close that off, and the
+        settled list below says where it bites.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li><strong>Base UI, per 0001&nbsp;D2's behaviour test</strong>, at the <code>~1.7.0</code> range 0001&nbsp;D4 pinned. Focus trap, scroll lock, inert background and focus restoration are all <code>modal</code>'s job and none of it is reimplemented.</li>
+      <li><strong>The Popover API and anchor positioning do not apply.</strong> Jig's rule that overlays use native anchor positioning is about <em>anchored</em> overlays; a dialog is centred in the viewport and has no anchor. <code>Tooltip</code> stays the only hand-rolled overlay.</li>
+      <li><strong>Title and description are props, not parts</strong>, and they are what wires <code>aria-labelledby</code> and <code>aria-describedby</code>. Same rule and the same reasoning as <a href="0002-text-input.html">0002&nbsp;D2</a>: making them props means the accessible wiring cannot be left out by accident.</li>
+      <li><strong>Opening is a wrapped trigger or the controlled pair</strong>, <code>open</code> / <code>onOpenChange</code>. Base UI 1.7's <code>createHandle()</code> imperative API is not exposed; agreed in scoping.</li>
+      <li><strong>No nested dialogs.</strong> Nothing styles against <code>--nested-dialogs</code>, and the backdrop's <code>forceRender</code> is left alone. A confirm-on-close flow would be a nested alert, and that arrives with Alert or not at all.</li>
+      <li><strong>An <code>&times;</code> in the top corner, always.</strong> Base UI's own guidance is that a modal dialog must contain a <code>Dialog.Close</code> so touch screen readers can escape the popup. AlertDialog will omit it &mdash; an alert is dismissed by choosing an action &mdash; and that is a difference in the wrapper, not in the stylesheet.</li>
+      <li><strong>The scroll region is <code>ScrollArea</code></strong> (0007), which was split out of this proposal precisely so its scrollbar was not designed as a dialog detail. Its mask marks the cropped edge; Dialog adds no rule of its own.</li>
+      <li><strong>Corner radius is <code>radius.400</code></strong>, matching Button, Input and Token. A larger radius for large surfaces is a system-wide change, not a Dialog one &mdash; see &sect;04.</li>
+      <li><strong>No <code>as</code> prop, no spacing props</strong>, root-only theming, and the standard file set with an export from <code>src/index.ts</code>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      The specimens are mock dialogs built from the real token values, over a scrap of
+      page so the scrim has something to cover. Scroll the ones that scroll.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="api-shape" data-title="Props for the frame, or composable parts">
+    <p class="decision-id">D1 &middot; api-shape</p>
+    <h2>Props for the frame, or composable parts</h2>
+    <p>
+      Input settled this for a component with three slots. A dialog has six &mdash;
+      trigger, title, description, body, actions, close &mdash; and the actions row is
+      the one people genuinely want to control. The question is whether
+      <a href="0002-text-input.html">0002&nbsp;D2</a>'s rule scales that far or breaks
+      at it.
+    </p>
+    <p>
+      All three render the same dialog. It is drawn once below rather than three times,
+      because the fork is in the source, not the pixels.
+    </p>
+
+    <div class="specimen block" style="margin-bottom:1.5rem">
+      <div class="jig">
+        <div class="stage">
+          <div class="stage-page">
+            <h4>Ingredients</h4>
+            <p>Sixteen items, two of them substituted.</p>
+            <div class="stage-swatches"><i style="background:#d4e8ff"></i><i style="background:#ceffca"></i><i style="background:#ffefbc"></i></div>
+          </div>
+          <div class="scrim scrim-token"></div>
+          <div class="popup">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Discard changes?</div>
+                <div class="popup-desc">Your edits to this recipe will be lost.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Cancel</button>
+              <button type="button" class="btn">Discard</button>
+            </div>
+          </div>
+        </div>
+        <p class="meas" style="margin-top:0.6rem">the dialog all three options produce &middot; scrim, popup, title, description, close, actions</p>
+      </div>
+    </div>
+
+    <div class="options">
+
+      <article class="option" data-option="props-frame" data-label="Props for the frame">
+        <div class="option-head">
+          <h3>Props for the frame</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">One component; the body is the children</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Dialog
+  trigger={&lt;Button&gt;Delete&lt;/Button&gt;}
+  title="Discard changes?"
+  description="Cannot be undone."
+  actions={&lt;&gt;
+    &lt;Button variant="secondary"&gt;
+      Cancel
+    &lt;/Button&gt;
+    &lt;Button variant="danger"&gt;
+      Discard
+    &lt;/Button&gt;
+  &lt;/&gt;}
+&gt;
+  Body content.
+&lt;/Dialog&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The accessible wiring cannot be omitted: passing <code>title</code> is the only way to get a title, and it is what sets <code>aria-labelledby</code>. This is the whole of 0002 D2's argument and it holds harder here, where an unlabelled dialog is a worse failure than an unlabelled input.</li>
+          <li class="pro">The layout of the frame stays Jig's. Title, description and actions cannot be reordered into something the design system never drew.</li>
+          <li class="pro"><code>actions</code> is a slot, so the buttons themselves are still the caller's &mdash; count, order, variant and handlers.</li>
+          <li class="con">A dialog that needs a custom header &mdash; an avatar beside the title, a status pill &mdash; has no way in short of dropping to Base UI.</li>
+          <li class="con">Six props on one component, one of which takes a fragment of buttons, is a wide signature to read.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="compound" data-label="Composable parts">
+        <div class="option-head">
+          <h3>Composable parts</h3>
+        </div>
+
+        <p class="specimen-label">Jig-styled parts, mirroring Base UI</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Dialog.Root&gt;
+  &lt;Dialog.Trigger&gt;
+    Delete
+  &lt;/Dialog.Trigger&gt;
+  &lt;Dialog.Popup&gt;
+    &lt;Dialog.Title&gt;
+      Discard changes?
+    &lt;/Dialog.Title&gt;
+    &lt;Dialog.Description&gt;
+      Cannot be undone.
+    &lt;/Dialog.Description&gt;
+    &lt;Dialog.Body&gt;
+      Body content.
+    &lt;/Dialog.Body&gt;
+    &lt;Dialog.Actions&gt;
+      &lt;Button&gt;Discard&lt;/Button&gt;
+    &lt;/Dialog.Actions&gt;
+  &lt;/Dialog.Popup&gt;
+&lt;/Dialog.Root&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Any header a caller can imagine, and the same mental model as Base UI's own docs, so their examples transfer.</li>
+          <li class="pro">The pattern <code>ToggleButtonGroup</code> already uses &mdash; children rather than props &mdash; so the system is not uniformly one or the other today.</li>
+          <li class="con">A dialog with no <code>Dialog.Title</code> renders happily and is announced as unlabelled. The type cannot require a child, so the failure is silent and only found by an audit.</li>
+          <li class="con">Eight exports, eight files to document, and eight chances to compose them into an arrangement the design system never drew.</li>
+          <li class="con">Contradicts 0002 D2 without new evidence, which would leave two components in the same system answering the same question differently.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="hybrid" data-label="Props, with parts as an escape hatch">
+        <div class="option-head">
+          <h3>Props, plus parts</h3>
+        </div>
+
+        <p class="specimen-label">The props API, and the parts for the rare case</p>
+        <div class="specimen block">
+<pre class="tree"><i>the common case, as above</i>
+&lt;Dialog title="Discard?" actions={&hellip;}&gt;
+  Body content.
+&lt;/Dialog&gt;
+
+<i>and, when the header is bespoke</i>
+&lt;Dialog.Root&gt;
+  &lt;Dialog.Popup&gt;
+    &lt;header&gt;
+      {avatar} {title} {badge}
+    &lt;/header&gt;
+    &lt;Dialog.Body&gt;&hellip;&lt;/Dialog.Body&gt;
+  &lt;/Dialog.Popup&gt;
+&lt;/Dialog.Root&gt;
+
+<i>two public APIs, one component</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Covers both the guarded common case and the bespoke one, without sending anybody to Base UI directly.</li>
+          <li class="con">Two APIs to document, test and keep visually identical. When they drift, they drift silently &mdash; a fix applied to the props path leaves the parts path stale.</li>
+          <li class="con">The escape hatch is the one with no accessibility guardrails, so the moment a caller needs a custom header they also lose the wiring the component existed to guarantee.</li>
+          <li class="con">Roughly twice the surface for a component with no second consumer yet.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="scrim-token" data-title="What the scrim is made of">
+    <p class="decision-id">D2 &middot; scrim-token</p>
+    <h2>What the scrim is made of</h2>
+    <p>
+      Nothing in <code>color.surfaces</code> is translucent. Every semantic in the system
+      is an alias to an opaque primitive, and an alias cannot add an alpha channel &mdash;
+      so a scrim needs something the token layer has not done before. The three ways to
+      get one differ in where the translucency is expressed and in what happens when the
+      theme is retuned.
+    </p>
+    <p>
+      They are close to identical at rest, which is the point: judge them on what they
+      cost, not on how they look. Each is drawn over the same scrap of page.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="alpha-token" data-label="A token with alpha baked in">
+        <div class="option-head">
+          <h3>A token with alpha</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>color.surfaces.scrim</code>, a literal oklch</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="stage">
+          <div class="stage-page">
+            <h4>Ingredients</h4>
+            <p>Sixteen items, two of them substituted.</p>
+            <div class="stage-swatches"><i style="background:#d4e8ff"></i><i style="background:#ceffca"></i><i style="background:#ffefbc"></i></div>
+          </div>
+              <div class="scrim scrim-token"></div>
+          <div class="popup">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Discard changes?</div>
+                <div class="popup-desc">Your edits to this recipe will be lost.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Cancel</button>
+              <button type="button" class="btn">Discard</button>
+            </div>
+          </div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">light <b>oklch(0.12 0 0 / 0.5)</b> &middot; dark <b>oklch(0 0 0 / 0.65)</b></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The pipeline already supports it. Primitives are DTCG colours with <code>colorSpace</code>, <code>components</code> and an <code>alpha</code> field &mdash; every one of them carries <code>alpha: 1</code> today, so a scrim is the same shape with a different number.</li>
+          <li class="pro">One name, one value, per theme. A designer changing how heavy the scrim feels edits a token rather than a component rule.</li>
+          <li class="pro">Light and dark can differ in more than opacity: dark goes to true black at 0.65, which a single formula over an ink colour cannot express.</li>
+          <li class="con">The first semantic in the system whose value is a literal rather than an alias to a primitive, so it does not move when the palette does.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="color-mix" data-label="color-mix from an existing token">
+        <div class="option-head">
+          <h3><code>color-mix</code> from a token</h3>
+        </div>
+
+        <p class="specimen-label">Computed in <code>dialog.css.ts</code>, no new token</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="stage">
+          <div class="stage-page">
+            <h4>Ingredients</h4>
+            <p>Sixteen items, two of them substituted.</p>
+            <div class="stage-swatches"><i style="background:#d4e8ff"></i><i style="background:#ceffca"></i><i style="background:#ffefbc"></i></div>
+          </div>
+              <div class="scrim scrim-mix"></div>
+          <div class="popup">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Discard changes?</div>
+                <div class="popup-desc">Your edits to this recipe will be lost.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Cancel</button>
+              <button type="button" class="btn">Discard</button>
+            </div>
+          </div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem"><b>color-mix(in oklab, {color.warm.600} 50%, transparent)</b></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No new token at all, and it tracks the palette: retune the warm ramp and the scrim follows.</li>
+          <li class="pro">Stays an alias in spirit &mdash; the colour is still named, the translucency is a styling fact.</li>
+          <li class="con">The percentage is the real decision and it ends up buried in a component stylesheet, which is exactly where a value nobody can find lives.</li>
+          <li class="con">One formula has to serve both themes. Mixing the light theme's ink at 50% gives a warm brown-grey veil rather than a neutral shadow, and the only fix is a second branch &mdash; at which point it is a token with extra steps.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="opacity" data-label="Opacity over an opaque token">
+        <div class="option-head">
+          <h3>Opacity over an opaque token</h3>
+        </div>
+
+        <p class="specimen-label"><code>surfaces.inverse</code> at <code>opacity: 0.5</code></p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="stage">
+          <div class="stage-page">
+            <h4>Ingredients</h4>
+            <p>Sixteen items, two of them substituted.</p>
+            <div class="stage-swatches"><i style="background:#d4e8ff"></i><i style="background:#ceffca"></i><i style="background:#ffefbc"></i></div>
+          </div>
+              <div class="scrim scrim-opaque"></div>
+          <div class="popup">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Discard changes?</div>
+                <div class="popup-desc">Your edits to this recipe will be lost.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Cancel</button>
+              <button type="button" class="btn">Discard</button>
+            </div>
+          </div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">background <b>color.surfaces.inverse</b> &middot; element <b>opacity: 0.5</b></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Simplest of the three, and it reuses a semantic that already exists for exactly this idea &mdash; the inverse surface is the system's "not the page" colour.</li>
+          <li class="pro">Opacity is the property a transition animates most cheaply, so a fade-in is free.</li>
+          <li class="con">Opacity applies to the whole element and everything in it. The backdrop holds nothing today, but it is the layer a future close-on-click affordance or a spinner would live on, and both would inherit the fade.</li>
+          <li class="con">Couples the scrim's hue to a token chosen for tooltips. Retuning the inverse surface for tooltip legibility would silently restyle every dialog.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="scroll-strategy" data-title="How a dialog taller than the screen scrolls">
+    <p class="decision-id">D3 &middot; scroll-strategy</p>
+    <h2>How a dialog taller than the screen scrolls</h2>
+    <p>
+      Base UI supports two shapes and they are structurally different.
+      <b>Inside</b>: the popup stays fully on screen and an inner region scrolls, so the
+      title and the actions never move &mdash; this is what <code>ScrollArea</code> was
+      built for. <b>Outside</b>: <code>Dialog.Viewport</code> becomes the scroller and
+      the whole popup travels through it, so a very tall dialog reads as one page.
+    </p>
+    <p>
+      Both specimens hold the same content in the same 250px stage. Scroll each.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="inside" data-label="Inside &mdash; the body scrolls">
+        <div class="option-head">
+          <h3>Inside &mdash; the body scrolls</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Title and actions pinned; ScrollArea in the middle</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="stage stage-tall">
+          <div class="stage-page">
+            <h4>Ingredients</h4>
+            <p>Sixteen items, two of them substituted.</p>
+            <div class="stage-swatches"><i style="background:#d4e8ff"></i><i style="background:#ceffca"></i><i style="background:#ffefbc"></i></div>
+          </div>
+              <div class="scrim scrim-token"></div>
+              <div class="popup" style="max-height:calc(100% - 1.6rem)">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Terms of service</div>
+                <div class="popup-desc">Updated 24 August 2026.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+            <div class="popup-body masked" data-fill>
+              <div class="sb"><div class="sb-thumb"></div></div>
+            </div>            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Decline</button>
+              <button type="button" class="btn">Accept</button>
+            </div>
+              </div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">the accept button is always reachable &middot; mask marks the crop</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The actions are always on screen. A user cannot be shown a dialog whose only way forward is below the fold, which is the failure mode that matters &mdash; it looks like a dialog with no buttons.</li>
+          <li class="pro">The title stays visible, so a long body never loses its context.</li>
+          <li class="pro">Uses the component already built for it. 0007 exists because of this case, and its mask already marks the cropped edge.</li>
+          <li class="con">On a short screen the body can be squeezed to very little between two fixed rows.</li>
+          <li class="con">Content that should read as one continuous page &mdash; a printed agreement, a changelog &mdash; is split into a frame and a window.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="outside" data-label="Outside &mdash; the popup scrolls">
+        <div class="option-head">
+          <h3>Outside &mdash; the popup scrolls</h3>
+        </div>
+
+        <p class="specimen-label"><code>Dialog.Viewport</code> is the scroller</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="stage stage-tall stage-outside">
+              <div class="outside-inner">
+                <div class="stage-page">
+                  <h4>Ingredients</h4>
+                  <p>Sixteen items, two of them substituted.</p>
+                </div>
+                <div class="scrim scrim-token"></div>
+              <div class="popup popup-outside">
+            <div class="popup-head">
+              <div>
+                <div class="popup-title">Terms of service</div>
+                <div class="popup-desc">Updated 24 August 2026.</div>
+              </div>
+              <button type="button" class="x" aria-label="Close"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg></button>
+            </div>
+                <div class="popup-body" data-fill-long></div>
+            <div class="popup-foot">
+              <button type="button" class="btn btn-2">Decline</button>
+              <button type="button" class="btn">Accept</button>
+            </div>
+              </div>
+              </div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">scroll to reach the buttons &middot; nothing is pinned</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The dialog reads as one page, which suits a document more than a form does.</li>
+          <li class="pro">No inner scroll region at all, so no ScrollArea and no nested scrolling to reason about.</li>
+          <li class="con">The actions are below the fold until you scroll, and the specimen shows how that reads: a dialog that appears to have no way out. Escape and the close button are still there, but neither is the affirmative action.</li>
+          <li class="con">The title scrolls away, so a long dialog loses its own heading.</li>
+          <li class="con">Leaves 0007 with no consumer, having just been built for this.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="both" data-label="A scroll prop offering both">
+        <div class="option-head">
+          <h3>A <code>scroll</code> prop</h3>
+        </div>
+
+        <p class="specimen-label">Caller chooses per dialog</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Dialog scroll="inside"&gt;   <i>default</i>
+&lt;Dialog scroll="outside"&gt;
+
+<i>inside  &rarr; ScrollArea between two
+          pinned rows
+outside &rarr; Dialog.Viewport scrolls,
+          nothing is pinned</i>
+
+<i>two layouts, two sets of edge cases,
+one component</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Both shapes are legitimate and a design system that offers one will eventually be asked for the other.</li>
+          <li class="pro">The default still guides: <code>inside</code> unless a caller opts out.</li>
+          <li class="con">Two layouts to build, style, test and keep visually consistent, for a component with no call site yet asking for the second.</li>
+          <li class="con">The two disagree about where padding and the edge treatment live, so the stylesheet branches early and stays branched.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="dialog-width" data-title="How wide a dialog is">
+    <p class="decision-id">D4 &middot; dialog-width</p>
+    <h2>How wide a dialog is</h2>
+    <p>
+      Every other component takes its box dimensions through <code>style</code> &mdash;
+      that is the standing rule, and it is why <code>Token</code> caps its own width with
+      <code>style</code> rather than a prop. A dialog is the case that tests it: a
+      confirm and a settings panel want visibly different widths, and picking one per
+      call site is how a system ends up with eleven of them.
+    </p>
+    <p>
+      Note the rule forbids raw dimensions as props, not named ramps &mdash;
+      <code>Button</code> and <code>Input</code> already take a <code>size</code>. Both
+      options below are legitimate; they differ in whether width is a system decision or
+      a call-site one.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <div class="jig">
+          <div class="w-rail">
+            <div class="w-row"><div class="w-bar" style="width:22rem"></div><p class="meas"><b>sm</b> 22rem &middot; 352px &middot; a confirm</p></div>
+            <div class="w-row"><div class="w-bar" style="width:30rem"></div><p class="meas"><b>md</b> 30rem &middot; 480px &middot; the default</p></div>
+            <div class="w-row"><div class="w-bar" style="width:42rem"></div><p class="meas"><b>lg</b> 42rem &middot; 672px &middot; a panel</p></div>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        The three widths at true scale, which is the only way to judge them. They are
+        the evidence for the first option and against it in equal measure: three widths
+        is a small enough set to hold in your head, and they are also three numbers that
+        answer to nothing in the token layer.
+      </figcaption>
+    </figure>
+
+    <div class="options">
+
+      <article class="option" data-option="size-ramp" data-label="A named size ramp">
+        <div class="option-head">
+          <h3>A named <code>size</code> ramp</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Three widths, at true scale</p>
+        <div class="specimen block">
+<pre class="tree">size.dialog.sm   <b>22rem</b>   352px
+size.dialog.md   <b>30rem</b>   480px   <i>default</i>
+size.dialog.lg   <b>42rem</b>   672px
+
+<i>each capped for the viewport:</i>
+min(width, calc(100vw - 2rem))</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Three widths across a whole product instead of eleven. That consistency is the reason to have a design system at all, and width is the dimension people diverge on fastest.</li>
+          <li class="pro">Matches the vocabulary <code>Button</code>, <code>Input</code>, <code>Slider</code> and <code>Token</code> already use, so <code>size</code> means the same kind of thing everywhere.</li>
+          <li class="pro">The viewport cap is decided once, in the component, rather than forgotten at each call site.</li>
+          <li class="con">Three off-ramp values. The spacing ramp tops out at 8rem and the type scale does not apply, so 22 / 30 / 42rem are numbers chosen by eye &mdash; the first in the system that answer to nothing.</li>
+          <li class="con">A genuinely unusual dialog &mdash; a media viewer, a diff &mdash; has to override with <code>style</code> anyway, so the ramp is a default rather than a constraint.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="style-only" data-label="Width through style">
+        <div class="option-head">
+          <h3>Width through <code>style</code></h3>
+        </div>
+
+        <p class="specimen-label">The standing rule, unbent</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Dialog style={{ maxWidth: '30rem' }}&gt;
+
+<i>the component still caps for the viewport:</i>
+maxWidth: `min(100%, calc(100vw - 2rem))`
+
+<i>no new values enter the token layer,
+and no prop to keep in step with the
+size ramps on other components</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No off-ramp numbers anywhere, and the rule that box dimensions are not props stays uniform &mdash; which is worth something on its own.</li>
+          <li class="pro">Nothing to deprecate later if a ramp turns out to be the wrong three values.</li>
+          <li class="con">Every call site picks its own width, and they will not agree. The system has no opinion on the one dimension a dialog is most defined by.</li>
+          <li class="con">A caller who writes <code>width</code> instead of <code>maxWidth</code>, or forgets the viewport cap, gets a dialog that overflows a phone &mdash; a failure the component could simply have prevented.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, on the recommended set</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree">&lt;Dialog
+  trigger={&lt;Button variant="danger"&gt;Delete recipe&lt;/Button&gt;}
+  title="Discard changes?"
+  description="Your edits to this recipe will be lost."
+  size="sm"
+  actions={
+    &lt;&gt;
+      &lt;Button variant="secondary"&gt;Cancel&lt;/Button&gt;
+      &lt;Button variant="danger" onClick={discard}&gt;Discard&lt;/Button&gt;
+    &lt;/&gt;
+  }
+&gt;
+  Sixteen ingredients and two substitutions will be lost.
+&lt;/Dialog&gt;
+
+<i>controlled, when the trigger is not adjacent &mdash; routing, form state</i>
+&lt;Dialog open={open} onOpenChange={setOpen} title="Terms"&gt;&hellip;&lt;/Dialog&gt;
+
+<b>Dialog</b>  children      <i>the body &mdash; scrolls in a ScrollArea when it overflows</i>
+        title         <i>required; sets aria-labelledby</i>
+        description   <i>sets aria-describedby</i>
+        actions       <i>the button row, right-aligned</i>
+        trigger       <i>a button element the dialog wires open state onto</i>
+        open onOpenChange   <i>the controlled pair; omit for uncontrolled</i>
+        size          <i>sm | md | lg                        (default md)</i>
+        closeLabel    <i>names the &times; for assistive tech      (default "Close")</i>
+        className style ref</pre>
+      </div>
+      <figcaption>
+        <code>trigger</code> and the controlled pair are not exclusive &mdash; a trigger
+        with <code>open</code> also passed is how Base UI's own controlled examples
+        work. <code>ref</code> points at the popup, which is the element a caller would
+        measure or scroll; <code>refs.test.tsx</code> will pin it.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong><code>AlertDialog</code>.</strong> Scoped out for this pass. It is a second Root and Trigger over this stylesheet, dropping the <code>&times;</code> and the outside-press dismissal; nothing here should make that harder, which is why the close button is settled as a wrapper concern rather than baked into the popup.</li>
+      <li><strong>The imperative handle.</strong> Base UI 1.7's <code>createHandle()</code> would allow a <code>confirm()</code>-style call from a function with no trigger rendered. Agreed out of scope; it is additive if it is ever wanted.</li>
+      <li><strong>Nested dialogs.</strong> No styling against <code>--nested-dialogs</code>, no <code>forceRender</code> on the backdrop.</li>
+      <li><strong>Entry and exit animation.</strong> Base UI exposes <code>data-starting-style</code>, <code>data-ending-style</code> and <code>onOpenChangeComplete</code>, and Jig has no motion vocabulary at all yet &mdash; no duration or easing tokens. Inventing them inside Dialog is how a motion system ends up defined by whichever component needed it first. Its own proposal.</li>
+      <li><strong>A larger radius for large surfaces.</strong> <code>radius.400</code> is 4.3px, drawn for a button, and it does look tight on a 30rem panel. Changing that is a system-wide decision touching Box, CodeBlock and every future surface, not something Dialog should settle for everyone.</li>
+      <li><strong>A drawer or sheet variant.</strong> Base UI ships a separate <code>drawer</code>; edge-anchored panels are not this component wearing a different prop.</li>
+      <li><strong><code>modal={false}</code> and <code>trap-focus</code>.</strong> Base UI's non-modal modes pass through untested. Jig designs the modal case; a non-modal panel is a different component with different rules about the page behind it.</li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0008
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0008-dialog",
+  "status": "proposed",
+  "follows": "0007-scroll-area",
+  "consumes": "0007-scroll-area",
+  "decided": null,
+  "built": null,
+  "settled": {
+    "foundation": "@base-ui/react Dialog at ~1.7.0, per 0001 D2's behaviour test and 0001 D4's pin. Focus trap, scroll lock, inert background and focus restoration are modal's job.",
+    "notAnchored": "The Popover/anchor-positioning rule is about anchored overlays. A dialog is centred; Tooltip stays the only hand-rolled overlay.",
+    "labelling": "title and description are props, and they are what wire aria-labelledby and aria-describedby. Same rule as 0002 D2.",
+    "opening": "Wrapped trigger plus the controlled open/onOpenChange pair. createHandle() is not exposed.",
+    "noNesting": "No nested dialogs; nothing styles --nested-dialogs and the backdrop's forceRender is left alone.",
+    "closeButton": "An x in the top corner, always - Base UI requires a Dialog.Close in a modal popup so touch screen readers can escape it. AlertDialog omits it in the wrapper, not the stylesheet.",
+    "scrollRegion": "ScrollArea (0007) is the scroll region; its mask marks the cropped edge and Dialog adds no rule of its own.",
+    "radius": "radius.400, matching Button, Input and Token."
+  },
+  "decisions": [
+    { "id": "api-shape",       "options": ["props-frame", "compound", "hybrid"],  "recommended": "props-frame" },
+    { "id": "scrim-token",     "options": ["alpha-token", "color-mix", "opacity"], "recommended": "alpha-token" },
+    { "id": "scroll-strategy", "options": ["inside", "outside", "both"],          "recommended": "inside" },
+    { "id": "dialog-width",    "options": ["size-ramp", "style-only"],            "recommended": "size-ramp" }
+  ]
+}
+</script>
+
+<script>
+  /* Fills the dialog bodies and drives the drawn scrollbar and the mask, the
+     same way ScrollArea does: MIN_THUMB_SIZE 16, and the two overflow
+     distances published as custom properties. */
+  (function () {
+    const LINES = [
+      'These terms govern your use of the service, and replace any version you agreed to before today.',
+      'Content you create remains yours. You grant only the licence needed to store it, display it back to you, and share it with people you choose.',
+      'The service is provided as it is. Where the law allows, there is no warranty beyond that.',
+      'We may change these terms. Material changes are announced before they take effect, and continuing to use the service is how you accept them.',
+      'Either party may end the agreement at any time. Your data stays exportable for thirty days afterwards.',
+      'Scroll to the bottom and the lower fade disappears, because there is nothing further down to point at.',
+    ];
+
+    const fill = (el, count) => {
+      if (el.querySelector('p')) return;
+      const html = LINES.slice(0, count).map((l) => '<p>' + l + '</p>').join('');
+      el.insertAdjacentHTML('afterbegin', html);
+    };
+
+    document.querySelectorAll('[data-fill]').forEach((el) => fill(el, 6));
+    document.querySelectorAll('[data-fill-long]').forEach((el) => fill(el, 5));
+
+    document.querySelectorAll('.popup-body[data-fill]').forEach((body) => {
+      const bar = body.querySelector('.sb');
+      const thumb = body.querySelector('.sb-thumb');
+
+      function update() {
+        const viewH = body.clientHeight;
+        const scrollH = body.scrollHeight;
+        const maxScroll = scrollH - viewH;
+        const top = body.scrollTop;
+
+        if (maxScroll <= 1) {
+          if (bar) bar.style.display = 'none';
+          return;
+        }
+        if (bar) bar.style.display = '';
+
+        const trackH = bar ? bar.clientHeight : viewH;
+        const thumbH = Math.max(16, Math.round(trackH * (viewH / scrollH)));
+        if (thumb) {
+          thumb.style.height = thumbH + 'px';
+          thumb.style.transform =
+            'translateY(' + Math.round((top / maxScroll) * (trackH - thumbH)) + 'px)';
+        }
+
+        body.style.setProperty('--overflow-y-start', top + 'px');
+        body.style.setProperty('--overflow-y-end', (maxScroll - top) + 'px');
+      }
+
+      body.addEventListener('scroll', update, { passive: true });
+      if (typeof ResizeObserver === 'function') new ResizeObserver(update).observe(body);
+      update();
+    });
+  })();
+</script>
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

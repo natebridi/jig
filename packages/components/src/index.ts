@@ -7,6 +7,14 @@ export { breakpoints } from './breakpoints';
 export type { Responsive } from './responsive';
 export type { SpacingProps, SpacingScale } from './spacing';
 export type { PolymorphicProps } from './polymorphic';
+// The icon set is also published at `@jig-ui/react/icons`. That subpath used
+// to be the only way to reach it, on the grounds that keeping it out of the
+// main entry stopped a Button from pulling the artwork in. It does not: Button,
+// IconButton, ToggleButton, Token, Slider and CodeBlock all render an Icon, so
+// the root entry imports the whole set on its first line either way. Both paths
+// resolve to the same chunk; the subpath stays so existing imports keep working.
+export { Icon } from './icon';
+export type { IconProps, IconName, IconWeight } from './icon';
 export { Button } from './button';
 export type { ButtonProps, ButtonVariant, ButtonSize } from './button';
 export { ToggleButton } from './togglebutton';
@@ -19,6 +27,8 @@ export { Input } from './input';
 export type { InputProps, InputSize } from './input';
 export { Token } from './token';
 export type { TokenProps, TokenColor, TokenSize } from './token';
+export { ScrollArea } from './scrollarea';
+export type { ScrollAreaProps } from './scrollarea';
 export { Slider } from './slider';
 export type { SliderProps, SliderSize } from './slider';
 export { Typography } from './typography';

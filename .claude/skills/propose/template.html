@@ -727,6 +727,38 @@
 
     const state = load();
 
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists —
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
     function load() {
       try {
         return JSON.parse(localStorage.getItem(storeKey)) || {};
@@ -745,7 +777,7 @@
     }
 
     function entry(id) {
-      if (!state[id]) state[id] = { choice: null, rejected: false, note: '' };
+      if (!state[id]) state[id] = blank(id);
       return state[id];
     }
 
@@ -873,7 +905,7 @@
 
     document.getElementById('reset').addEventListener('click', function () {
       blocks.forEach(function (block) {
-        state[block.dataset.decision] = { choice: null, rejected: false, note: '' };
+        state[block.dataset.decision] = blank(block.dataset.decision);
       });
       save();
       paint();

@@ -1,0 +1,1975 @@
+<title>0007 &middot; Scroll Area</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---------------------------------------------------------------
+     Specimen palette and a working scroll area.
+
+     The scrollbars below are real: native ones are hidden with
+     `scrollbar-width: none` and a thumb div is positioned from the
+     scroll metrics, which is exactly what Base UI's ScrollArea does.
+     MIN_THUMB_SIZE (16px) and SCROLL_TIMEOUT (500ms) are its own
+     constants, read from scroll-area/constants.d.ts. Scroll them.
+     --------------------------------------------------------------- */
+
+  .jig {
+    --j-sp-100: 0.17rem;
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+
+    --j-rad-400: 4.3px;
+    --j-rad-500: 7px;
+
+    /* surfaces + text, light */
+    --j-card: #ffffff;
+    --j-body: #eeece8;
+    --j-text: #34312a;
+    --j-muted: #86837d;
+    --j-line: #d3d0cb;
+
+    /* proposed color.scrollbar.* &mdash; light */
+    --j-sb-track: #e7e5e1;   /* warm.100 */
+    --j-sb-thumb: #b1afa9;   /* warm.300 */
+    --j-sb-hover: #86837d;   /* warm.400 */
+
+    /* the reuse option: color.control.border / hover-border */
+    --j-ctl-thumb: #d3d0cb;  /* warm.200 */
+    --j-ctl-hover: #b1afa9;  /* warm.300 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-card: #242424;
+      --j-body: #181818;
+      --j-text: #e5e5e5;
+      --j-muted: #afafaf;
+      --j-line: #565656;
+
+      --j-sb-track: #313131;  /* gray.600 */
+      --j-sb-thumb: #6c6c6c;  /* gray.450 */
+      --j-sb-hover: #838383;  /* gray.400 */
+
+      --j-ctl-thumb: #565656; /* gray.500 */
+      --j-ctl-hover: #838383; /* gray.400 */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-card: #242424;
+    --j-body: #181818;
+    --j-text: #e5e5e5;
+    --j-muted: #afafaf;
+    --j-line: #565656;
+
+    --j-sb-track: #313131;
+    --j-sb-thumb: #6c6c6c;
+    --j-sb-hover: #838383;
+
+    --j-ctl-thumb: #565656;
+    --j-ctl-hover: #838383;
+  }
+
+  /* ---- the scroll area itself ---- */
+
+  .jig .sa {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    height: 190px;
+    background: var(--j-card);
+    border: 1px solid var(--j-line);
+    border-radius: var(--j-rad-400);
+    overflow: hidden;
+    font-family: var(--sans);
+    color: var(--j-text);
+  }
+
+  .jig .sa-vp {
+    height: 100%;
+    overflow: auto;
+    /* Base UI hides the native bar and draws its own; same here. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    outline: none;
+  }
+
+  .jig .sa-vp::-webkit-scrollbar { display: none; }
+
+  .jig .sa-content {
+    padding: var(--j-sp-400) var(--j-sp-500);
+    font-size: var(--j-ts-200);
+    line-height: 1.65;
+  }
+
+  .jig .sa-content p { margin: 0 0 0.7em; max-width: none; color: inherit; font-size: inherit; }
+  .jig .sa-content p:last-child { margin-bottom: 0; }
+
+  /* Scrollbar track. `--gutter` is the width it reserves in layout; the
+     overlay options set it to 0 and float the bar instead. */
+  .jig .sa-bar {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    width: var(--j-sp-300);
+    border-radius: var(--j-rad-500);
+    background: transparent;
+    transition: opacity 160ms ease, background 160ms ease;
+  }
+
+  .jig .sa-thumb {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    border-radius: var(--j-rad-500);
+    background: var(--j-sb-thumb);
+    transition: background 120ms ease, opacity 160ms ease;
+  }
+
+  .jig .sa-thumb:hover { background: var(--j-sb-hover); }
+
+  /* Hidden entirely when the content does not overflow &mdash; Base UI unmounts
+     the scrollbar unless `keepMounted` is set. */
+  .jig .sa[data-overflow="false"] .sa-bar { display: none; }
+
+  /* --- D1 option a: reserved gutter, always visible --- */
+  .jig .sa-gutter .sa-vp { padding-right: calc(var(--j-sp-300) + 4px); }
+  .jig .sa-gutter .sa-bar { background: var(--j-sb-track); }
+
+  /* --- D1 option b: overlay, fades in on hover or scroll --- */
+  .jig .sa-fade .sa-bar { opacity: 0; }
+  .jig .sa-fade:hover .sa-bar,
+  .jig .sa-fade[data-scrolling] .sa-bar { opacity: 1; }
+
+  /* --- D1 option c: overlay, always visible --- */
+  /* nothing to add: the base rules already draw a floating, permanent bar */
+
+  /* --- D1 as revised: the gutter is reserved in all three, and the reveal
+         triggers are the same. What differs is what sits there at rest. --- */
+  .jig .sa-reserve .sa-vp { padding-right: calc(var(--j-sp-300) + 4px); }
+
+  /* a: nothing at rest */
+  .jig .sa-r-empty .sa-bar { opacity: 0; }
+  .jig .sa-r-empty:hover .sa-bar,
+  .jig .sa-r-empty:focus-within .sa-bar,
+  .jig .sa-r-empty[data-scrolling] .sa-bar { opacity: 1; }
+
+  /* b: the track is painted, the thumb is revealed */
+  .jig .sa-r-track .sa-bar { background: var(--j-sb-track); }
+  .jig .sa-r-track .sa-thumb { opacity: 0; }
+  .jig .sa-r-track:hover .sa-thumb,
+  .jig .sa-r-track:focus-within .sa-thumb,
+  .jig .sa-r-track[data-scrolling] .sa-thumb { opacity: 1; }
+
+  /* c: the thumb is there but dimmed */
+  .jig .sa-r-dim .sa-thumb { opacity: 0.35; }
+  .jig .sa-r-dim:hover .sa-thumb,
+  .jig .sa-r-dim:focus-within .sa-thumb,
+  .jig .sa-r-dim[data-scrolling] .sa-thumb { opacity: 1; }
+
+  /* The viewport takes focus when it overflows, so the specimens can be
+     tabbed into &mdash; see the script, which mirrors Base UI's own rule. */
+  .jig .sa-vp:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  /* --- D2: edge affordances --- */
+
+  /* mask fade, driven by the same custom properties Base UI publishes */
+  .jig .sa-mask .sa-vp {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      black min(28px, var(--overflow-y-start, 0px)),
+      black calc(100% - min(28px, var(--overflow-y-end, 0px))),
+      transparent 100%
+    );
+    mask-repeat: no-repeat;
+  }
+
+  /* hairline rules that appear only on the scrolled edge */
+  .jig .sa-rule::before,
+  .jig .sa-rule::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--j-line);
+    opacity: 0;
+    transition: opacity 140ms ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .jig .sa-rule::before { top: 0; }
+  .jig .sa-rule::after { bottom: 0; }
+  .jig .sa-rule[data-at-start="false"]::before { opacity: 1; }
+  .jig .sa-rule[data-at-end="false"]::after { opacity: 1; }
+
+  /* --- a pinned header and footer, which is what Dialog needs --- */
+  .jig .sa-shell {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 210px;
+    background: var(--j-card);
+    border: 1px solid var(--j-line);
+    border-radius: var(--j-rad-400);
+    overflow: hidden;
+    font-family: var(--sans);
+    color: var(--j-text);
+  }
+
+  .jig .sa-shell .sa {
+    border: none;
+    border-radius: 0;
+    height: auto;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .jig .sa-head,
+  .jig .sa-foot {
+    flex: none;
+    padding: var(--j-sp-400) var(--j-sp-500);
+    font-size: var(--j-ts-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--j-sp-300);
+  }
+
+  .jig .sa-head { font-weight: 600; }
+  .jig .sa-foot { color: var(--j-muted); font-size: var(--j-ts-100); }
+
+  .jig .col { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+  .jig .row { display: flex; flex-wrap: wrap; gap: var(--j-sp-400); align-items: flex-start; }
+
+  .meas {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .meas b { color: var(--ink-2); font-weight: 600; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0007</p>
+    <h1>Scroll Area</h1>
+    <p class="standfirst">
+      A scrollable region with a scrollbar Jig draws rather than the platform.
+      Proposed on its own rather than inside Dialog, because Dialog's inside-scroll
+      pattern &mdash; title and actions pinned, body scrolling &mdash; is built on it, and
+      a scrollbar designed as a detail of one component is a scrollbar that has to be
+      redesigned for the next.
+    </p>
+    <p class="standfirst" style="margin-top:0.9rem">
+      All four are decided. D1 was rejected once and rebuilt: it had wrongly treated
+      reserving a gutter and revealing the bar on demand as alternatives, when what was
+      wanted was both.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-24</li>
+      <li>revised 2026-08-25</li>
+      <li>decided 2026-08-25</li>
+      <li>built 2026-08-25</li>
+      <li>4 decisions</li>
+      <li>blocks <b>Dialog</b> (0008)</li>
+      <li>follows <a href="0006-token.html">0006</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Nothing in Jig scrolls today. <code>CodeBlock</code> scrolls horizontally with a
+      native bar and that is the whole of it. Dialog needs more: a long dialog should
+      keep its title and its actions on screen while the body moves, which means an
+      inner scroll region that is styled, that says whether it is at its top or bottom,
+      and that does not change size when a platform decides to show a bar.
+    </p>
+    <p>
+      Base UI 1.7.0 &mdash; the range <a href="0001-base-ui-foundation.html">0001&nbsp;D4</a>
+      pinned at <code>~1.7.0</code> &mdash; ships <code>ScrollArea</code> as
+      <code>Root / Viewport / Content / Scrollbar / Thumb / Corner</code>. It hides the
+      native scrollbar, tracks the scroll metrics, and publishes them as data attributes
+      and custom properties. What it does not do is decide what any of it looks like, and
+      that is what this document is for.
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>what Base UI publishes, from the installed 1.7.0</i>
+
+<b>data-has-overflow-y</b>        <i>the axis overflows at all</i>
+<b>data-overflow-y-start</b>      <i>scrolled away from the top</i>
+<b>data-overflow-y-end</b>        <i>more content below</i>
+<b>data-scrolling</b>            <i>set during a scroll, cleared after 500ms</i>
+
+<b>--scroll-area-thumb-height</b>       <i>computed thumb size</i>
+<b>--scroll-area-overflow-y-start</b>   <i>px scrolled from the top</i>
+<b>--scroll-area-overflow-y-end</b>     <i>px remaining below</i>
+
+<i>constants.d.ts:</i>  MIN_THUMB_SIZE = 16   SCROLL_TIMEOUT = 500</pre>
+      </div>
+      <figcaption>
+        Every decision below is a choice about how to spend these. The two
+        <code>overflow-y</code> properties are pixel distances rather than booleans,
+        which is what makes a gradient mask possible at all &mdash; D2 turns on whether
+        that is worth having.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li><strong>Base UI, per 0001&nbsp;D2's behaviour test.</strong> A scroll area tracks scroll metrics, computes thumb geometry, handles drag, and manages a touch-modality edge case in WebKit where momentum scrolling dispatches no events. That is behaviour, not styling, and it is already written.</li>
+      <li><strong>Keyboard focus is Base UI's, and it is already right.</strong> The viewport carries <code>tabIndex={0}</code> only while it actually overflows, and <code>-1</code> otherwise (<code>viewport/ScrollAreaViewport.js:281</code>), so a scrollable region is reachable by keyboard without a non-scrolling one adding a stray tab stop. Nothing for Jig to add, and nothing to get wrong.</li>
+      <li><strong>The native scrollbar is hidden by Base UI</strong>, not by us &mdash; the viewport carries its own <code>styleDisableScrollbar</code> class and <code>overflow: scroll</code> inline.</li>
+      <li><strong>One component, not six parts.</strong> <a href="0002-text-input.html">0002&nbsp;D2</a>'s rule: the pieces are props rather than composable parts, because anyone who wants to assemble them by hand is better served by Base UI directly. Five of ScrollArea's six parts are invariant boilerplate, so <code>&lt;ScrollArea&gt;{children}&lt;/ScrollArea&gt;</code> renders the lot.</li>
+      <li><strong>Both axes, each hiding itself.</strong> Base UI unmounts a scrollbar whose axis does not overflow unless <code>keepMounted</code> is set. Jig takes that default; there is no <code>orientation</code> prop to get wrong.</li>
+      <li><strong>Height is the caller's.</strong> A scroll area scrolls because something constrains it. That constraint goes through <code>style</code> or a flex parent, not a prop &mdash; box dimensions are not props.</li>
+      <li><strong>No <code>as</code> prop, no spacing props</strong>, and the standard file set with an export from <code>src/index.ts</code>.</li>
+      <li><strong>Scrollbar width is <code>spacing.300</code></strong> &mdash; 0.45rem, 7.2px &mdash; which lands in the usual 6&ndash;10px band for a drawn scrollbar without inventing an off-ramp value. The thumb takes <code>radius.500</code> (7px), which at that width is a capsule.</li>
+      <li><strong>Nested scroll areas are not designed for.</strong> Neither is a horizontal scroll area inside a vertical one; the corner part renders but nothing is designed against it.</li>
+    </ul>
+
+    <h3>What Dialog needs from it</h3>
+    <p>
+      Recorded here so the decisions below are answerable rather than abstract. Dialog
+      (0008) will wrap Base UI's <code>Dialog.Viewport</code> for positioning and put a
+      ScrollArea inside <code>Dialog.Popup</code> for the body. From this component it
+      needs exactly three things:
+    </p>
+    <ul class="notes">
+      <li>A body that scrolls while the title and the action row stay put.</li>
+      <li>A way to draw a rule under a pinned title <em>only once the body has been scrolled</em>, so a short dialog has no spurious line across it. That is D2 and D4.</li>
+      <li>A scrollbar that does not shift the body's text when it appears. That is D1.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Every specimen below is a working scroll area &mdash; native bar hidden, thumb
+      positioned from the scroll metrics, the same 16px minimum thumb and 500ms idle
+      timeout Base UI uses. Scroll them.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="scrollbar-presence" data-revised="2026-08-25" data-title="What sits in the reserved gutter at rest">
+    <p class="decision-id">D1 &middot; scrollbar-presence &middot; revised</p>
+    <h2>What sits in the reserved gutter at rest</h2>
+
+    <div class="outcome">
+      <span class="tag">Revised after rejection &mdash; 2026-08-25</span>
+      <b>The first draft offered three options and argued that reserving a gutter and
+      fading the bar were mutually exclusive</b> &mdash; &ldquo;a bar that fades cannot
+      also hold a gutter open; an empty reserved strip is worse than either.&rdquo; That
+      was asserted, not shown, and it is wrong.
+      <p>
+        Rejected with: &ldquo;<i>Reserve area and fade in on hover and focus.</i>&rdquo;
+        The two are orthogonal. Reserving the gutter buys the things reserving is for
+        &mdash; no reflow when a region becomes scrollable, and no thumb sitting on top
+        of the text &mdash; and none of that requires the bar to be painted while nobody
+        is looking at it.
+      </p>
+      <p>
+        <b>D2 settles the objection that drove the original recommendation.</b> The case
+        against fading was that a cropped body would look uncropped to a touch user who
+        never produces a hover. With the gradient mask accepted, the content itself
+        carries that signal permanently and on every input type, so the scrollbar no
+        longer has to. The two decisions were argued separately and should not have been.
+      </p>
+    </div>
+
+    <p>
+      So the gutter is reserved &mdash; <code>spacing.300</code>, 7.2px &mdash; and the
+      bar reveals on <b>hover</b>, on <b>focus within</b> the area, and on
+      <b>scroll</b>. Focus matters because Base UI puts the viewport in the tab order
+      whenever it overflows, so a keyboard user can land inside a scroll region and
+      needs to see what they landed in. Scroll is the addition to the note: it is the
+      only trigger a touch user ever fires, and it is what Base UI's
+      <code>data-scrolling</code> attribute and its 500ms timeout exist for.
+    </p>
+    <p>
+      What is left open is what occupies the reserved strip while none of those are
+      true. All three specimens below reserve the same width and reveal on the same
+      three triggers. <b>Tab into them</b>, hover them, and scroll them.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="reserve-empty" data-label="Nothing at rest">
+        <div class="option-head">
+          <h3>Nothing at rest</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Clean until hovered, focused or scrolled</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa sa-reserve sa-r-empty" data-fill>
+              <div class="sa-vp"><div class="sa-content"></div></div>
+              <div class="sa-bar"><div class="sa-thumb"></div></div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem"><b>7.2px</b> reserved &middot; nothing painted at rest &middot; the note, exactly</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly what was asked for, and the quietest of the three &mdash; a dialog at rest has no chrome down its right edge at all.</li>
+          <li class="pro">No reflow and no thumb over the text, which is the whole reason to reserve.</li>
+          <li class="pro">Nothing to keep in contrast at rest, so the track colour question in D3 only has to hold up while the bar is actually visible.</li>
+          <li class="con">The reserved strip reads as asymmetric padding rather than as a rail, so the body text looks slightly off-centre in its box until something reveals the bar.</li>
+          <li class="con">Gives the least indication of <em>where</em> to aim before the pointer arrives &mdash; you hover the general area and the thumb appears somewhere in it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="reserve-track" data-label="A painted track, thumb revealed">
+        <div class="option-head">
+          <h3>A painted track</h3>
+        </div>
+
+        <p class="specimen-label">The rail is permanent; the thumb is what fades</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa sa-reserve sa-r-track" data-fill>
+              <div class="sa-vp"><div class="sa-content"></div></div>
+              <div class="sa-bar"><div class="sa-thumb"></div></div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem"><b>7.2px</b> reserved &middot; track at <code>scrollbar.track</code> &middot; thumb reveals</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The reserved space is legible as a scrollbar rail rather than as stray padding, which is the one real cost of the option above.</li>
+          <li class="pro">Says &ldquo;this region scrolls&rdquo; permanently and on every input type, without the thumb being painted over the text&rsquo;s edge.</li>
+          <li class="con">A permanent vertical line down every scrolling surface, including short ones inside a dialog where it is the loudest thing on the panel.</li>
+          <li class="con">Reintroduces most of what the note was rejecting &mdash; the bar is still always there, only emptier.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="reserve-dim" data-label="A dimmed thumb">
+        <div class="option-head">
+          <h3>A dimmed thumb</h3>
+        </div>
+
+        <p class="specimen-label">Always locatable, never loud</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa sa-reserve sa-r-dim" data-fill>
+              <div class="sa-vp"><div class="sa-content"></div></div>
+              <div class="sa-bar"><div class="sa-thumb"></div></div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem"><b>7.2px</b> reserved &middot; thumb at 35% &middot; full on reveal</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Keeps position information visible at rest &mdash; you can see how far down you are without touching anything, which neither of the others gives you.</li>
+          <li class="pro">The reveal is a strengthening rather than an appearance, so nothing moves or materialises under the pointer.</li>
+          <li class="con">An opacity that is not a token. 35% is a number chosen by eye, and it has to hold against both themes and every surface a scroll area can sit on.</li>
+          <li class="con">Dimmed-but-present is the least decisive of the three: too faint to rely on, too visible to be absent.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-25</span>
+      <b>Nothing at rest.</b> The gutter reserves <code>spacing.300</code> (7.2px) so the
+      body never reflows and the thumb never sits over the text, and the bar is painted
+      only while the area is hovered, has focus within it, or is being scrolled. At rest
+      a scroll area shows no chrome at all &mdash; the gradient mask from D2 is what says
+      the content is cropped.
+      <p>
+        <b>This resolves the contingency in D3.</b> No option that paints a permanent
+        rail was chosen, so <code>color.scrollbar.track</code> has no consumer and is not
+        shipped: the set is <code>thumb</code> and <code>thumb-hover</code> only. Add
+        <code>track</code> if a future surface needs a visible rail, rather than shipping
+        a token nothing reads.
+      </p>
+      <p>
+        <b>Build obligation.</b> The reveal is three triggers, not one:
+        <code>:hover</code>, <code>:focus-within</code> &mdash; Base UI puts the viewport
+        in the tab order whenever it overflows, so a keyboard user can land inside a
+        scroll region and must see what they landed in &mdash; and Base UI's
+        <code>data-scrolling</code>, which is the only one a touch user ever fires.
+        Missing the third makes the scrollbar invisible to touch entirely.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="edge-affordance" data-title="What marks the cropped edge">
+    <p class="decision-id">D2 &middot; edge-affordance</p>
+    <h2>What marks the cropped edge</h2>
+    <p>
+      A scrollbar says <em>how much</em> there is. It does not say <em>where the content
+      is cut</em>, and in a Dialog those are different questions &mdash; the crop falls
+      between a pinned title and the body, which is exactly the seam a reader needs
+      drawn. Base UI publishes the two distances as pixel values precisely so this can
+      be styled rather than guessed.
+    </p>
+    <p>
+      Whichever is chosen must appear <em>only when scrolled</em>. A short dialog with a
+      rule across it, or a fade over content that is entirely visible, is worse than no
+      treatment at all. Each specimen has a pinned header and footer so it is judged in
+      the arrangement it exists for.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="hairline" data-label="Hairline rule on the scrolled edge">
+        <div class="option-head">
+          <h3>Hairline on the scrolled edge</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Rules fade in as you leave each end</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa-shell">
+              <div class="sa-head">Terms of service</div>
+              <div class="sa sa-rule" data-fill>
+                <div class="sa-vp"><div class="sa-content"></div></div>
+                <div class="sa-bar"><div class="sa-thumb"></div></div>
+              </div>
+              <div class="sa-foot">Accept &middot; Decline</div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">1px &middot; <code>color.control.border</code> &middot; opacity from <code>data-overflow-y-*</code></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Draws the seam where it actually is &mdash; between the pinned row and the moving one &mdash; which is the thing a reader needs to understand the layout.</li>
+          <li class="pro">Obscures no content. Every character stays legible at full contrast.</li>
+          <li class="pro">Works on any background, because a line does not have to blend into one. A mask has to.</li>
+          <li class="con">Less literally expressive than a fade: it marks the boundary rather than suggesting continuation.</li>
+          <li class="con">One more rule to keep in step with whatever border the header already draws, or the two double up.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="mask-fade" data-label="Gradient mask fade">
+        <div class="option-head">
+          <h3>Gradient mask fade</h3>
+        </div>
+
+        <p class="specimen-label">Base UI's own example, on the real custom properties</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa-shell">
+              <div class="sa-head">Terms of service</div>
+              <div class="sa sa-mask" data-fill>
+                <div class="sa-vp"><div class="sa-content"></div></div>
+                <div class="sa-bar"><div class="sa-thumb"></div></div>
+              </div>
+              <div class="sa-foot">Accept &middot; Decline</div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem"><code>mask-image</code> &middot; 28px ramp &middot; clamped by <code>--scroll-area-overflow-y-*</code></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Reads as continuation rather than as a boundary &mdash; text visibly runs on past the edge, which is unambiguous.</li>
+          <li class="pro">Self-scaling: the ramp shortens as you approach either end, because it is clamped by the remaining distance.</li>
+          <li class="con">Fades the content itself. The top line of a scrolled dialog is partly transparent, which is a legibility cost paid continuously.</li>
+          <li class="con"><code>mask-image</code> on a scrolling element forces it onto its own compositor layer; on a long body that is a real cost, and it interacts badly with anything sticky inside.</li>
+          <li class="con">Only works when the surface behind is flat &mdash; the fade goes to transparent, not to the popup's colour, so a patterned or image background shows through.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="none" data-label="Nothing beyond the scrollbar">
+        <div class="option-head">
+          <h3>Nothing beyond the scrollbar</h3>
+        </div>
+
+        <p class="specimen-label">The bar is the only signal</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa-shell">
+              <div class="sa-head">Terms of service</div>
+              <div class="sa" data-fill>
+                <div class="sa-vp"><div class="sa-content"></div></div>
+                <div class="sa-bar"><div class="sa-thumb"></div></div>
+              </div>
+              <div class="sa-foot">Accept &middot; Decline</div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">no edge treatment &middot; smallest surface</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing to build, nothing to keep in step, and no opinion imposed on a consumer who wants their own treatment.</li>
+          <li class="pro">The data attributes are still published by Base UI, so a caller can style the edge themselves without the component having chosen.</li>
+          <li class="con">Leaves Dialog to solve it, which is how a scroll detail becomes a Dialog detail &mdash; the thing splitting this proposal out was meant to avoid.</li>
+          <li class="con">A pinned header floating directly above moving text, with no seam, reads as a rendering error more than as a layout.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-25</span>
+      <b>Gradient mask fade.</b> Not the recommendation. The viewport carries a
+      <code>mask-image</code> clamped by <code>--scroll-area-overflow-y-start</code> and
+      <code>-end</code>, so the ramp shortens to nothing as each end is reached. The
+      scrollbar is a sibling of the viewport rather than a child, so it is not masked
+      with the content.
+      <p>
+        This accepts the three costs the option names: the top and bottom lines of a
+        scrolled region are partly transparent; <code>mask-image</code> puts the
+        scrolling element on its own compositor layer; and the fade goes to transparent
+        rather than to a colour, so it only reads correctly over a flat background.
+        <b>Build obligation</b> &mdash; state that last one in the component's
+        documentation, because a ScrollArea placed over a patterned surface will show it
+        through and the failure will not look like a ScrollArea bug.
+      </p>
+      <p>
+        It also changed D1. The argument for an always-painted scrollbar was that
+        otherwise nothing tells a touch user the region is cropped; the mask now does
+        that permanently and on every input type, which is why D1 was reopened rather
+        than re-recommended unchanged.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="scrollbar-colour" data-title="Where the scrollbar's colours come from">
+    <p class="decision-id">D3 &middot; scrollbar-colour</p>
+    <h2>Where the scrollbar's colours come from</h2>
+    <p>
+      A drawn scrollbar needs a thumb colour, a hover colour, and &mdash; if D1 keeps the
+      gutter &mdash; a track. The question is whether that is a set of its own or whether
+      it borrows from <code>color.control.*</code>, which already carries a border and a
+      hover border for every field-like control.
+    </p>
+    <p>
+      The two render differently, and the difference is legible below: control borders
+      are tuned to sit quietly around an input, which is a step lighter than a thumb
+      wants to be to read as a grabbable object.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="new-set" data-label="A color.scrollbar set">
+        <div class="option-head">
+          <h3>A <code>color.scrollbar</code> set</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>track</code> warm.100 &middot; <code>thumb</code> warm.300 &middot; <code>thumb-hover</code> warm.400</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa sa-gutter" data-fill style="height:150px">
+              <div class="sa-vp"><div class="sa-content"></div></div>
+              <div class="sa-bar"><div class="sa-thumb"></div></div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">3 tokens &times; 2 themes &middot; hover the thumb</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A thumb is a control you drag, and it can be tuned to read that way rather than inheriting a value chosen to be unobtrusive.</li>
+          <li class="pro">The same shape the system already uses for component-scoped colour &mdash; <code>color.button.*</code>, <code>color.control.*</code>, <code>color.token.*</code> &mdash; built with a small util beside them.</li>
+          <li class="pro">Retuning input borders later cannot silently restyle every scrollbar.</li>
+          <li class="con">Three more semantics per theme for one component, before a second consumer exists.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="reuse-control" data-label="Borrow color.control.*">
+        <div class="option-head">
+          <h3>Borrow <code>color.control.*</code></h3>
+        </div>
+
+        <p class="specimen-label"><code>border</code> warm.200 &middot; <code>hover-border</code> warm.300</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="sa sa-gutter" data-fill style="height:150px">
+              <div class="sa-vp"><div class="sa-content"></div></div>
+              <div class="sa-bar" style="background:transparent"><div class="sa-thumb" style="background:var(--j-ctl-thumb)"></div></div>
+            </div>
+            <p class="meas" style="margin-top:0.6rem">0 new tokens &middot; one step lighter than the set above</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No new tokens, and the checklist's standing instruction to compose before adding.</li>
+          <li class="pro">A scrollbar inside a bordered surface matches the border around it exactly, which is one fewer grey in the system.</li>
+          <li class="con">Visibly fainter, as above. An input border is drawn to recede; a thumb has to invite a drag.</li>
+          <li class="con">Borrows a name that means something else. <code>control.border</code> on a thing that is not a border and not a control is the kind of alias that reads as a mistake in a year.</li>
+          <li class="con">No third value, so a painted track would have to borrow again from somewhere else.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-25</span>
+      <b>A <code>color.scrollbar</code> set.</b> Three semantics per theme &mdash;
+      <code>track</code>, <code>thumb</code>, <code>thumb-hover</code> &mdash; generated
+      beside <code>buttonSet</code>, <code>controlSet</code> and <code>tokenSet</code>
+      in <code>packages/tokens/src/utils.ts</code>.
+      <p>
+        <b>One of the three was contingent on D1, and D1 settled it.</b>
+        <code>track</code> is only painted by an option that keeps a permanent rail, and
+        &ldquo;nothing at rest&rdquo; does not. The set ships as <code>thumb</code> and
+        <code>thumb-hover</code>; <code>track</code> is dropped rather than shipped
+        unread.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="overflow-state-api" data-title="How a parent reacts to scroll position">
+    <p class="decision-id">D4 &middot; overflow-state-api</p>
+    <h2>How a parent reacts to scroll position</h2>
+    <p>
+      D2 draws the edge <em>inside</em> the scroll area. Dialog may want it outside &mdash;
+      a rule belonging to the pinned title rather than to the body, so it spans the
+      popup's full width including the gutter, and sits with the header's own padding.
+      For that, something outside the scroll area has to know it has been scrolled.
+    </p>
+    <p>
+      Base UI already puts <code>data-overflow-y-start</code> and
+      <code>data-overflow-y-end</code> on both Root and Viewport. The question is only
+      whether Jig re-publishes that, adds a JavaScript channel alongside it, or leaves
+      it at the DOM.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="css-only" data-label="Data attributes only">
+        <div class="option-head">
+          <h3>Data attributes only</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">The parent styles a descendant selector &mdash; no React state</p>
+        <div class="specimen block">
+<pre class="tree">&lt;div class="popup"&gt;
+  &lt;h2 class="title"&gt;Terms&lt;/h2&gt;
+  &lt;ScrollArea class="body"&gt;&hellip;&lt;/&gt;
+&lt;/div&gt;
+
+<i>dialog.css.ts &mdash; the title's rule</i>
+selectors: {
+  '&amp;:has(~ .body<b>[data-overflow-y-start]</b>)':
+    { borderBottom: `1px solid ${line}` },
+}
+
+<i>no callback, no re-render,
+no state to keep in sync</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Zero API. The attributes exist whether or not anyone reads them, so this option costs nothing to ship and cannot be wrong.</li>
+          <li class="pro">No re-render on scroll. A callback firing on every frame of a drag is a real cost in a dialog with a form in it.</li>
+          <li class="pro">The state is on the DOM node that owns it, which survives the value being read by CSS, by a test, or by a devtools inspection.</li>
+          <li class="con">A consumer who genuinely needs the value in JavaScript &mdash; to disable an Accept button until the terms are scrolled to the bottom &mdash; has to reach for a <code>MutationObserver</code> or their own ref.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="callback" data-label="An onEdgeChange callback">
+        <div class="option-head">
+          <h3>An <code>onEdgeChange</code> callback</h3>
+        </div>
+
+        <p class="specimen-label">Edges as React state</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ScrollArea
+  onEdgeChange={({ atEnd }) =&gt;
+    setAtBottom(atEnd)}
+&gt;
+  &hellip;
+&lt;/ScrollArea&gt;
+
+<i>fires on entering or leaving
+an edge, not on every scroll</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Covers the case CSS cannot: gating an action on having read to the bottom, which is a real requirement for a terms dialog.</li>
+          <li class="pro">Debounced by construction &mdash; the edges are booleans, so it fires twice per traversal rather than continuously.</li>
+          <li class="con">Public API added speculatively. No consumer needs it yet: Dialog's rule is a border, and a border is CSS.</li>
+          <li class="con">Invites the mistake it looks like it solves &mdash; a caller putting scroll position in React state and re-rendering a dialog body on every scroll.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="both" data-label="Attributes now, callback when asked for">
+        <div class="option-head">
+          <h3>Attributes now, callback when asked for</h3>
+        </div>
+
+        <p class="specimen-label">Ship the first, record the second</p>
+        <div class="specimen block">
+<pre class="tree"><b>ships</b>
+  data-overflow-y-start / -end,
+  re-published on the root
+
+<b>deferred</b>
+  onEdgeChange
+  trigger: a consumer needing
+  the value in JavaScript
+
+<i>the shape 0003 D3 used to
+defer grid offsets</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Identical to the first option in what it ships, and says out loud what would bring the second back.</li>
+          <li class="pro">A named revisit trigger is how 0003 deferred offsets, so the archive already reads this way.</li>
+          <li class="con">Not really a third option so much as the first with a note attached &mdash; if that note belongs anywhere it is in the outcome, not in the API.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-25</span>
+      <b>Data attributes only.</b> No <code>onEdgeChange</code>. Base UI's
+      <code>data-overflow-y-start</code> and <code>-end</code> are re-published on the
+      ScrollArea root, and a parent that wants to react &mdash; Dialog drawing a rule
+      under its title &mdash; does it in CSS with <code>:has()</code>. Nothing
+      re-renders on scroll.
+      <p>
+        Revisit trigger, recorded rather than built: a consumer that needs the value in
+        JavaScript, such as gating an Accept button on having read to the bottom.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as built</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>on its own &mdash; the height is the caller's, as always</i>
+&lt;ScrollArea style={{ maxHeight: '20rem' }}&gt;
+  &lt;Typography as="p" with="body01"&gt;&hellip;&lt;/Typography&gt;
+&lt;/ScrollArea&gt;
+
+<i>inside a flex column, which is how Dialog will use it</i>
+&lt;div className={popup}&gt;
+  &lt;h2 className={title}&gt;Terms&lt;/h2&gt;
+  &lt;ScrollArea className={body}&gt;&hellip;&lt;/ScrollArea&gt;   <i>flex: 1; min-height: 0</i>
+  &lt;div className={actions}&gt;&hellip;&lt;/div&gt;
+&lt;/div&gt;
+
+<b>ScrollArea</b>  children    <i>the scrolling content</i>
+            className   <i>applied to the root, which is what constrains the height</i>
+            style       <i>where max-height or flex sizing goes</i>
+            ref         <i>HTMLDivElement &mdash; the root, not the viewport</i>
+
+<i>published on the root, for a parent to style against:</i>
+            data-has-overflow-y   data-overflow-y-start   data-overflow-y-end</pre>
+      </div>
+      <figcaption>
+        Four props, three of which are the standard ones. Everything else &mdash;
+        orientation, thumb geometry, keyboard focus, the corner &mdash; is Base UI's or is
+        settled above. The <code>ref</code> pointing at the root rather than the viewport
+        is worth stating: the root is the element a caller sizes, and
+        <code>refs.test.tsx</code> will pin it.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A <code>ScrollArea.Content</code> equivalent.</strong> Base UI's Content part is optional and exists for state propagation; a single component renders it internally or not at all. Nothing is exposed.</li>
+      <li><strong>Scroll position control.</strong> No <code>scrollTo</code>, no <code>defaultScrollTop</code>. A ref to the root plus <code>querySelector</code> is unpleasant, so if this is wanted the honest answer is an imperative handle, and that deserves its own decision rather than a prop bolted on here.</li>
+      <li><strong>Horizontal-only styling.</strong> The horizontal scrollbar renders and works &mdash; it is Base UI's &mdash; but nothing in Jig is designed against it yet, and <code>CodeBlock</code> keeps its native bar until something asks otherwise.</li>
+      <li><strong>The corner.</strong> Rendered, unstyled beyond the track colour. Both axes overflowing at once is not a layout Jig has.</li>
+      <li><strong>Shadow-based edge affordances.</strong> An inset shadow at the cropped edge was considered and dropped: it reads as depth on a surface that has none, and Jig has no elevation vocabulary to draw on.</li>
+      <li><strong>Overscroll behaviour.</strong> <code>overscroll-behavior: contain</code> inside a Dialog stops a scroll chaining to the page behind. That belongs to Dialog's modal handling, not here.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-25. <code>pnpm turbo typecheck test</code> passes &mdash; 12 tasks,
+      136 tests across 15 files, 6 of the tests new &mdash; and the packed-consumer test
+      installs and type-checks the tarball in isolation. The three reveal triggers, the
+      mask and the focus ring were driven in a real browser, because none of them exist
+      in jsdom.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/tokens/src/utils.ts</code> &mdash; new <code>scrollbarSet</code>, beside <code>buttonSet</code>, <code>controlSet</code> and <code>tokenSet</code>. Two tokens, not three, per the D1/D3 outcome.</li>
+      <li><code>packages/tokens/src/semantics/color-light.ts</code>, <code>color-dark.ts</code> &mdash; <code>scrollbar: scrollbarSet(theme)</code>. The resolver validates 424 tokens across both themes, up from 422.</li>
+      <li><code>packages/components/src/scrollarea/</code> &mdash; new. Component, styles, stories, tests, <code>index.ts</code>, exported from <code>src/index.ts</code>.</li>
+      <li><code>packages/components/src/refs.test.tsx</code> &mdash; the ref lands on the root, not the viewport.</li>
+      <li><code>packages/components/scripts/packed-consumer-test.mjs</code> &mdash; the dangling-var check is now fallback-aware. See below.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; a scrolling area, a short one, and the pinned title/actions arrangement Dialog will compose.</li>
+    </ul>
+
+    <h3>What the proposal got wrong</h3>
+    <ul class="notes">
+      <li><strong><code>data-scrolling</code> does not exist.</strong> The Context figure listed it among the attributes Base UI publishes, and D1's outcome named it as the reveal-on-scroll mechanism. It is never emitted: the root's <code>stateAttributesMapping</code> maps the overflow booleans and explicitly drops <code>cornerHidden</code>, and has no entry for <code>scrolling</code> at all. Three <code>DataAttributes</code> enums in the package name the string, which is where the claim came from, but nothing writes it. The decision is delivered by reading <code>state.scrolling</code> through Base UI's function-form <code>className</code> &mdash; a documented API &mdash; rather than from the DOM. Verified in the browser: the bar carries three classes during a scroll and two 500ms after it stops.</li>
+      <li><strong><code>height: 100%</code> on the viewport silently breaks the obvious way to size one.</strong> It is what Base UI's own examples use, and it only resolves against a parent with a definite height. A caller writing <code>style={{ maxHeight: '20rem' }}</code> &mdash; the natural thing, and what the proposal's own API section shows &mdash; got a viewport sized to its content, no overflow, no scrollbar, and a scroll area that quietly did not scroll. The root is a flex column instead, with the viewport at <code>flex: 1; min-height: 0</code>, which works for a max-height, a fixed height and a flex parent alike. Same automatic-minimum-size trap that <code>Stack</code> hit.</li>
+      <li><strong>The mask eats the focus ring, and the proposal never considered the two together.</strong> A mask applies to everything an element paints, its outline included &mdash; and the viewport is the element that takes focus. A ring drawn on it fades out at exactly the two edges the mask touches, so the focus indicator is faintest where the mask is strongest. Confirmed by moving the ring onto the viewport and looking: the left and right sides render at full strength, the top and bottom segments disappear entirely. The ring is drawn on the unmasked root instead, through <code>&amp;:has(.viewport:focus-visible)</code>, with the viewport's own outline suppressed.</li>
+      <li><strong>&ldquo;Reserve the gutter&rdquo; did not say which axis.</strong> Only the vertical bar reserves. A strip along the bottom of every scroll area, held open for a horizontal bar that &sect;04 says nothing in Jig is designed against, costs more than the reflow it would avoid &mdash; so the horizontal scrollbar overlays. Worth revisiting if a horizontal scroll area is ever designed.</li>
+    </ul>
+
+    <h3>What it taught</h3>
+    <ul class="notes">
+      <li><strong>The packed-consumer guard was too blunt, and this was the first legitimate failure.</strong> It flagged every <code>var()</code> whose custom property is not declared in <code>styles.css</code>, which caught the two <code>--scroll-area-overflow-y-*</code> references Base UI writes onto the element at runtime. A reference carrying a fallback cannot render as nothing, which is the only failure the check exists to catch, so it now scans for a top-level comma and ignores those. Its teeth are intact: a bare <code>var(--jig-not-a-token)</code> still fails the run, which was checked by introducing one.</li>
+      <li><strong>Base UI classifies programmatic scrolls as non-user and suppresses the scrolling state.</strong> A scroll driven by <code>scrollTo</code> rather than by wheel, key or pointer will not reveal the bar &mdash; the flag is cleared by <code>onWheel</code>, <code>onPointerMove</code>, <code>onPointerEnter</code> and <code>onKeyDown</code> on the viewport. Defensible, and it is the reason browser automation that scrolls without dispatching a wheel event shows no reveal at all. Anything that scrolls a region for the user and wants the bar seen has to solve that separately.</li>
+      <li><strong>Both the root and the viewport carry <code>role="presentation"</code></strong>, so a test selecting the viewport by role silently gets the root. Reached structurally instead.</li>
+      <li><strong>Accurate everywhere else.</strong> The gutter width, the two-token colour set, the mask clamped by the published distances, the CSS-only edge API, and Base UI's <code>tabIndex</code> handling all went in as written.</li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0007
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0007-scroll-area",
+  "status": "built",
+  "follows": "0006-token",
+  "blocks": "0008-dialog",
+  "decided": "2026-08-25",
+  "built": "2026-08-25",
+  "settled": {
+    "foundation": "@base-ui/react ScrollArea at ~1.7.0, per 0001 D2's behaviour test and 0001 D4's pin.",
+    "keyboardFocus": "Base UI's. The viewport carries tabIndex 0 only while it overflows (viewport/ScrollAreaViewport.js:281); nothing for Jig to add.",
+    "nativeScrollbar": "Hidden by Base UI's own styleDisableScrollbar class, not by Jig.",
+    "apiShape": "One component, not six parts, per 0002 D2. Five of the six parts are invariant boilerplate.",
+    "axes": "Both, each scrollbar unmounting when its axis does not overflow. No orientation prop.",
+    "sizing": "Height is the caller's, via style or a flex parent. Box dimensions are not props.",
+    "scrollbarWidth": "spacing.300 (0.45rem / 7.2px); thumb radius.500, a capsule at that width.",
+    "outOfScope": "Nested scroll areas; a horizontal area inside a vertical one."
+  },
+  "consumer": "Dialog (0008) needs: a body that scrolls under a pinned title and action row; a rule that appears only once scrolled; and a scrollbar that does not reflow the body when it appears.",
+  "decisions": [
+    {
+      "id": "scrollbar-presence",
+      "options": [
+        "reserve-empty",
+        "reserve-track",
+        "reserve-dim"
+      ],
+      "recommended": "reserve-empty",
+      "revised": "2026-08-25",
+      "note": "Gutter reserves spacing.300; bar paints only on hover, focus-within, or data-scrolling. Missing any of the three triggers loses an input type - focus for keyboard, data-scrolling for touch.",
+      "outcome": "reserve-empty"
+    },
+    {
+      "id": "edge-affordance",
+      "options": [
+        "hairline",
+        "mask-fade",
+        "none"
+      ],
+      "recommended": "hairline",
+      "outcome": "mask-fade",
+      "note": "Not the recommendation. Accepts the faded first/last lines, the compositor layer, and the flat-background requirement; that last one must be documented."
+    },
+    {
+      "id": "scrollbar-colour",
+      "options": [
+        "new-set",
+        "reuse-control"
+      ],
+      "recommended": "new-set",
+      "outcome": "new-set",
+      "note": "track dropped: D1 chose 'nothing at rest', so no option paints a permanent rail and nothing would read the token. Set ships as thumb and thumb-hover."
+    },
+    {
+      "id": "overflow-state-api",
+      "options": [
+        "css-only",
+        "callback",
+        "both"
+      ],
+      "recommended": "css-only",
+      "outcome": "css-only",
+      "note": "Revisit trigger: a consumer needing the edge state in JavaScript, e.g. gating an action on having scrolled to the bottom."
+    }
+  ],
+  "revisions": [
+    {
+      "date": "2026-08-25",
+      "summary": "D1 was rejected. The first draft merged 'reserve a gutter' and 'always visible' into one axis and dismissed the combination of reserving plus revealing on demand in a sentence, without a specimen. It is not only viable, it is what was asked for. D2 landing on mask-fade also removed the argument that drove the original recommendation: the mask now carries the permanent overflow signal, so the scrollbar does not have to. D1 rebuilt as a single axis \u2014 what occupies the reserved gutter at rest \u2014 with the gutter reserved and the reveal triggers (hover, focus-within, scroll) fixed across all three options."
+    }
+  ],
+  "obligations": [
+    "ScrollArea's mask fades to transparent, not to a colour. Document that it assumes a flat parent background - over a pattern it shows through, and the failure will not look like a ScrollArea bug.",
+    "Reveal is three triggers: :hover, :focus-within, and Base UI's data-scrolling.",
+    "Ship color.scrollbar.thumb and .thumb-hover only. No track token."
+  ],
+  "asBuilt": {
+    "verification": "pnpm turbo typecheck test - 12 tasks, 136 tests across 15 files, 6 new. Packed-consumer test installs and type-checks the tarball in isolation. Reveal triggers, mask and focus ring driven in a real browser.",
+    "corrections": [
+      "data-scrolling is never emitted. The root's stateAttributesMapping has no entry for `scrolling`; three DataAttributes enums name the string but nothing writes it. Reveal-on-scroll reads state.scrolling through Base UI's function-form className instead.",
+      "height:100% on the viewport only resolves against a definite parent height, so style={{maxHeight}} produced a scroll area that did not scroll. Root is a flex column, viewport is flex:1 with min-height:0.",
+      "The mask fades the focus ring: a mask applies to an element's outline too, and the viewport is what takes focus. Ring moved to the unmasked root via :has(.viewport:focus-visible).",
+      "'Reserve the gutter' did not name an axis. Only vertical reserves; the horizontal bar overlays, since nothing in Jig is designed against horizontal scroll (section 04)."
+    ],
+    "learned": [
+      "The packed-consumer dangling-var check flagged the two --scroll-area-overflow-y-* references Base UI sets at runtime. It is now fallback-aware - a var() with a top-level comma cannot render as nothing - and was re-verified to still fail on a bare undeclared var.",
+      "Base UI treats programmatic scrolls as non-user and suppresses the scrolling state, so scrollTo will not reveal the bar. The flag is cleared by wheel, pointer and key events on the viewport.",
+      "Both the root and the viewport carry role='presentation'."
+    ]
+  }
+}
+</script>
+
+<script>
+  /* Working scroll areas for the specimens. Mirrors Base UI's mechanism: the
+     native bar is hidden, the thumb is positioned from the scroll metrics, and
+     the same MIN_THUMB_SIZE (16) and SCROLL_TIMEOUT (500) are used. */
+  (function () {
+    const MIN_THUMB_SIZE = 16;
+    const SCROLL_TIMEOUT = 500;
+
+    const LINES = [
+      'A scroll area is a region that is smaller than what it holds. That is the whole of it, and everything below is about saying so clearly.',
+      'The native scrollbar is hidden and one is drawn in its place, because a platform scrollbar is sized, coloured and timed by the operating system rather than by the design system, and the same dialog then looks different on every machine.',
+      'What a drawn scrollbar has to earn back is discoverability. A bar that is only visible while the pointer is over it tells a touch user nothing at all.',
+      'The second signal is the cropped edge itself. A scrollbar says how much content there is; it does not say where the visible part stops, which in a dialog is the seam between a pinned title and a moving body.',
+      'Base UI publishes both distances as pixel values rather than booleans, so an edge treatment can shorten as it approaches the end rather than switching on and off.',
+      'Scroll this to the bottom and the lower rule disappears, because there is nothing further down to point at.',
+    ];
+
+    document.querySelectorAll('[data-fill]').forEach(function (area) {
+      const content = area.querySelector('.sa-content');
+      if (content && !content.childElementCount) {
+        content.innerHTML = LINES.map(function (line) { return '<p>' + line + '</p>'; }).join('');
+      }
+    });
+
+    document.querySelectorAll('.sa').forEach(function (area) {
+      const viewport = area.querySelector('.sa-vp');
+      const bar = area.querySelector('.sa-bar');
+      const thumb = area.querySelector('.sa-thumb');
+      if (!viewport || !bar || !thumb) return;
+
+      let idle;
+
+      function update() {
+        const viewH = viewport.clientHeight;
+        const scrollH = viewport.scrollHeight;
+        const maxScroll = scrollH - viewH;
+        const top = viewport.scrollTop;
+
+        area.dataset.overflow = maxScroll > 1 ? 'true' : 'false';
+        // Base UI's own rule: a scrollable viewport is in the tab order, a
+        // non-scrollable one is not (viewport/ScrollAreaViewport.js:281).
+        viewport.tabIndex = maxScroll > 1 ? 0 : -1;
+
+        if (maxScroll <= 1) {
+          area.dataset.atStart = 'true';
+          area.dataset.atEnd = 'true';
+          return;
+        }
+
+        const trackH = bar.clientHeight;
+        const thumbH = Math.max(MIN_THUMB_SIZE, Math.round(trackH * (viewH / scrollH)));
+        const progress = top / maxScroll;
+
+        thumb.style.height = thumbH + 'px';
+        thumb.style.transform = 'translateY(' + Math.round(progress * (trackH - thumbH)) + 'px)';
+
+        // The two properties the mask option reads, in the same units and with
+        // the same meaning Base UI gives them.
+        area.style.setProperty('--overflow-y-start', top + 'px');
+        area.style.setProperty('--overflow-y-end', (maxScroll - top) + 'px');
+
+        area.dataset.atStart = top <= 1 ? 'true' : 'false';
+        area.dataset.atEnd = top >= maxScroll - 1 ? 'true' : 'false';
+      }
+
+      viewport.addEventListener('scroll', function () {
+        update();
+        area.dataset.scrolling = '';
+        clearTimeout(idle);
+        idle = setTimeout(function () { delete area.dataset.scrolling; }, SCROLL_TIMEOUT);
+      }, { passive: true });
+
+      if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(update).observe(viewport);
+      }
+      window.addEventListener('resize', update);
+      update();
+    });
+  })();
+</script>
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

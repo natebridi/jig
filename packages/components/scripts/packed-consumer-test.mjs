@@ -64,9 +64,11 @@ try {
   // component, so a broken entry point fails here rather than for a user.
   writeFileSync(
     join(app, 'src', 'app.tsx'),
-    `import { Button, IconButton, ToggleButton, Stack, Grid, Typography, Adorn, Tooltip, CodeBlock } from '@jig-ui/react';
+    `import { Button, IconButton, ToggleButton, Stack, Grid, Typography, Adorn, Tooltip, CodeBlock, Icon } from '@jig-ui/react';
 import { color, spacing } from '@jig-ui/react/tokens';
-import { Icon } from '@jig-ui/react/icons';
+// Both specifiers must keep resolving: the subpath predates the root export
+// and existing consumers still use it.
+import { Icon as IconFromSubpath } from '@jig-ui/react/icons';
 import '@jig-ui/react/styles.css';
 import '@jig-ui/react/reset.css';
 
@@ -85,6 +87,7 @@ export function App() {
       <Stack as="ol" start={2}><li>correlated</li></Stack>
       <Adorn as="code" with="mono">mono</Adorn>
       <Icon icon="heart" label="Liked" />
+      <IconFromSubpath icon="star" label="Starred" />
       <CodeBlock label="app.tsx">{'const a = 1;'}</CodeBlock>
       <div style={{ background: color.surfaces.card, padding: spacing['500'] }} />
     </Stack>
@@ -156,8 +159,19 @@ export function App() {
     problems.push('reset.css rules are not inside @layer jig.reset');
   }
   const declared = new Set(css.match(/--[\w-]+(?=\s*:)/g) ?? []);
-  const dangling = [...new Set([...css.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]))]
-    .filter((name) => !declared.has(name));
+  const dangling = [
+    ...new Set(
+      varReferences(css)
+        // A reference with a fallback cannot render as nothing, which is the
+        // only failure this check exists to catch. Some custom properties are
+        // legitimately set at runtime rather than declared in the stylesheet —
+        // ScrollArea reads `--scroll-area-overflow-y-start`, which Base UI
+        // writes onto the viewport element — and those carry a fallback
+        // precisely so they resolve before anyone sets them.
+        .filter((ref) => !ref.hasFallback && !declared.has(ref.name))
+        .map((ref) => ref.name)
+    ),
+  ];
   if (dangling.length) problems.push(`styles.css references undeclared vars: ${dangling.join(', ')}`);
 } finally {
   rmSync(workspace, { recursive: true, force: true });
@@ -178,3 +192,35 @@ if (problems.length) {
 }
 
 console.log('\n\x1b[32mPacked consumer test passed\x1b[0m — installs, type-checks and resolves in isolation');
+
+/**
+ * Every `var()` reference in a stylesheet, with whether it supplies a fallback.
+ *
+ * Scanned rather than matched with a regex because a fallback may itself
+ * contain `var()`, and the comma that matters is the one at the top level of
+ * this reference — `var(--a, var(--b))` has a fallback, `var(--a)` inside one
+ * does not.
+ */
+function varReferences(text) {
+  const refs = [];
+  const pattern = /var\(\s*(--[\w-]+)/g;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    let depth = 1;
+    let index = pattern.lastIndex;
+    let hasFallback = false;
+
+    while (index < text.length && depth > 0) {
+      const char = text[index];
+      if (char === '(') depth += 1;
+      else if (char === ')') depth -= 1;
+      else if (char === ',' && depth === 1) hasFallback = true;
+      index += 1;
+    }
+
+    refs.push({ name: match[1], hasFallback });
+  }
+
+  return refs;
+}
