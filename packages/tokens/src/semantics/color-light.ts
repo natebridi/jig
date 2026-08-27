@@ -8,6 +8,23 @@ export default {
             '$value': '{color.black}'
         },
         surfaces: {
+            /**
+             * The dialog scrim.
+             *
+             * The one semantic in the system whose value is a literal rather
+             * than an alias to a primitive, because an alias cannot add an
+             * alpha channel and nothing in the palette is translucent. It
+             * therefore does not move when the ramps are retuned and has to be
+             * checked by eye. Decided in 0008 D2, which records that.
+             */
+            scrim: {
+                '$type': 'color',
+                '$value': {
+                    colorSpace: 'oklch',
+                    components: [0.12, 0, 0],
+                    alpha: 0.5
+                }
+            },
             body: {
                 '$type': 'color',
                 '$value': '{color.warm.25}'

@@ -789,7 +789,7 @@
   .jig .stage-outside { overflow: auto; scrollbar-width: none; }
   .jig .stage-outside::-webkit-scrollbar { display: none; }
   /* The scrim has to cover the whole scrollable area, not just the visible
-     slice — an absolutely-positioned child of a scroller is sized to the
+     slice &mdash; an absolutely-positioned child of a scroller is sized to the
      padding box and would scroll away, and `fixed` escapes the stage entirely.
      A relative wrapper that is at least as tall as the content gives the
      scrim something to fill. */
@@ -832,8 +832,10 @@
       of this and is built; Dialog is its first consumer.
     </p>
     <ul class="meta">
-      <li><span class="status status-proposed" id="doc-status">Proposed</span></li>
-      <li>2026-08-25</li>
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>proposed 2026-08-25</li>
+      <li>decided 2026-08-26</li>
+      <li>built 2026-08-26</li>
       <li>4 decisions</li>
       <li>consumes <a href="0007-scroll-area.html">0007</a></li>
     </ul>
@@ -1072,6 +1074,48 @@ props minus `modal` and `disablePointerDismissal`.</i></pre>
       <button type="button" class="reject">Reject all &mdash; none of these</button>
     </div>
     <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-26</span>
+      <b>Props for the frame</b>, with two refinements from the note:
+      <p>
+        &ldquo;<i>I do want a simplified dialog, but I don't want it to be rigid. As long
+        as the props are optional, and the content can be anything, the first option is
+        good. I do think I want an option to put the close button outside the dialog
+        frame, so it may be safest to create a child element in Dialog.Popup that has the
+        popup styles, but with the ability to place elements outside of that.</i>&rdquo;
+      </p>
+      <p>
+        <b>Every frame prop is optional.</b> The document proposed <code>title</code> as
+        required &mdash; &sect;03 said so outright &mdash; and that is corrected below. A
+        Dialog with no <code>title</code>, no <code>description</code> and no
+        <code>actions</code> is a plain panel around whatever the children are, which is
+        what removes the rigidity the option's own tradeoffs admitted to.
+      </p>
+      <p>
+        <b>That has one consequence worth naming.</b> <code>title</code> was doing the
+        accessible naming, so an untitled dialog has no accessible name at all. The
+        caller passes <code>aria-label</code> instead, and a dialog with neither logs a
+        development warning &mdash; the same answer 0005 reached for
+        <code>ToggleButton</code>'s <code>value</code>, where the type cannot express
+        &ldquo;required only in this case&rdquo; and the runtime check is what remains.
+      </p>
+      <p>
+        <b>The popup splits in two.</b> <code>Dialog.Popup</code> keeps Base UI's
+        behaviour and becomes a positioning box with no surface of its own and
+        <code>overflow: visible</code>; an inner panel carries the background, radius,
+        shadow and the clipping the scroll region needs. Anything that has to sit outside
+        the frame &mdash; the close button first &mdash; is a sibling of the panel,
+        absolutely positioned against the popup. A
+        <code>closePlacement="inside" | "outside"</code> prop selects it, defaulting to
+        <code>inside</code>; rename it freely at build time.
+      </p>
+      <p>
+        And a knock-on for later: with the surface on the panel, the element a future
+        entry animation scales or fades is the panel, not the Popup. Motion is still
+        &sect;04's problem, but whoever picks it up should not have to rediscover that.
+      </p>
+    </div>
   </section>
 
   <!-- ============================= D2 ============================= -->
@@ -1234,6 +1278,21 @@ props minus `modal` and `disablePointerDismissal`.</i></pre>
       <button type="button" class="reject">Reject all &mdash; none of these</button>
     </div>
     <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-26</span>
+      <b>A token with alpha baked in.</b> <code>color.surfaces.scrim</code> ships as a
+      literal DTCG colour rather than an alias &mdash;
+      <code>oklch(0.12 0 0 / 0.5)</code> in light, <code>oklch(0 0 0 / 0.65)</code> in
+      dark &mdash; which is the same shape every primitive already has, with an
+      <code>alpha</code> below 1.
+      <p>
+        It is the first semantic in the system whose value does not resolve to a
+        primitive, so it will not move when the palette does. That is the cost the option
+        named and it is accepted; the note to leave for whoever retunes the ramps is that
+        this one token has to be checked by eye rather than by following an alias.
+      </p>
+    </div>
   </section>
 
   <!-- ============================= D3 ============================= -->
@@ -1387,6 +1446,19 @@ one component</i></pre>
       <button type="button" class="reject">Reject all &mdash; none of these</button>
     </div>
     <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-26</span>
+      <b>Inside &mdash; the body scrolls.</b> No <code>scroll</code> prop. The title and
+      the action row are pinned and a <code>ScrollArea</code> (0007) sits between them,
+      so the affirmative action is never below the fold. <code>Dialog.Viewport</code> is
+      used for positioning only.
+      <p>
+        With the frame props now optional, a dialog with no title and no actions is just
+        the ScrollArea filling the panel &mdash; which is the outside-scroll shape in
+        everything but name, reached by passing nothing rather than by a second layout.
+      </p>
+    </div>
   </section>
 
   <!-- ============================= D4 ============================= -->
@@ -1491,10 +1563,25 @@ size ramps on other components</i></pre>
       <button type="button" class="reject">Reject all &mdash; none of these</button>
     </div>
     <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-26</span>
+      <b>A named <code>size</code> ramp.</b> <code>sm</code> 22rem, <code>md</code> 30rem
+      (default), <code>lg</code> 42rem, each capped by
+      <code>min(width, calc(100vw - 2rem))</code> so a narrow screen gets the margin
+      rather than the overflow.
+      <p>
+        The three values are off-ramp and that was the argument against; they go in
+        <code>semantics/size.ts</code> beside <code>size.control</code> as
+        <code>size.dialog.*</code>, so they are at least named and in one place rather
+        than spelled into a stylesheet. <code>style</code> still overrides for the
+        genuinely unusual dialog.
+      </p>
+    </div>
   </section>
 
   <section>
-    <h2><span class="num">03</span>The API, on the recommended set</h2>
+    <h2><span class="num">03</span>The API, as decided</h2>
     <figure>
       <div class="scroller">
 <pre class="tree">&lt;Dialog
@@ -1516,20 +1603,41 @@ size ramps on other components</i></pre>
 &lt;Dialog open={open} onOpenChange={setOpen} title="Terms"&gt;&hellip;&lt;/Dialog&gt;
 
 <b>Dialog</b>  children      <i>the body &mdash; scrolls in a ScrollArea when it overflows</i>
-        title         <i>required; sets aria-labelledby</i>
-        description   <i>sets aria-describedby</i>
-        actions       <i>the button row, right-aligned</i>
+        title         <i>optional; sets aria-labelledby when given</i>
+        description   <i>optional; sets aria-describedby</i>
+        actions       <i>optional; the button row, right-aligned</i>
         trigger       <i>a button element the dialog wires open state onto</i>
         open onOpenChange   <i>the controlled pair; omit for uncontrolled</i>
         size          <i>sm | md | lg                        (default md)</i>
+        closePlacement      <i>inside | outside                (default inside)</i>
         closeLabel    <i>names the &times; for assistive tech      (default "Close")</i>
-        className style ref</pre>
+        aria-label    <i>required when title is omitted &mdash; dev warning if neither</i>
+        className style ref
+
+<i>every frame prop is optional; passing none of them leaves a plain
+panel around whatever the children are</i>
+&lt;Dialog trigger={&lt;Button&gt;Preview&lt;/Button&gt;} aria-label="Preview"&gt;
+  &lt;img src={src} alt="" /&gt;
+&lt;/Dialog&gt;</pre>
       </div>
       <figcaption>
         <code>trigger</code> and the controlled pair are not exclusive &mdash; a trigger
         with <code>open</code> also passed is how Base UI's own controlled examples
         work. <code>ref</code> points at the popup, which is the element a caller would
         measure or scroll; <code>refs.test.tsx</code> will pin it.
+        <br><br>
+        <b>As decided:</b> the frame props are optional, corrected from the required
+        <code>title</code> this section originally showed &mdash; see D1's outcome. The
+        popup is also two elements now: <code>Dialog.Popup</code> positions and clips
+        nothing, and an inner panel carries the surface, so
+        <code>closePlacement="outside"</code> can put the <code>&times;</code> beyond the
+        frame's edge without escaping the popup's own box.
+        <br><br>
+        <b>As built:</b> the viewport cap is <em>not</em>
+        <code>min(100%, calc(100vw - 2rem))</code> as D4's specimen wrote it.
+        <code>100vw</code> includes the width of a classic scrollbar, so that formula
+        overflows the narrow screens it exists to protect. The margin is padding on the
+        viewport and the width is <code>min(size.dialog.X, 100%)</code> inside it.
       </figcaption>
     </figure>
   </section>
@@ -1544,6 +1652,60 @@ size ramps on other components</i></pre>
       <li><strong>A larger radius for large surfaces.</strong> <code>radius.400</code> is 4.3px, drawn for a button, and it does look tight on a 30rem panel. Changing that is a system-wide decision touching Box, CodeBlock and every future surface, not something Dialog should settle for everyone.</li>
       <li><strong>A drawer or sheet variant.</strong> Base UI ships a separate <code>drawer</code>; edge-anchored panels are not this component wearing a different prop.</li>
       <li><strong><code>modal={false}</code> and <code>trap-focus</code>.</strong> Base UI's non-modal modes pass through untested. Jig designs the modal case; a non-modal panel is a different component with different rules about the page behind it.</li>
+    </ul>
+  </section>
+
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-26. <code>pnpm turbo typecheck test</code> passes &mdash; 12 tasks,
+      146 tests across 16 files, 10 of the tests new &mdash; and the packed-consumer test
+      installs and type-checks the tarball in isolation. The scrim, the pinned layout,
+      both close placements and the width cap were driven in a browser in both themes.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/tokens/src/semantics/color-light.ts</code>, <code>color-dark.ts</code> &mdash; <code>color.surfaces.scrim</code> as a literal oklch with alpha. It survives Terrazzo intact: <code>oklch(12% 0 0 / 0.5)</code> and <code>oklch(0% 0 0 / 0.65)</code>.</li>
+      <li><code>packages/tokens/src/semantics/size.ts</code> &mdash; <code>size.dialog.{sm,md,lg}</code> beside <code>size.control</code>. 431 tokens validated across both themes.</li>
+      <li><code>packages/components/src/dialog/</code> &mdash; new. Component, styles, stories, tests, <code>index.ts</code>, exported from <code>src/index.ts</code>.</li>
+      <li><code>packages/components/src/dev.ts</code> &mdash; new. <code>warnInDev</code>, the first development-only warning in the repo. See below.</li>
+      <li><code>packages/components/src/scrollarea/scrollarea.css.ts</code> &mdash; <code>gutter</code> is exported so Dialog can compensate for it rather than restate it.</li>
+      <li><code>packages/components/src/refs.test.tsx</code> &mdash; the ref lands on the panel, not Base UI's positioning popup.</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; four dialogs: a confirm, a scrolling one, the bare image preview with the close outside, and a large.</li>
+    </ul>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Added after &mdash; 2026-08-26</span>
+      <b>The panel gained a drop shadow, from a new elevation ramp.</b> Nothing in this
+      document decided one; the shadow in D1's specimen was a literal in the specimen's
+      own CSS. <code>elevation.{lo, med, hi}</code> now exist as themed
+      <code>$type: shadow</code> tokens and the panel takes <code>hi</code>.
+      <p>
+        Two layers each &mdash; a tight contact edge and a broad ambient falloff &mdash;
+        because a single layer reads as a grey halo. The ramp is a theme context of its
+        own: the resolver previously swapped only <code>colorLight</code> /
+        <code>colorDark</code>, so <code>elevationLight</code> /
+        <code>elevationDark</code> were added alongside them. The dark ramp carries about
+        four times the opacity at the same geometry, since the same alpha that lifts a
+        surface off white is invisible on a dark page.
+      </p>
+    </div>
+
+    <h3>What the proposal got wrong</h3>
+    <ul class="notes">
+      <li><strong>The viewport cap could not be written the way D4 showed it.</strong> <code>100vw</code> counts the classic scrollbar's width, so <code>calc(100vw - 2rem)</code> overflows exactly the narrow screens the cap protects. Corrected in &sect;03: the margin is the viewport's padding and the width is <code>min(size.dialog.X, 100%)</code> inside it, which needs no viewport unit at all.</li>
+      <li><strong>&ldquo;Outside&rdquo; had no defined position, and the obvious one is broken.</strong> Hanging the close off the panel's trailing corner with a negative offset puts it past the edge of the screen as soon as the dialog is as wide as the viewport allows &mdash; on a phone, always. The popup reserves a strip above the panel instead, so the button has somewhere to be at every width. Verified in the browser: above the panel, right-aligned to it, inside the viewport.</li>
+      <li><strong>The outside close cannot take <code>text.inverse</code>.</strong> The decision put it &ldquo;over the scrim&rdquo;, and the obvious foreground token flips with the theme &mdash; but the scrim is dark in <em>both</em>, so an inverted foreground disappears in dark mode. It carries <code>surfaces.card</code> and its own full radius instead, reading as a piece of the dialog rather than a mark on the scrim.</li>
+      <li><strong>Every dialog's body sat 7.2px off-centre.</strong> ScrollArea reserves its scrollbar gutter unconditionally (0007&nbsp;D1), so the content column was short on the trailing side whether or not anything scrolled &mdash; measured at 18.7px leading against 25.9px trailing. The body's trailing padding is now shortened by exactly that gutter, read from ScrollArea's newly exported constant so the two cannot drift. Measured again after: 18.7px on both sides.</li>
+    </ul>
+
+    <h3>What it taught</h3>
+    <ul class="notes">
+      <li><strong><code>process</code> is not typed in the components package, deliberately.</strong> D1's obligation called for a development warning, and <code>process.env.NODE_ENV</code> &mdash; the convention every React library uses &mdash; does not compile here, because adding <code>@types/node</code> would pull a Node global surface into a package that only runs in a browser. <code>src/dev.ts</code> declares it narrowly with a <code>typeof</code> guard. It is the first of these in the repo and the place the next one belongs.</li>
+      <li><strong>Worth its own proposal: there is no way to remove the body's padding.</strong> D1's note asked that &ldquo;the content can be anything&rdquo;, and the case that exercises it &mdash; an image preview with the close outside &mdash; wants content reaching the frame's own edges. Neither <code>className</code> nor <code>style</code> reaches the body; both land on the panel. A <code>bleed</code> prop, or moving the padding out of the component, is a real decision rather than something to invent at build time, so the padding stands and the image sits inset.</li>
+      <li><strong>Accurate everywhere else.</strong> The two-element popup, the optional frame props, the <code>aria-label</code> fallback, inside-scroll over a ScrollArea, the size ramp and the alpha token all went in as decided, and the alpha survived the token pipeline without any change to it.</li>
     </ul>
   </section>
 
@@ -1571,11 +1733,11 @@ size ramps on other components</i></pre>
 <script type="application/json" id="decision-record">
 {
   "doc": "0008-dialog",
-  "status": "proposed",
+  "status": "built",
   "follows": "0007-scroll-area",
   "consumes": "0007-scroll-area",
-  "decided": null,
-  "built": null,
+  "decided": "2026-08-26",
+  "built": "2026-08-26",
   "settled": {
     "foundation": "@base-ui/react Dialog at ~1.7.0, per 0001 D2's behaviour test and 0001 D4's pin. Focus trap, scroll lock, inert background and focus restoration are modal's job.",
     "notAnchored": "The Popover/anchor-positioning rule is about anchored overlays. A dialog is centred; Tooltip stays the only hand-rolled overlay.",
@@ -1587,11 +1749,70 @@ size ramps on other components</i></pre>
     "radius": "radius.400, matching Button, Input and Token."
   },
   "decisions": [
-    { "id": "api-shape",       "options": ["props-frame", "compound", "hybrid"],  "recommended": "props-frame" },
-    { "id": "scrim-token",     "options": ["alpha-token", "color-mix", "opacity"], "recommended": "alpha-token" },
-    { "id": "scroll-strategy", "options": ["inside", "outside", "both"],          "recommended": "inside" },
-    { "id": "dialog-width",    "options": ["size-ramp", "style-only"],            "recommended": "size-ramp" }
-  ]
+    {
+      "id": "api-shape",
+      "options": [
+        "props-frame",
+        "compound",
+        "hybrid"
+      ],
+      "recommended": "props-frame",
+      "outcome": "props-frame",
+      "note": "I do want a simplified dialog, but I don't want it to be rigid. As long as the props are optional, and the content can be anything, the first option is good. I do think I want an option to put the close button outside the dialog frame, so it may be safest to create a child element in Dialog.Popup that has the popup styles, but with the ability to place elements outside of that.",
+      "obligations": [
+        "Every frame prop is optional, including title - the proposal wrongly showed it as required. A Dialog with none of them is a plain panel around its children.",
+        "title was the accessible name, so an untitled dialog needs aria-label from the caller. Dev warning when neither is present; the type cannot express 'required only when title is absent' (same answer as 0005 for ToggleButton value).",
+        "Dialog.Popup becomes a positioning box with no surface and overflow: visible; an inner panel carries background, radius, shadow and the clipping the scroll region needs.",
+        "closePlacement='inside'|'outside' (default inside) puts the close button beyond the panel's edge as a sibling of the panel, positioned against the popup. Name is provisional.",
+        "Knock-on: a future entry animation targets the panel, not the Popup."
+      ]
+    },
+    {
+      "id": "scrim-token",
+      "options": [
+        "alpha-token",
+        "color-mix",
+        "opacity"
+      ],
+      "recommended": "alpha-token",
+      "outcome": "alpha-token",
+      "note": "First semantic whose value is a literal rather than an alias, so it does not move with the palette - it has to be checked by eye when the ramps are retuned."
+    },
+    {
+      "id": "scroll-strategy",
+      "options": [
+        "inside",
+        "outside",
+        "both"
+      ],
+      "recommended": "inside",
+      "outcome": "inside",
+      "note": "No scroll prop. With the frame props optional, a dialog with no title and no actions is the outside-scroll shape reached by passing nothing."
+    },
+    {
+      "id": "dialog-width",
+      "options": [
+        "size-ramp",
+        "style-only"
+      ],
+      "recommended": "size-ramp",
+      "outcome": "size-ramp",
+      "note": "sm 22rem / md 30rem / lg 42rem, capped by min(width, calc(100vw - 2rem)). Values live in semantics/size.ts as size.dialog.* beside size.control."
+    }
+  ],
+  "asBuilt": {
+    "verification": "pnpm turbo typecheck test - 12 tasks, 146 tests across 16 files, 10 new. Packed-consumer test installs and type-checks the tarball in isolation. Scrim, pinned layout, both close placements and the width cap driven in a browser in both themes.",
+    "corrections": [
+      "The viewport cap cannot use 100vw as D4's specimen showed - it counts the classic scrollbar's width and overflows the narrow screens the cap protects. The margin is the viewport's padding; width is min(size.dialog.X, 100%).",
+      "'Outside' had no defined position. A negative offset from the panel's corner leaves the screen whenever the dialog is as wide as the viewport allows. The popup reserves a strip above the panel instead.",
+      "The outside close cannot use text.inverse: it flips with the theme while the scrim is dark in both. It carries surfaces.card and a full radius.",
+      "Every dialog body sat 7.2px off-centre - ScrollArea reserves its gutter unconditionally (0007 D1). The body's trailing padding is shortened by ScrollArea's now-exported gutter constant."
+    ],
+    "learned": [
+      "process is not typed in the components package (browser-only, no @types/node). src/dev.ts declares it narrowly behind a typeof guard - the first dev-only warning in the repo.",
+      "Open question for its own proposal: nothing can remove the body's padding. className and style both land on the panel, so the 'content can be anything' case that wants edge-to-edge content (an image preview) cannot have it. A bleed prop is a decision, not a build-time invention."
+    ]
+  }
 }
 </script>
 

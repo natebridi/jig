@@ -15,9 +15,23 @@ export type DimensionTokenValue = {
     unit: 'px' | 'rem';
 }
 
+/**
+ * One shadow layer. A `shadow` token's `$value` is either one of these or an
+ * array of them, innermost first — layering is what makes an elevation read as
+ * light falling on a surface rather than as a grey halo.
+ */
+export type ShadowTokenValue = {
+    color: ColorTokenValue | string;
+    offsetX: DimensionTokenValue;
+    offsetY: DimensionTokenValue;
+    blur: DimensionTokenValue;
+    spread: DimensionTokenValue;
+    inset?: boolean;
+}
+
 export type Token = {
-    '$type': 'color' | 'dimension' | 'fontWeight' | 'fontFamily' | 'number';
-    '$value': ColorTokenValue | DimensionTokenValue | string | string[] | number;
+    '$type': 'color' | 'dimension' | 'fontWeight' | 'fontFamily' | 'number' | 'shadow';
+    '$value': ColorTokenValue | DimensionTokenValue | ShadowTokenValue | ShadowTokenValue[] | string | string[] | number;
 }
 
 export type TokenSet = {

@@ -27,6 +27,8 @@ export { Input } from './input';
 export type { InputProps, InputSize } from './input';
 export { Token } from './token';
 export type { TokenProps, TokenColor, TokenSize } from './token';
+export { Dialog } from './dialog';
+export type { DialogProps, DialogSize, DialogClosePlacement } from './dialog';
 export { ScrollArea } from './scrollarea';
 export type { ScrollAreaProps } from './scrollarea';
 export { Slider } from './slider';

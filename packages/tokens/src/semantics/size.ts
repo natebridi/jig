@@ -38,8 +38,30 @@ const height = (fontStep: number, padStep: number): Token => ({
     }
 });
 
+/**
+ * A dialog's width.
+ *
+ * Off the ratio ramp, and knowingly: the spacing ramp tops out at 8rem and the
+ * type scale does not apply, so these three are chosen by eye. They are named
+ * here rather than spelled into dialog.css.ts so that the one place a reader
+ * looks for a system dimension is the place they are written down. Decided in
+ * apps/docs/decisions/0008-dialog.html (D4), which records that cost.
+ *
+ * The viewport cap — min(width, 100vw - 2rem) — is the component's, not a
+ * token: it depends on the runtime viewport, which the token layer cannot see.
+ */
+const width = (value: number): Token => ({
+    $type: 'dimension',
+    $value: { value, unit: 'rem' }
+});
+
 export default {
     size: {
+        dialog: {
+            sm: width(22),
+            md: width(30),
+            lg: width(42)
+        },
         control: {
             // Font step and vertical padding step, matching button.css.ts.
             // md and lg share a padding step there, which is why the ramp is

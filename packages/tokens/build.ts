@@ -44,8 +44,8 @@ const read = (group: string) =>
 // The same composition the resolver below describes: the invariant foundation,
 // plus one theme context on top.
 const foundation = merge(read('color'), read('radius'), read('spacing'), read('typography'), read('size'))
-const light = merge(foundation, read('colorLight'))
-const dark = merge(foundation, read('colorDark'))
+const light = merge(foundation, read('colorLight'), read('elevationLight'))
+const dark = merge(foundation, read('colorDark'), read('elevationDark'))
 
 const problems = [
   ...validateContext('light', light),
@@ -53,6 +53,8 @@ const problems = [
   ...validateRequired('light', light),
   ...validateRequired('dark', dark),
   ...validateParity(read('colorLight'), read('colorDark')),
+  // Elevation is a theme context too, so it owes the same both-themes promise.
+  ...validateParity(read('elevationLight'), read('elevationDark')),
 ]
 
 if (problems.length) {
@@ -81,8 +83,14 @@ const resolver = {
     modifiers: {
         theme: {
             contexts: {
-                lux: [{ '$ref': 'colorLight.dtcg.json' }],
-                dark: [{ '$ref': 'colorDark.dtcg.json' }]
+                lux: [
+                    { '$ref': 'colorLight.dtcg.json' },
+                    { '$ref': 'elevationLight.dtcg.json' }
+                ],
+                dark: [
+                    { '$ref': 'colorDark.dtcg.json' },
+                    { '$ref': 'elevationDark.dtcg.json' }
+                ]
             },
             default: 'lux'
         }

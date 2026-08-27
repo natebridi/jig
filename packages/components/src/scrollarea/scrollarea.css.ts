@@ -8,7 +8,7 @@ import { focusRing } from "../focus-ring";
  * On the ratio ramp rather than an off-ramp constant: 0.45rem is 7.2px, which
  * lands in the usual 6-10px band for a drawn scrollbar. Decided in 0007.
  */
-const gutter = spacing[300];
+export const gutter = spacing[300];
 
 /**
  * How far the gradient mask ramps in from each edge. Clamped by the distance

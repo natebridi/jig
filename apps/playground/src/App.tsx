@@ -1,6 +1,6 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea } from '@jig-ui/react'
-import { color, spacing } from '@jig-ui/react/tokens'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog } from '@jig-ui/react'
+import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
 const Item = ({ children }: { children: React.ReactNode }) => (
@@ -163,6 +163,15 @@ export function App() {
             <Button variant="secondary">Secondary</Button>
             <Button variant="danger">Danger</Button>
             <Button variant="ghost" icon="calendar" size="sm">Ghost</Button>
+          </Stack>
+        </Stack>
+
+        <Stack spacing="400">
+          <Typography as="h2" with="heading04">Elevation</Typography>
+          <Stack direction="row" spacing="400">
+            <Box style={{ width: '5rem', height: '5rem', boxShadow: elevation.lo, backgroundColor: color.surfaces.card }} />
+            <Box style={{ width: '5rem', height: '5rem', boxShadow: elevation.med, backgroundColor: color.surfaces.card }} />
+            <Box style={{ width: '5rem', height: '5rem', boxShadow: elevation.hi, backgroundColor: color.surfaces.card }} />
           </Stack>
         </Stack>
 
@@ -366,6 +375,55 @@ export function App() {
             <Button variant="primary">Accept</Button>
           </Stack>
         </div>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">Dialog</Typography>
+
+        <Stack direction="row" spacing="300" style={{ flexWrap: 'wrap' }}>
+          <Dialog
+            trigger={<Button variant="danger" data-testid="dlg-confirm">Discard</Button>}
+            title="Discard changes?"
+            description="Your edits to this recipe will be lost."
+            size="sm"
+            actions={<><Button variant="secondary">Cancel</Button><Button variant="danger">Discard</Button></>}
+          >
+            Sixteen ingredients and two substitutions will be lost.
+          </Dialog>
+
+          <Dialog
+            trigger={<Button data-testid="dlg-terms">Terms</Button>}
+            title="Terms of service"
+            description="Updated 24 August 2026."
+            actions={<><Button variant="secondary">Decline</Button><Button>Accept</Button></>}
+          >
+            <Stack spacing="300">
+              {Array.from({ length: 10 }, (_, i) => (
+                <Typography key={i} as="p" with="body01">
+                  Clause {i + 1}. Content you create remains yours. You grant only the licence needed to store it, display it back to you, and share it with people you choose.
+                </Typography>
+              ))}
+            </Stack>
+          </Dialog>
+
+          {/* No frame props at all, and the close lifted onto the scrim. */}
+          <Dialog
+            trigger={<Button variant="secondary" data-testid="dlg-bare">Preview</Button>}
+            aria-label="Preview"
+            closePlacement="outside"
+          >
+            <div style={{ aspectRatio: '4 / 3', background: 'linear-gradient(135deg, #1563de, #ab12b6)', borderRadius: '4.3px' }} />
+          </Dialog>
+
+          <Dialog
+            trigger={<Button variant="secondary" data-testid="dlg-lg">Large</Button>}
+            title="A large dialog"
+            size="lg"
+            actions={<Button>Done</Button>}
+          >
+            42rem, capped to the viewport less its margin.
+          </Dialog>
+        </Stack>
       </Stack>
 
       <Stack spacing="400" align="stretch">

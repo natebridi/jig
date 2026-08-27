@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Grid, Icon, IconButton, ScrollArea, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Dialog, Grid, Icon, IconButton, ScrollArea, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -27,6 +27,8 @@ describe('refs', () => {
       ['Token with both', createRef<HTMLSpanElement>(), (r: never) => <Token ref={r} href="/x" onRemove={() => {}}>x</Token>, 'SPAN'],
       // The root, not the viewport — the root is the element a caller sizes.
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
+      // The panel — the visible frame — not Base UI's positioning popup.
+      ['Dialog', createRef<HTMLDivElement>(), (r: never) => <Dialog ref={r} defaultOpen title="t">x</Dialog>, 'DIV'],
     ] as const;
 
     for (const [name, ref, renderCase, tag] of cases) {

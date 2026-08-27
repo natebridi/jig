@@ -8,6 +8,18 @@ export default {
             '$value': '{color.white}'
         },
         surfaces: {
+            /**
+             * Deeper and truly neutral in dark, where a lifted scrim over an
+             * already-dark page separates the two layers less. See 0008 D2.
+             */
+            scrim: {
+                '$type': 'color',
+                '$value': {
+                    colorSpace: 'oklch',
+                    components: [0, 0, 0],
+                    alpha: 0.65
+                }
+            },
             body: {
                 '$type': 'color',
                 '$value': '{color.gray.700}'
