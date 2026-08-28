@@ -66,6 +66,25 @@ export const button = recipe({
           background: color.button.danger.disabledBg,
         },
       },
+      smoke: {
+        background: color.button.smoke.baseBg,
+        color: color.button.smoke.text,
+        backdropFilter: "blur(12px)",
+        ":hover": {
+          background: color.button.smoke.hoverBg,
+        },
+        ":active": {
+          background: color.button.smoke.activeBg,
+        },
+        // Keeps a fill, where ghost clears its own: smoke's whole job is to
+        // separate the button from what is behind it, and a disabled control
+        // that vanishes into a photograph is worse than one that is visibly
+        // there and visibly unavailable. The muted text carries "disabled".
+        ":disabled": {
+          background: color.button.smoke.disabledBg,
+          color: color.button.smoke.disabledText,
+        },
+      },
       // Draws no fill until interacted with, for utility actions that sit on
       // top of another surface.
       ghost: {

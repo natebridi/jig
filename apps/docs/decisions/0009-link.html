@@ -1,0 +1,2148 @@
+<title>0009 &middot; Link</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes -- real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option -- a
+     measurement table, a diagram -- sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way -- dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose -- localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Values copied out of packages/styles/dist/tokens.css. The one thing that
+     is not real is the typeface: Work Sans is not loadable from file://, so
+     specimens fall back to the document's sans stack. Geometry, colour and
+     weight are the shipped numbers. */
+
+  .jig {
+    --j-sp-200: 0.28rem;   /* spacing.200 */
+    --j-sp-300: 0.45rem;   /* spacing.300 */
+    --j-sp-400: 0.72rem;   /* spacing.400 */
+    --j-sp-500: 1.17rem;   /* spacing.500 */
+
+    --j-ts-200: 0.79rem;   /* type.scale.200 */
+    --j-ts-300: 0.97rem;   /* type.scale.300 */
+    --j-ts-400: 1.21rem;   /* type.scale.400 */
+
+    --j-rad-400: 4.3px;    /* radius.400 */
+
+    --j-body:   oklch(94.3% 0.005 83);     /* surfaces.body   warm.25 */
+    --j-text:   oklch(31.3% 0.012 83);     /* text.primary    warm.600 */
+    --j-muted:  oklch(45.4% 0 0);          /* text.secondary  gray.500 */
+    --j-accent: oklch(38.3% 0.179 262.2);  /* text.accent     blue.550 */
+
+    --j-p-bg:  oklch(53.2% 0.201 260);     /* button.primary.base-bg   blue.450 */
+    --j-p-tx:  oklch(93.7% 0.031 251.1);   /* button.primary.text      blue.50  */
+    --j-s-bg:  oklch(53.2% 0.01 83);       /* button.secondary.base-bg warm.450 */
+    --j-s-tx:  oklch(93.7% 0.006 83);      /* button.secondary.text    warm.50  */
+    --j-g-tx:  oklch(31.3% 0.012 83);      /* button.ghost.text        warm.600 */
+    --j-g-hv:  oklch(92.3% 0.006 83);      /* button.ghost.hover-bg    warm.100 */
+    --j-sm-bg: oklch(12% 0 0 / 0.1);       /* button.smoke.base-bg */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:   oklch(20.9% 0 0);          /* gray.700 */
+      --j-text:   oklch(92.3% 0 0);          /* gray.100 */
+      --j-muted:  oklch(75.3% 0 0);          /* gray.300 */
+      --j-accent: oklch(75.3% 0.127 256.7);  /* blue.300 */
+      --j-p-bg:   oklch(45.4% 0.196 261.1);  /* blue.500 */
+      --j-p-tx:   oklch(92.3% 0.038 252.2);  /* blue.100 */
+      --j-s-bg:   oklch(45.4% 0.011 83);     /* warm.500 */
+      --j-s-tx:   oklch(92.3% 0.006 83);     /* warm.100 */
+      --j-g-tx:   oklch(92.3% 0 0);
+      --j-g-hv:   oklch(31.3% 0 0);          /* gray.600 */
+      --j-sm-bg:  oklch(100% 0 0 / 0.14);
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:   oklch(20.9% 0 0);
+    --j-text:   oklch(92.3% 0 0);
+    --j-muted:  oklch(75.3% 0 0);
+    --j-accent: oklch(75.3% 0.127 256.7);
+    --j-p-bg:   oklch(45.4% 0.196 261.1);
+    --j-p-tx:   oklch(92.3% 0.038 252.2);
+    --j-s-bg:   oklch(45.4% 0.011 83);
+    --j-s-tx:   oklch(92.3% 0.006 83);
+    --j-g-tx:   oklch(92.3% 0 0);
+    --j-g-hv:   oklch(31.3% 0 0);
+    --j-sm-bg:  oklch(100% 0 0 / 0.14);
+  }
+
+  /* A scrap of page at the body surface, so a specimen is judged on the
+     ground it will actually sit on rather than on the document's. */
+  .jig .stage {
+    width: 100%;
+    background: var(--j-body);
+    color: var(--j-text);
+    border-radius: var(--j-rad-400);
+    padding: var(--j-sp-500);
+    font-family: var(--sans);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--j-sp-400);
+  }
+
+  .jig .stage.col { display: block; }
+  .jig .stage + .stage { margin-top: 0.6rem; }
+
+  /* The Button recipe, transcribed: base plus the md size variant. */
+  .jig .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--j-sp-300);
+    font-family: inherit;
+    font-size: var(--j-ts-300);
+    font-weight: 500;
+    line-height: 1em;
+    padding: var(--j-sp-400) var(--j-sp-500);
+    border: none;
+    border-radius: var(--j-rad-400);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .jig .btn.sm { font-size: var(--j-ts-200); padding: var(--j-sp-300) var(--j-sp-400); gap: var(--j-sp-200); }
+  .jig .btn.lg { font-size: var(--j-ts-400); }
+
+  .jig .btn svg { width: 1.4em; height: 1.4em; margin: -0.2em 0; flex: none; fill: currentColor; }
+
+  .jig .btn-primary   { background: var(--j-p-bg);  color: var(--j-p-tx); }
+  .jig .btn-secondary { background: var(--j-s-bg);  color: var(--j-s-tx); }
+  .jig .btn-ghost     { background: transparent;    color: var(--j-g-tx); }
+  .jig .btn-ghost:hover { background: var(--j-g-hv); }
+  .jig .btn-smoke     { background: var(--j-sm-bg); color: var(--j-g-tx); backdrop-filter: blur(12px); }
+
+  /* Running text, so a text link is judged in a sentence rather than alone. */
+  .jig .prose {
+    font-family: var(--sans);
+    font-size: var(--j-ts-300);
+    line-height: 1.55;
+    color: var(--j-text);
+    margin: 0;
+    max-width: 38ch;
+  }
+
+  .jig .lnk { border-radius: 2px; }
+  .jig .lnk-accent-always  { color: var(--j-accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .jig .lnk-inherit-always { color: inherit;         text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .jig .lnk-accent-hover   { color: var(--j-accent); text-decoration: none; }
+  .jig .lnk-accent-hover:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  .tradeoffs code, .notes code, .outcome code { overflow-wrap: anywhere; }
+
+  /* D3 shows the same link in three type contexts, so the specimen needs the
+     presets themselves -- type.heading04 and type.caption01, transcribed. */
+  .jig .prose.h   { font-size: 1.21rem; font-weight: 600; line-height: 1.25; margin-top: 0.55rem; }
+  .jig .prose.cap { font-size: 0.79rem; line-height: 1.35; color: var(--j-muted); margin-top: 0.55rem; }
+  .jig .h-size    { font-size: 1.21rem; font-weight: 600; }
+  .jig .cap-size  { font-size: 0.79rem; }
+
+  /* D5: what `underline={false}` resolves to under each option. */
+  .jig .lnk-none       { color: inherit; text-decoration: none; }
+  .jig .lnk-hover-only { color: inherit; text-decoration: none; }
+  .jig .lnk-hover-only:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+  /* D6: the external marker, at the text variant's scale rather than the
+     button's -- 1.4em would tower over a word in running text. */
+  .jig .ext {
+    width: 1em;
+    height: 1em;
+    fill: currentColor;
+    display: inline-block;
+    vertical-align: -0.1em;
+    margin-left: 0.22em;
+  }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0009</p>
+    <h1>Link</h1>
+    <p class="standfirst">
+      Jig has no link. Adding one has to answer what a link <em>is</em> in a system whose
+      only interactive vocabulary is Button's &mdash; and how a component that must render
+      an <code>&lt;a&gt;</code> reaches a recipe written for a <code>&lt;button&gt;</code>.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-08-28</li>
+      <li>6 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Nothing in Jig renders a standalone anchor today. The only link styling in the
+      system is internal to <code>Token</code> &mdash; <code>linkToken</code> and
+      <code>labelLink</code> in <code>packages/components/src/token/token.css.ts</code>
+      &mdash; and both exist to serve a pill, not to be reused. A consuming app that
+      wants a link writes its own <code>&lt;a&gt;</code> and picks its own colour.
+    </p>
+    <p>
+      The sharing half of the request is already a solved shape. Button's recipe is not
+      private: <code>IconButton</code> and <code>ToggleButton</code> both
+      <code>import { button } from '../button/button.css'</code> and call it with
+      <code>color</code>, <code>size</code> and <code>iconOnly</code>. That is the
+      established route to &ldquo;looks like a Button&rdquo;, and a third caller is not
+      a new pattern. The recipe's base is close to element-agnostic &mdash;
+      <code>appearance</code>, <code>border</code>, <code>display: inline-flex</code>,
+      padding, radius, and <code>focusRing</code> &mdash; all of which an
+      <code>&lt;a&gt;</code> wears without complaint.
+    </p>
+    <p>
+      Two parts of it do not transfer. <code>:disabled</code> never matches an anchor, so
+      every <code>disabledBg</code> and <code>disabledText</code> in the recipe is dead
+      weight on a link. And <code>cursor: pointer</code> is set in the base because a
+      <code>&lt;button&gt;</code> does not get one by default; an <code>&lt;a href&gt;</code>
+      already does.
+    </p>
+    <p>
+      Worth stating plainly, because it constrains every option below: a link is not a
+      button. <code>&lt;a href&gt;</code> activates on Enter alone,
+      <code>&lt;button&gt;</code> on Enter and Space; assistive technology announces
+      &ldquo;link&rdquo; against &ldquo;button&rdquo;, and users decide whether to
+      middle-click, copy the target or open a new tab on that announcement. So the
+      question here is only ever about <em>appearance</em>. Whichever options are
+      accepted, a navigation control renders an anchor with a real <code>href</code>.
+    </p>
+    <p>
+      One live dependency: Button gained a fifth variant, <code>smoke</code>, immediately
+      before this document. Anything that shares the recipe inherits it, and inherits the
+      next one too &mdash; which is an argument for sharing and a reason to be careful
+      about what the shared surface promises.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule and is <em>not</em> up for debate in this
+      document. Listing it is what keeps the decision count honest.
+    </p>
+    <ul class="notes">
+      <li>No <code>as</code> prop. Polymorphism stays on layout and typography components, via <code>PolymorphicProps</code> in <code>packages/components/src/polymorphic.ts</code>. Link renders an anchor, full stop.</li>
+      <li><code>size</code> is <code>sm | md | lg</code>, the same union as <code>ButtonSize</code>.</li>
+      <li>Icons come from the curated set as <code>icon</code> plus <code>iconPosition</code>, exactly as Button declares them, and are sized by the component through <code>buttonIconSize</code> &mdash; never by the caller.</li>
+      <li>Focus is the shared <code>focusRing</code>, not a border highlight. Link draws no border of its own, which is the test 0002 D4 set.</li>
+      <li>No spacing props. Spacing comes from the parent <code>Stack</code> or <code>Grid</code>; box dimensions go through <code>style</code>.</li>
+      <li>The ref forwards and is typed <code>HTMLAnchorElement</code>. <code>refs.test.tsx</code> enforces it.</li>
+      <li>Ships the five-file set &mdash; <code>link.tsx</code>, <code>link.css.ts</code>, <code>link.stories.tsx</code>, <code>link.test.tsx</code>, <code>index.ts</code> &mdash; plus an export from <code>packages/components/src/index.ts</code>.</li>
+      <li>No new primitives, and no new colour ramp. <ins>Corrected 2026-08-28: this originally read that a text link's colour &ldquo;already exists as <code>color.text.accent</code>&rdquo;. D3 came back saying the text variant should inherit its colour from the parent, under which it needs no colour token at all &mdash; and <code>color.text.accent</code> keeps the consumers it already had rather than gaining one.</ins></li>
+      <li>Theming stays <code>:root</code>-scoped.</li>
+      <li><strong>No disabled link is offered in any option below.</strong> An anchor without <code>href</code> is not focusable or activatable, and <code>:disabled</code> does not match one. A control that can be turned off is a Button; a link that should not be followed is not rendered.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English.
+    </p>
+    <p>
+      <b>Settled over two rounds.</b> D1, D2 and D4 were accepted first. D3 came back
+      open with a note that made the underline a prop and the type inherited; it was
+      rebuilt, and the two questions the note opened became D5 and D6. All six are now
+      decided, and every option is kept &mdash; including the ones not taken and the
+      original D3 that was replaced &mdash; because the reasoning is the point of the
+      record. The resulting API is &sect;03.
+    </p>
+  </section>
+
+  <!-- ============================== D1 ============================== -->
+  <section class="decision" data-decision="link-shape" data-title="What visual vocabulary Link offers">
+    <p class="decision-id">D1 &middot; link-shape</p>
+    <h2>What visual vocabulary Link offers</h2>
+    <p>
+      The request is for a link that can look like a button. The open question is whether
+      it <em>also</em> covers the ordinary underlined link in a sentence &mdash; the thing
+      most people mean by &ldquo;Link&rdquo; &mdash; and if so whether one component
+      carries both or two components split them.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="one-axis" data-label="One component, text plus the Button variants">
+        <div class="option-head">
+          <h3>One component, one variant axis</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>variant="text"</code> by default; Button's five on the same prop</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Deployment finished in 42 seconds. <a href="#" class="lnk lnk-accent-always">View the build log</a> for the full output.</p>
+          </div>
+          <div class="stage">
+            <a href="#" class="btn btn-primary">Open dashboard</a>
+            <a href="#" class="btn btn-secondary">Docs</a>
+            <a href="#" class="btn btn-ghost">Cancel</a>
+            <a href="#" class="btn btn-primary">Continue<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
+          </div>
+          <p class="caption">one component &middot; <code>&lt;Link href&gt;</code> &middot; <code>&lt;Link href variant="primary" icon="arrow-right" iconPosition="end"&gt;</code></p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One import and one name for &ldquo;a thing that navigates&rdquo;. A caller who starts with a text link and later wants it to look like a button changes one prop, not the component.</li>
+          <li class="pro">The system finally owns its text links. Today every consuming app invents that colour and underline itself, which is the gap a design system exists to close.</li>
+          <li class="pro"><code>variant</code> already means &ldquo;how loud is this&rdquo; on Button. Adding <code>text</code> at the quiet end extends the vocabulary rather than forking it.</li>
+          <li class="con">One prop spans two genuinely different objects: <code>text</code> has no padding, no fill and no size ramp worth the name, while the other five are all box. The type permits <code>variant="text" size="lg"</code>, which does very little.</li>
+          <li class="con">Ties Link's variant union to Button's. <code>smoke</code> arrives for free; so does the next one, whether or not it makes sense on a link.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="button-only" data-label="Button-shaped only">
+        <div class="option-head">
+          <h3>Button-shaped only</h3>
+        </div>
+
+        <p class="specimen-label">Link <em>is</em> &ldquo;a Button that navigates&rdquo;; text links stay out of scope</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <a href="#" class="btn btn-primary">Open dashboard</a>
+            <a href="#" class="btn btn-secondary">Docs</a>
+            <a href="#" class="btn btn-ghost">Cancel</a>
+          </div>
+          <div class="stage col">
+            <p class="prose" style="color:var(--j-muted)">Deployment finished in 42 seconds. <a href="#" style="color:inherit">View the build log</a> for the full output. <i>&mdash; still the app's own anchor, unstyled by Jig</i></p>
+          </div>
+          <p class="caption">smallest surface &middot; nothing new to look at</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Answers exactly what was asked and nothing more. Every prop on the component means the same thing it means on Button.</li>
+          <li class="pro">No new visual decision to make, so D3 disappears and the document shrinks to three.</li>
+          <li class="con">Leaves the most common link in any interface &mdash; one inside a sentence &mdash; undefined by the system. The gap gets filled by each consuming app, differently.</li>
+          <li class="con">The name is then wrong. A component called <code>Link</code> that cannot do an inline link will be reached for and found lacking, repeatedly.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="two-components" data-label="Two components">
+        <div class="option-head">
+          <h3>Two components</h3>
+        </div>
+
+        <p class="specimen-label"><code>Link</code> for text, <code>LinkButton</code> for the box</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Deployment finished. <a href="#" class="lnk lnk-accent-always">View the build log</a>.</p>
+            <p class="caption" style="margin-top:0.5rem">&lt;Link href&gt;</p>
+          </div>
+          <div class="stage">
+            <a href="#" class="btn btn-primary">Open dashboard</a>
+            <a href="#" class="btn btn-ghost">Cancel</a>
+          </div>
+          <p class="caption">&lt;LinkButton href variant="primary"&gt;</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Each component has one job and a signature that fits it. No <code>size</code> on a text link, no <code>balance</code>-style dead props.</li>
+          <li class="pro">Mirrors the split the system already made between <code>Button</code> and <code>IconButton</code>: same recipe, different component, because the contract differs.</li>
+          <li class="con">Two exports, two stories, two test files, and a naming question the system has not had to answer before &mdash; <code>LinkButton</code> reads as a button, which is the one thing it must not be.</li>
+          <li class="con">Changing a text link into a button-shaped one means changing the component, which is a bigger edit than changing a prop for something callers do reach for.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>One component, one variant axis.</b> <code>Link</code> renders an anchor and
+      takes <code>variant</code>, defaulting to <code>text</code>, with Button's five
+      &mdash; <code>primary</code>, <code>secondary</code>, <code>danger</code>,
+      <code>ghost</code>, <code>smoke</code> &mdash; available on the same prop.
+      <p>
+        The cost the option named is real and now has a shape: <code>size</code> is
+        meaningful for the five box variants and not for <code>text</code>, whose type
+        comes from its surroundings. D3 covers that.
+      </p>
+      <p>
+        The specimen above draws its text link in <code>color.text.accent</code>,
+        underlined, because that is what the document proposed at the time. That
+        treatment was reopened &mdash; the decision recorded here is the <em>one
+        component, one axis</em> shape, not the colour.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D2 ============================== -->
+  <section class="decision" data-decision="style-reuse" data-title="How Link reaches Button's styles">
+    <p class="decision-id">D2 &middot; style-reuse</p>
+    <h2>How Link reaches Button's styles</h2>
+    <p>
+      &ldquo;Inherit or share the button styles&rdquo; has three plausible mechanisms, and
+      they differ in what happens the next time Button changes &mdash; which, on the
+      evidence of <code>smoke</code> landing last week, is soon.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="import-recipe" data-label="Import the button recipe">
+        <div class="option-head">
+          <h3>Import the recipe, as its siblings do</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">A fourth caller of an already-shared recipe</p>
+        <div class="specimen block">
+<pre class="tree"><i>packages/components/src/link/link.tsx</i>
+import { button, buttonIconSize }
+  from '<b>../button/button.css</b>';
+
+&lt;a
+  href={href}
+  className={<b>button</b>({ color: variant, size })}
+&gt;
+
+<i>the callers of button() today</i>
+button/button.tsx        <span class="in">already</span>
+iconbutton/iconbutton.tsx <span class="in">already</span>
+togglebutton/&hellip;tsx        <span class="in">already</span>
+link/link.tsx            <span class="in">new</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Zero new machinery. This is the existing pattern, and the third and fourth callers cost nothing that the second did not.</li>
+          <li class="pro">Button's variants stay in one place. A retune of <code>color.button.*</code> or a sixth variant reaches Link without anyone remembering to update it.</li>
+          <li class="pro">One stylesheet rule per variant, shared across four components &mdash; the recipe is emitted once. <code>stylesheet.test.ts</code> already guards against duplication here.</li>
+          <li class="con">Link inherits the recipe's dead weight: four <code>:disabled</code> declarations per variant that can never match an anchor, and a <code>cursor: pointer</code> the anchor already had.</li>
+          <li class="con">Couples Link to Button's variant union. Deliberate, but it means Button can no longer add a variant without asking what it means on a link.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="extract-control" data-label="Extract a shared control recipe">
+        <div class="option-head">
+          <h3>Extract a shared <code>control</code> recipe</h3>
+        </div>
+
+        <p class="specimen-label">A neutral base both Button and Link consume</p>
+        <div class="specimen block">
+<pre class="tree"><i>new</i>
+control.css.ts   <b>control()</b>  <i>base + size + colour</i>
+                 <i>no :disabled, no cursor</i>
+
+<i>then</i>
+button.css.ts    button() = control() + <b>:disabled</b>
+link.css.ts      link()   = control() + <b>:visited</b>
+
+<i>and every existing caller moves</i>
+iconbutton  <span class="no">edit</span>   togglebutton <span class="no">edit</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Each element gets only the states it can actually enter. No dead <code>:disabled</code> rules on an anchor.</li>
+          <li class="pro">Names the thing honestly: what IconButton, ToggleButton and Link share is &ldquo;a control&rdquo;, not &ldquo;a button&rdquo;.</li>
+          <li class="con">Refactors three shipped components to add a fourth. The dead rules it removes are a handful of bytes in a stylesheet no one reads.</li>
+          <li class="con">A second layer of indirection between a variant name and its colour, for a system with one link component in it.</li>
+          <li class="con">Real risk of drift while nothing forces the two wrappers to stay in step &mdash; the failure this was meant to prevent, relocated.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="href-on-button" data-label="href on Button">
+        <div class="option-head">
+          <h3><code>href</code> on Button</h3>
+        </div>
+
+        <p class="specimen-label">Button becomes an anchor when given a target &mdash; Token's precedent</p>
+        <div class="specimen block">
+<pre class="tree"><i>Token already does exactly this (0006 D4)</i>
+&lt;Token href&gt;      &rarr; &lt;a&gt;
+&lt;Token onRemove&gt;  &rarr; &lt;span&gt;
+
+<i>so</i>
+&lt;Button&gt;            &rarr; &lt;button&gt;
+&lt;Button <b>href</b>="/docs"&gt; &rarr; <b>&lt;a&gt;</b>
+
+<i>a discriminated union, as in token.tsx</i>
+type ButtonProps =
+  | AnchorButtonProps   <i>href: string</i>
+  | NativeButtonProps   <i>href?: never</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing to share, because there is nothing to share <em>with</em> &mdash; one component, one recipe, no coupling to keep in step.</li>
+          <li class="pro">Has precedent in this codebase, and the union pattern in <code>token.tsx</code> is already written and tested.</li>
+          <li class="con">A component named <code>Button</code> that renders an anchor is a trap. <code>type="button"</code>, <code>disabled</code> and <code>onClick</code> all quietly change meaning or stop working, and the type has to forbid each one on the anchor branch.</li>
+          <li class="con">Does not answer the text link at all, so under D1's recommendation a <code>Link</code> is needed anyway and this only adds a second way to get a button-shaped one.</li>
+          <li class="con">Token's union works because the pill is one visual object with three internal arrangements. Button and Link are two objects with two roles.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Import the recipe, as its siblings do.</b> <code>link.tsx</code> imports
+      <code>button</code> and <code>buttonIconSize</code> from
+      <code>../button/button.css</code> and becomes the fourth caller of a recipe that
+      three components already share.
+      <p>
+        One consequence follows from D3's note and is worth writing down before it is
+        built: <b>the <code>text</code> variant must not call the recipe at all.</b> The
+        recipe's base sets a font size, a font family, padding, a radius and
+        <code>display: inline-flex</code> &mdash; every one of which contradicts a link
+        that inherits its type from the parent, and <code>inline-flex</code> would stop
+        it wrapping mid-sentence. So <code>variant="text"</code> takes a separate rule in
+        <code>link.css.ts</code> and only the five box variants go through
+        <code>button()</code>. The decision to share still stands; it shares across five
+        variants rather than six.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D3 ============================== -->
+  <section class="decision" data-decision="text-link-type" data-revised="2026-08-28r1" data-title="Where the text variant's type comes from">
+    <p class="decision-id">D3 &middot; text-link-type &middot; <span style="color:var(--gate)">revised</span></p>
+    <h2>Where the text variant's type comes from</h2>
+
+    <div class="outcome">
+      <span class="tag">Reopened &middot; 2026-08-28</span>
+      <b>The original D3 was left open.</b> It offered three fixed treatments &mdash;
+      accent or inherited colour, crossed with underline always or on hover. The note
+      rejected the frame rather than the options:
+      <p>
+        &ldquo;<i>underline should be a boolean prop, and the base styles of the type
+        should inherit from the parent element. if it's easier or better to have Link
+        inherit the Typography props directly, that would be great. external should also
+        be a prop, which would place an icon to the right of the text.</i>&rdquo;
+      </p>
+      <p>
+        That settles two things and opens three. <b>Settled:</b> the underline is a prop,
+        not a fixed treatment, so &ldquo;always or on hover&rdquo; is no longer a
+        question the system answers on the caller's behalf; and the text variant takes
+        its colour from the parent rather than from <code>color.text.accent</code>.
+        <b>Reopened below</b> is how far &ldquo;inherit from the parent&rdquo; goes
+        &mdash; colour only, or the whole type ramp, or Typography's props outright
+        &mdash; which is the part the note flagged as worth choosing rather than
+        assuming. The <code>underline</code> default is now D5 and <code>external</code>
+        is now D6.
+      </p>
+      <p>
+        One correction to the document's own argument, not just to this decision: the
+        settled list claimed a text link's colour &ldquo;already exists as
+        <code>color.text.accent</code>&rdquo;. Under an inherited colour it does not need
+        a token at all, and <code>color.text.accent</code> keeps the consumers it already
+        had. &sect;01 is corrected.
+      </p>
+    </div>
+
+    <p>
+      Given that the text variant inherits, the open question is <em>how much</em>.
+      &ldquo;Colour&rdquo; and &ldquo;the type&rdquo; are different amounts of
+      inheritance, and the second interacts with <code>size</code>: a
+      <code>sm | md | lg</code> ramp is meaningful for the five box variants and means
+      nothing for a link whose size comes from its surroundings.
+    </p>
+    <p>
+      Each specimen puts the same link in three contexts &mdash; body copy, a heading,
+      and a caption &mdash; because that is where the options differ. Judge them on
+      whether the link looks like it belongs to the text around it.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="inherit-all" data-label="Inherit everything">
+        <div class="option-head">
+          <h3>Inherit everything</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Declares no colour, family, size or weight of its own</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Body copy, with <a href="#" class="lnk lnk-inherit-always">a link in it</a> that takes the paragraph's ink.</p>
+            <p class="prose h">A heading with <a href="#" class="lnk lnk-inherit-always">a link</a></p>
+            <p class="prose cap">A caption, and <a href="#" class="lnk lnk-inherit-always">its link</a>, at caption size.</p>
+          </div>
+          <p class="caption">one rule: <code>color: inherit</code> &middot; <code>font: inherit</code></p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly what the note asked for, and the smallest thing that can work. A link inside a <code>Typography</code> of any preset is already the right size and colour, with no prop to pass and nothing to keep in step.</li>
+          <li class="pro">Composes with the type system instead of duplicating it. Wrapping a link in a <code>Typography</code> already works, for every preset at once, and needs no cooperation from Link.</li>
+          <li class="pro">Survives being dropped on a coloured callout or an inverse surface, which is where a hard-coded accent goes wrong.</li>
+          <li class="con"><code>size</code> becomes meaningless on <code>variant="text"</code> while staying meaningful on the other five. The type permits <code>variant="text" size="lg"</code>, which does nothing.</li>
+          <li class="con">A standalone text link with no typographic parent takes the browser's default rather than a Jig preset. Wrapping it in a <code>Typography</code> is the answer, but it is a step the caller has to know to take.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="inherit-plus-with" data-label="Inherit, plus a with escape hatch">
+        <div class="option-head">
+          <h3>Inherit, plus <code>with</code></h3>
+        </div>
+
+        <p class="specimen-label">Inherits by default; <code>with</code> borrows one Typography preset when standalone</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Inside copy it still inherits: <a href="#" class="lnk lnk-inherit-always">a link in it</a>.</p>
+            <p class="caption" style="margin:0.6rem 0 0.35rem">standalone, with a preset named</p>
+            <p class="prose" style="margin:0"><a href="#" class="lnk lnk-inherit-always cap-size">with="caption01"</a></p>
+            <p class="prose" style="margin:0.3rem 0 0"><a href="#" class="lnk lnk-inherit-always h-size">with="heading04"</a></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Answers the standalone case that pure inheritance leaves to the browser, without the caller wrapping anything.</li>
+          <li class="pro">Reuses Typography's vocabulary rather than inventing a second one, so <code>with</code> means the same thing everywhere it appears.</li>
+          <li class="con">Two ways to set a link's type &mdash; the parent's, or <code>with</code> &mdash; and nothing says which wins when both are present. The answer has to be documented rather than being obvious.</li>
+          <li class="con">Adds a prop to solve a case (<code>Link</code> with no typographic ancestor) that the type system arguably should not have.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="typography-props" data-label="Typography's type props wholesale">
+        <div class="option-head">
+          <h3>Typography's type props</h3>
+        </div>
+
+        <p class="specimen-label"><code>with</code> and <code>balance</code>, from Typography's own recipe</p>
+        <div class="specimen block">
+<pre class="tree"><i>Link absorbs Typography's type props</i>
+&lt;Link href
+  <b>with</b>="heading04"
+  <b>balance</b>
+&gt;A long link that wraps evenly&lt;/Link&gt;
+
+<i>but not its spacing props &mdash; the rule</i>
+<i>keeps those on Stack, Grid, Typography</i>
+&lt;Link <span class="no">marginTop="400"</span>&gt;   <span class="no">not offered</span>
+
+<i>and not `as` &mdash; a Link is an anchor</i>
+&lt;Link <span class="no">as="span"</span>&gt;          <span class="no">not offered</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The closest reading of &ldquo;inherit the Typography props directly&rdquo;. A link is text, and this treats it as text.</li>
+          <li class="pro"><code>balance</code> is genuinely useful on a long link that wraps &mdash; a wrapped link with one orphaned word is a real thing to want to fix.</li>
+          <li class="con">Adopts a second component's surface without adopting its element model, so <code>Link</code> answers <code>with</code> and <code>balance</code> but not <code>as</code> or the spacing props. A partial adoption is harder to remember than either whole.</li>
+          <li class="con">Makes Link the first non-layout, non-type component to carry type props, which is a rule change reaching further than one component.</li>
+          <li class="con">Everything it buys is available by wrapping in a <code>Typography</code>, which already works and needs no new API.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Inherit, plus <code>with</code>.</b> The text variant declares no colour, family,
+      size or weight of its own and takes them from whatever encloses it;
+      <code>with</code> names a Typography preset for the standalone case.
+      <p>
+        <b>The precedence the option left open is now settled: an explicit
+        <code>with</code> wins.</b> That was this option's one named cost &mdash;
+        &ldquo;nothing says which wins when both are present&rdquo; &mdash; and accepting
+        it means answering it. A prop the caller passed at the call site beats an
+        ambient value it did not, which is the only reading under which
+        <code>with</code> is usable at all. Absent <code>with</code>, nothing is
+        declared and inheritance does the work.
+      </p>
+      <p>
+        Two consequences for the build. <code>size</code> does nothing on
+        <code>variant="text"</code>: its type comes from the parent or from
+        <code>with</code>, never from the <code>sm | md | lg</code> ramp, which stays
+        meaningful only for the five box variants. And <code>with</code> is the
+        <em>only</em> prop borrowed from Typography &mdash; not <code>balance</code>,
+        not the spacing props, not <code>as</code>. A Link is an anchor and takes its
+        spacing from its parent.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D4 ============================== -->
+  <section class="decision" data-decision="router-integration" data-title="How a consumer swaps in their router's link">
+    <p class="decision-id">D4 &middot; router-integration</p>
+    <h2>How a consumer swaps in their router's link</h2>
+    <p>
+      Most apps that would use this do client-side routing, where a bare
+      <code>&lt;a href&gt;</code> triggers a full page load. Jig cannot depend on a router,
+      so the component needs a way to hand its markup to one &mdash; or a decision that it
+      will not.
+    </p>
+    <p>
+      This is the one place <code>as</code> would normally be reached for, and it is
+      unavailable: polymorphism stays on layout and typography components. So the options
+      are the ones that do not widen that rule.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="render-prop" data-label="A render prop">
+        <div class="option-head">
+          <h3>A <code>render</code> prop</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Backed by <code>useRender</code> from <code>@base-ui/react@1.7.0</code> &mdash; a public export</p>
+        <div class="specimen block">
+<pre class="tree"><i>next/link</i>
+&lt;Link
+  href="/docs"
+  variant="primary"
+  <b>render</b>={&lt;NextLink href="/docs" /&gt;}
+&gt;Docs&lt;/Link&gt;
+
+<i>react-router</i>
+&lt;Link <b>render</b>={&lt;RouterLink to="/docs" /&gt;}&gt;
+
+<i>already in the codebase</i>
+togglebutton.tsx uses Base UI's
+<b>render</b> callback for the same job</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Base UI is already the foundation (0001) and <code>useRender</code> is a documented public entry point at <code>@base-ui/react/use-render</code> in the pinned 1.7.0 &mdash; verified against the registry, not from memory. No new dependency.</li>
+          <li class="pro">Merges rather than overwrites: <code>className</code> strings are joined and handlers composed, so Jig's classes and the router's <code>onClick</code> both survive. Hand-rolled cloning gets this wrong.</li>
+          <li class="pro">One prop name that will be right for every future component with the same problem, and <code>ToggleButton</code> already exposes the concept internally.</li>
+          <li class="con">A second way to spell the element, sitting next to the <code>as</code> rule and looking like an exception to it. Needs the docs to say why it is not one.</li>
+          <li class="con">The caller writes the target twice &mdash; once as <code>href</code> for Jig, once on the router's element.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="class-export" data-label="Export the class names">
+        <div class="option-head">
+          <h3>Export the class-name builder</h3>
+        </div>
+
+        <p class="specimen-label">Jig hands over classes; the consumer renders their own element</p>
+        <div class="specimen block">
+<pre class="tree"><i>consumer code</i>
+import { <b>linkStyles</b> } from '@jig-ui/react';
+
+&lt;NextLink
+  href="/docs"
+  className={<b>linkStyles</b>({
+    variant: 'primary', size: 'md'
+  })}
+&gt;Docs&lt;/NextLink&gt;
+
+<i>Jig renders nothing here at all</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Works with any router, any framework, and anything not yet invented, with no integration surface to maintain.</li>
+          <li class="pro">Honest about what is being shared: this decision is entirely about appearance, and a class name is appearance.</li>
+          <li class="con">Everything the component does beyond styling is lost &mdash; icon rendering and sizing, and any external-link handling &mdash; so the caller rebuilds it and gets it slightly wrong.</li>
+          <li class="con">Publishes the recipe's call signature as public API. Renaming a variant becomes a breaking change for consumers who never rendered a Jig component.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="nothing" data-label="Nothing &mdash; plain anchor only">
+        <div class="option-head">
+          <h3>Nothing &mdash; a plain anchor</h3>
+        </div>
+
+        <p class="specimen-label">Link always renders <code>&lt;a href&gt;</code>; routing is the app's problem</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Link href="/docs"&gt;Docs&lt;/Link&gt;
+  &rarr; &lt;a href="/docs"&gt;   <i>full page load</i>
+
+<i>the app's own wrapper, once</i>
+function AppLink(props) {
+  return &lt;NextLink
+    href={props.href}
+    legacyBehavior passHref&gt;
+    &lt;<b>Link</b> {...props} /&gt;
+  &lt;/NextLink&gt;;
+}</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Smallest possible surface, and it is the correct component for the many links that really are external or cross-document.</li>
+          <li class="pro">Defers a decision that a real consumer's routing setup would inform better than this document can.</li>
+          <li class="con">Every app writes the same wrapper, and the wrappers rely on router-specific escape hatches &mdash; <code>legacyBehavior</code> is deprecated in Next's App Router, so the recipe rots.</li>
+          <li class="con">The failure is silent and slow: a link that works but does a full reload looks fine in review and is found in a performance audit months later.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>A <code>render</code> prop</b>, backed by <code>useRender</code> from
+      <code>@base-ui/react@1.7.0</code>.
+      <p>
+        The cost the option named stands and needs answering in the docs: <code>as</code>
+        is refused on every component and <code>render</code> is accepted here, which
+        looks like an exception. It is not one. <code>as</code> asks the component to
+        <em>be</em> a different element and pick up that element's prop types;
+        <code>render</code> hands the component's own props and classes to an element the
+        caller has already constructed. Link is always an anchor either way.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D5 ============================== -->
+  <section class="decision" data-decision="underline-default" data-title="What the underline prop defaults to">
+    <p class="decision-id">D5 &middot; underline-default &middot; <span style="color:var(--gate)">new</span></p>
+    <h2>What the <code>underline</code> prop defaults to</h2>
+    <p>
+      The note settles that the underline is a boolean prop rather than a fixed
+      treatment, so the system no longer decides always-or-on-hover for the caller. What
+      it still has to decide is the <em>default</em> &mdash; and what <code>false</code>
+      means, since with an inherited colour (D3) the underline is the only thing left
+      distinguishing a link from the text around it.
+    </p>
+    <p>
+      That is the whole weight of this decision. Under the original D3 an
+      un-underlined link still had the accent to fall back on; under an inherited
+      colour it has nothing.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="default-true-hard" data-label="Defaults true; false means never">
+        <div class="option-head">
+          <h3>Defaults <code>true</code>; <code>false</code> means never</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Underlined unless the caller turns it off, and off is off</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Default: the build finished, <a href="#" class="lnk lnk-inherit-always">view the log</a> for output.</p>
+            <p class="caption" style="margin:0.6rem 0 0.35rem"><code>underline={false}</code> &mdash; for links that are obvious from context</p>
+            <p class="prose" style="margin:0">Docs &middot; <a href="#" class="lnk lnk-none">Changelog</a> &middot; <a href="#" class="lnk lnk-none">Status</a></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Safe by default. A caller who passes nothing gets a link that is distinguishable without relying on colour &mdash; WCAG 1.4.1 &mdash; which is the correct way round for a default to fail.</li>
+          <li class="pro"><code>false</code> means one thing, so a nav row of links reads as a nav row and not as a set of underlined words that appear on hover.</li>
+          <li class="pro">Honest about where <code>underline={false}</code> belongs: somewhere the link is already obviously a link &mdash; a nav bar, a card that is entirely a target, a breadcrumb.</li>
+          <li class="con">Nothing stops <code>underline={false}</code> being used in running text, where it produces a link that is genuinely invisible. The prop trusts the caller.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="default-true-hover" data-label="Defaults true; false still underlines on hover">
+        <div class="option-head">
+          <h3>Defaults <code>true</code>; <code>false</code> keeps hover</h3>
+        </div>
+
+        <p class="specimen-label"><code>underline={false}</code> removes it at rest only &mdash; hover the links below</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Default: the build finished, <a href="#" class="lnk lnk-inherit-always">view the log</a> for output.</p>
+            <p class="caption" style="margin:0.6rem 0 0.35rem"><code>underline={false}</code> &mdash; hover these</p>
+            <p class="prose" style="margin:0">Docs &middot; <a href="#" class="lnk lnk-hover-only">Changelog</a> &middot; <a href="#" class="lnk lnk-hover-only">Status</a></p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The affordance is never permanently gone for pointer users, so an over-eager <code>underline={false}</code> degrades rather than breaks.</li>
+          <li class="pro">Matches <code>labelLink</code> in <code>token.css.ts</code>, so the two places in the system with an optional underline behave the same.</li>
+          <li class="con"><code>false</code> not meaning &ldquo;no underline&rdquo; is a small lie in the API, and the one that will be tripped over. A boolean should turn the thing off.</li>
+          <li class="con">Does nothing for touch, so the case it protects against is still broken on a phone &mdash; it buys reassurance rather than access.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="default-false" data-label="Defaults false">
+        <div class="option-head">
+          <h3>Defaults <code>false</code></h3>
+        </div>
+
+        <p class="specimen-label">Plain by default; the caller opts into the underline</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Default: the build finished, <a href="#" class="lnk lnk-none">view the log</a> for output.</p>
+            <p class="caption" style="margin:0.6rem 0 0.35rem"><code>underline</code> &mdash; opted in</p>
+            <p class="prose" style="margin:0">The build finished, <a href="#" class="lnk lnk-inherit-always">view the log</a> for output.</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Quietest, and it makes the five box variants and the text variant agree: none of them is underlined unless asked.</li>
+          <li class="con">The default is the inaccessible one. Combined with D3's inherited colour it renders a link with <em>no</em> visual distinction at all, which is the worst cell in the whole matrix and the one a caller reaches by passing nothing.</li>
+          <li class="con">Pushes the accessible choice onto every call site, where it will be forgotten unevenly.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Defaults <code>true</code>; <code>false</code> means never.</b> A text link is
+      underlined unless the caller turns it off, and turning it off removes the underline
+      in every state rather than deferring it to hover.
+      <p>
+        The cost is accepted with it: nothing stops <code>underline={false}</code> being
+        used in running text, where &mdash; with D3's inherited colour &mdash; it
+        produces a link with no visual distinction at all. The prop trusts the caller,
+        and the place it is meant for is somewhere the link is already obviously a link:
+        a nav row, a breadcrumb, a card that is entirely a target.
+      </p>
+      <p>
+        <b>Scope, which the decision implies rather than states:</b> <code>underline</code>
+        belongs to <code>variant="text"</code>. The five box variants take their whole
+        appearance from the button recipe, which draws a filled or ghosted box and no
+        text decoration; an underline inside one would be a second affordance on a
+        control that already reads as pressable. So <code>link.css.ts</code> sets
+        <code>text-decoration: none</code> on the box variants and
+        <code>underline</code> has no effect there. Flagged rather than assumed &mdash;
+        say so if the intent was for it to apply across all six.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D6 ============================== -->
+  <section class="decision" data-decision="external-affordance" data-title="What the external prop does">
+    <p class="decision-id">D6 &middot; external-affordance &middot; <span style="color:var(--gate)">new</span></p>
+    <h2>What the <code>external</code> prop does</h2>
+    <p>
+      The note asks for <code>external</code> to place an icon to the right of the text.
+      That settles the glyph and its position &mdash; <code>arrow-square-out</code> from
+      the curated set, at the end &mdash; and leaves what else the prop is responsible
+      for. The candidates are <code>target="_blank"</code>, <code>rel</code>, and an
+      announcement for assistive technology, and they are not one bundle: a link can
+      leave the site without opening a tab, and opening a tab is the part a user notices.
+    </p>
+    <p>
+      There is also a collision to resolve. Link takes <code>icon</code> and
+      <code>iconPosition</code> from Button's vocabulary (D1), and <code>external</code>
+      wants the same slot. Each option below says how it lands.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="marker-and-rel" data-label="Marker and rel; target stays the caller's">
+        <div class="option-head">
+          <h3>Marker and <code>rel</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">The glyph means &ldquo;this leaves the site&rdquo; &mdash; which is true whether or not a tab opens</p>
+        <div class="specimen block jig">
+          <div class="stage col">
+            <p class="prose">Built on <a href="#" class="lnk lnk-inherit-always">Base UI<svg class="ext" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg></a>, and released under MIT.</p>
+          </div>
+          <div class="stage">
+            <a href="#" class="btn btn-secondary">Read the RFC<svg viewBox="0 0 256 256" aria-hidden="true"><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg></a>
+          </div>
+          <p class="caption">works on the text variant and the box variants alike</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Says only what it knows. The glyph marks a destination outside the app; whether to hand the user a new tab is a judgement about their task, which the call site has and the component does not.</li>
+          <li class="pro"><code>rel="noopener noreferrer"</code> costs nothing and closes a real hole when the caller <em>does</em> add <code>target="_blank"</code> and forgets it &mdash; the common mistake, prevented without taking the decision away.</li>
+          <li class="pro">Resolves the collision cleanly: <code>external</code> owns the end slot, so passing <code>iconPosition="end"</code> alongside it is a type error, and <code>icon</code> with the default <code>start</code> still works &mdash; a glyph at each end is a legitimate thing to want.</li>
+          <li class="con">A caller who wants a new tab writes <code>target</code> themselves, and then owes the announcement themselves too. The prop helps with the marking and not with that.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="full-bundle" data-label="Marker, new tab, and the announcement">
+        <div class="option-head">
+          <h3>Marker, new tab, announcement</h3>
+        </div>
+
+        <p class="specimen-label">One prop for the whole external-link convention</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Link href="https://&hellip;" <b>external</b>&gt;
+  Base UI
+&lt;/Link&gt;
+
+<i>renders</i>
+&lt;a href="https://&hellip;"
+   <b>target</b>="_blank"
+   <b>rel</b>="noopener noreferrer"&gt;
+  Base UI
+  &lt;svg <i>arrow-square-out</i> /&gt;
+  &lt;span <b>class="visually-hidden"</b>&gt;
+    (opens in a new tab)
+  &lt;/span&gt;
+&lt;/a&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The announcement matches the behaviour. A link that opens a tab without telling a screen reader user is a real failure, and bundling makes it impossible to get half right.</li>
+          <li class="pro">One prop for what most teams write as a four-part snippet, which is the kind of thing a design system is for.</li>
+          <li class="con">Decides on the user's behalf that leaving the site means leaving the page. That is contested as a UX default &mdash; it takes the back button away &mdash; and it is not what &ldquo;external&rdquo; means.</li>
+          <li class="con">A caller who wants the marker without the tab has to abandon the prop and rebuild the icon by hand, losing the sizing the component owns.</li>
+          <li class="con">Needs the visually-hidden text to be translatable, which the component cannot do &mdash; so it ships an English string into every locale.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="marker-only" data-label="Marker only">
+        <div class="option-head">
+          <h3>Marker only</h3>
+        </div>
+
+        <p class="specimen-label">Purely visual; every anchor attribute stays the caller's</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Link href="https://&hellip;" <b>external</b>&gt;
+  Base UI
+&lt;/Link&gt;
+
+<i>renders</i>
+&lt;a href="https://&hellip;"&gt;
+  Base UI
+  &lt;svg <i>arrow-square-out</i> /&gt;
+&lt;/a&gt;
+
+<i>everything else is passed through</i>
+&lt;Link external
+  target="_blank"
+  rel="noopener noreferrer" /&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Smallest and most predictable: <code>external</code> is a styling prop and nothing else, so it can never surprise anyone with behaviour.</li>
+          <li class="pro">No opinion to disagree with, and no attribute to fight when the caller needs a different one.</li>
+          <li class="con">Leaves <code>rel="noopener"</code> to be remembered at every call site that adds <code>target="_blank"</code>. It is free to add and the omission is a genuine security hole, so declining to add it is a decision to let that happen.</li>
+          <li class="con">Barely earns a prop. If it only renders a glyph, <code>icon="arrow-square-out" iconPosition="end"</code> already does it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Marker, new tab, announcement.</b> <code>external</code> renders the
+      <code>arrow-square-out</code> glyph after the label and sets
+      <code>target="_blank"</code>, <code>rel="noopener noreferrer"</code> and a
+      visually-hidden &ldquo;(opens in a new tab)&rdquo; so the announcement matches the
+      behaviour.
+      <p>
+        Both of the option's costs are accepted rather than solved. <b>The new tab is
+        now the component's opinion</b>, not the call site's &mdash; a link that leaves
+        the app takes the back button with it, and a caller who wants the marker without
+        the tab cannot use the prop. <b>The announcement ships as an English string</b>
+        into every locale, because a component cannot reach a translation layer it has
+        no knowledge of. If that becomes a real problem the smallest fix is an override
+        prop for the string; that is a later decision and is deliberately not being
+        added here.
+      </p>
+      <p>
+        <b>One rule carried across from the option that was not chosen.</b> The collision
+        between <code>external</code> and the inherited <code>icon</code> /
+        <code>iconPosition</code> was spelled out under <em>Marker and rel</em> and not
+        restated here, but it is orthogonal to what separated the three and something
+        has to resolve it: <code>external</code> owns the end slot, so passing
+        <code>iconPosition="end"</code> alongside it is a type error, while
+        <code>icon</code> at the default <code>start</code> still works &mdash; a glyph
+        at each end is legitimate. Flagged because it is being carried rather than
+        chosen.
+      </p>
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as decided</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>a text link &mdash; the default; type comes from the paragraph around it</i>
+&lt;p&gt;The build finished. &lt;Link href="/logs"&gt;View the log&lt;/Link&gt; for output.&lt;/p&gt;
+
+<i>the same component, wearing a Button variant</i>
+&lt;Link href="/dashboard" <b>variant</b>="primary" <b>icon</b>="arrow-right" <b>iconPosition</b>="end"&gt;
+  Open dashboard
+&lt;/Link&gt;
+
+<i>standalone, so a preset is named rather than inherited</i>
+&lt;Link href="/changelog" <b>with</b>="caption01"&gt;What&rsquo;s new&lt;/Link&gt;
+
+<i>leaving the app &mdash; glyph, new tab, rel, and the announcement, from one prop</i>
+&lt;Link href="https://base-ui.com" <b>external</b>&gt;Base UI&lt;/Link&gt;
+
+<i>handed to a router; Jig&rsquo;s classes and the router&rsquo;s onClick both survive</i>
+&lt;Link href="/docs" variant="ghost" <b>render</b>={&lt;NextLink href="/docs" /&gt;}&gt;Docs&lt;/Link&gt;
+
+<b>Link</b>  href          <i>required &mdash; a Link without a target is not a link</i>
+      children      <i>the label</i>
+      variant       <i>text | primary | secondary | danger | ghost | smoke  (default text)</i>
+      size          <i>sm | md | lg          (default md; no effect on variant="text")</i>
+      with          <i>a Typography preset; overrides the inherited type when passed</i>
+      underline     <i>boolean               (default true; variant="text" only)</i>
+      external      <i>boolean &mdash; glyph at the end, target=_blank, rel, announcement</i>
+      icon          <i>a name from the curated set, sized by the component</i>
+      iconPosition  <i>start | end           (default start; end is a type error with external)</i>
+      render        <i>a ReactElement to compose with &mdash; a router&rsquo;s link</i>
+      className style ref   <i>ref is HTMLAnchorElement</i>
+
+<i>what Link deliberately does not take</i>
+      <span class="no">as</span>            <i>polymorphism stays on layout and type components</i>
+      <span class="no">disabled</span>      <i>:disabled never matches an anchor &mdash; render a Button</i>
+      <span class="no">balance</span>       <i>`with` is the only prop borrowed from Typography</i>
+      <span class="no">margin* padding*</span>  <i>spacing comes from the parent</i></pre>
+      </div>
+      <figcaption>
+        <b>Two variants, one recipe, two code paths.</b> The five box variants call
+        <code>button()</code> from <code>../button/button.css</code> and inherit
+        everything including <code>smoke</code>. <code>variant="text"</code> does not
+        touch the recipe &mdash; its base sets a font size, a family, padding and
+        <code>display: inline-flex</code>, and the last of those would stop a link
+        wrapping mid-sentence. See D2's outcome.
+        <br><br>
+        <b>Three things resolved in the outcomes rather than in an option</b>, each
+        flagged there: <code>with</code> beats the inherited type when both are present
+        (D3); <code>underline</code> applies to the text variant only, with the box
+        variants setting <code>text-decoration: none</code> (D5); and
+        <code>external</code> owns the end icon slot (D6).
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>Automatic external-link detection</strong> &mdash; still not proposed, though the prop it guarded now is. This section originally ruled out external-link handling altogether, adding that &ldquo;if it is wanted, it should be an explicit <code>external</code> prop&rdquo;. The note asked for exactly that, so it is <b>D6</b>. What stays out is the <em>detection</em>: sniffing <code>href</code> for a different origin and setting the prop implicitly. Whether a destination counts as leaving the app is a fact about the product &mdash; a docs subdomain usually does not &mdash; and a URL cannot answer it.</li>
+      <li><strong>A <code>:visited</code> treatment.</strong> Browsers restrict what can be styled on <code>:visited</code>, and the system has no token for it. Worth revisiting only for a documentation site, where it earns its keep.</li>
+      <li><strong>A <code>disabled</code> prop.</strong> Covered in the settled list: it cannot be made to work on an anchor, and faking it with <code>aria-disabled</code> plus a removed <code>href</code> produces a control that is announced but not reachable.</li>
+      <li><strong>Spacing props on Link.</strong> The rule stands &mdash; spacing comes from the parent.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-28. Every accepted option survived contact with the compiler; nothing
+      below is a change of decision. What follows is what the build added to them.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><b>Added</b> <code>packages/components/src/link/</code> &mdash; <code>link.tsx</code>, <code>link.css.ts</code>, <code>link.stories.tsx</code>, <code>link.test.tsx</code>, <code>index.ts</code>.</li>
+      <li><b>Changed</b> <code>packages/components/src/index.ts</code> &mdash; exports <code>Link</code>, <code>LinkProps</code>, <code>LinkVariant</code>.</li>
+      <li><b>Changed</b> <code>packages/components/src/typography/typography.css.ts</code> &mdash; the sixteen presets are lifted out of the recipe into an exported <code>typeStyles</code> map. No behaviour change to Typography; the recipe now reads <code>style: typeStyles</code>.</li>
+      <li><b>Changed</b> <code>refs.test.tsx</code> and <code>api.types.test.tsx</code> &mdash; three ref cases and three type-contract cases for Link.</li>
+    </ul>
+
+    <h3>What the proposal under-specified</h3>
+    <ul class="notes">
+      <li>
+        <b>Where <code>with</code>'s presets come from.</b> D3 said &ldquo;a Typography
+        preset&rdquo; without saying whether Link reaches Typography's recipe or restates
+        the values. Neither works as written: the recipe's <em>base</em> sets
+        <code>color: color.text.primary</code> and a font family, so wearing it would
+        defeat the inheritance the same decision asked for &mdash; and restating sixteen
+        blocks is the drift D2 was argued on. So the presets were extracted to a shared
+        <code>typeStyles</code> map that carries the four type properties and no colour.
+        That extraction is the one thing here that touched a shipped component.
+      </li>
+      <li>
+        <b>The underline cannot live on the anchor.</b> D5 was written as though
+        <code>underline</code> decorates the link, and the obvious implementation puts
+        <code>text-decoration</code> on the <code>&lt;a&gt;</code>. That underlines
+        everything inside it, including the space in front of the <code>external</code>
+        marker &mdash; and an SVG takes no text decoration, so the rule runs a space past
+        the last word and then stops dead. The underline is carried by a span around the
+        label instead, which is also closer to what the prop means. Same structure
+        <code>Token</code> already uses for its own label.
+      </li>
+      <li>
+        <b>The separator before the external marker is load-bearing.</b> The accessible
+        name algorithm concatenates inline elements without a separator and trims each
+        one, so a leading space inside the hidden &ldquo;(opens in a new tab)&rdquo; span
+        is discarded and the name comes out as
+        <code>Base UI(opens in a new tab)</code>. A non-breaking space is trimmed too
+        &mdash; both were tried. It has to be a bare text node in the anchor, which is
+        what ships; on the box variants a whitespace-only text node in a flex container
+        is not rendered, so the Button recipe's <code>gap</code> still owns the spacing
+        there.
+      </li>
+    </ul>
+
+    <h3>A cost D6 did not price</h3>
+    <p>
+      Making <code>iconPosition="end"</code> a type error alongside <code>external</code>
+      requires a discriminated union, and <b>a union breaks prop spreading</b>. A caller
+      who holds a <code>LinkProps</code>-typed object cannot spread it into a
+      <code>&lt;Link&gt;</code> and then set <code>external</code> or
+      <code>iconPosition</code> &mdash; TypeScript cannot narrow the spread to either
+      arm. That is not hypothetical: it broke two of this component's own stories, which
+      now destructure the two discriminants out of <code>args</code> before spreading.
+    </p>
+    <p>
+      Wrapping a Jig component is an ordinary thing to do, so this will be met again. It
+      is recorded rather than fixed because the ban is what D6's outcome settled, and
+      because the alternative &mdash; resolving the collision at runtime by letting
+      <code>external</code> win the end slot and rendering <code>icon</code> at the start
+      &mdash; is a decision, not an implementation detail. Worth its own proposal if the
+      friction shows up in real use.
+    </p>
+
+    <h3>Worth a future proposal</h3>
+    <ul class="notes">
+      <li><b>The English announcement.</b> D6 accepted that &ldquo;(opens in a new tab)&rdquo; ships untranslated. Now that it is real, the cheapest fix is visible: an override prop for the string, or a locale-aware wrapper. Neither is added here.</li>
+      <li><b>Nothing consumes <code>color.text.accent</code> in running text.</b> The token was introduced so emphasised text tracks the primary button's hue, and the text link &mdash; its most obvious consumer &mdash; inherits instead. It still has consumers, but the original argument for it is now weaker than the document's &sect;01 assumed.</li>
+      <li><b>A <code>size</code> that means nothing on one variant.</b> <code>variant="text" size="lg"</code> type-checks and does nothing, which D1 and D3 both named. The type could express it &mdash; the same union machinery as <code>external</code> &mdash; at the same spreading cost. Left alone deliberately.</li>
+    </ul>
+
+    <h3>Verification</h3>
+    <p>
+      <code>pnpm turbo typecheck test</code>: 12 tasks, 134 tests, all passing.
+      <code>api.types.test.tsx</code> is enforced by <code>tsc</code> rather than by
+      Vitest &mdash; an unused <code>@ts-expect-error</code> is itself a build failure
+      &mdash; so the seven new type assertions are load-bearing. Rendering was checked in
+      Storybook in both themes.
+    </p>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0009
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">6 of 6 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0009-link",
+  "status": "built",
+  "decided": "2026-08-28",
+  "built": "2026-08-28",
+  "decisions": [
+    {
+      "id": "link-shape",
+      "title": "What visual vocabulary Link offers",
+      "options": ["one-axis", "button-only", "two-components"],
+      "recommended": "one-axis",
+      "outcome": "one-axis",
+      "note": null
+    },
+    {
+      "id": "style-reuse",
+      "title": "How Link reaches Button's styles",
+      "options": ["import-recipe", "extract-control", "href-on-button"],
+      "recommended": "import-recipe",
+      "outcome": "import-recipe",
+      "note": "Consequence recorded in the outcome: variant=\"text\" does not call the recipe, so the sharing covers the five box variants only."
+    },
+    {
+      "id": "text-link-type",
+      "title": "Where the text variant's type comes from",
+      "options": ["inherit-all", "inherit-plus-with", "typography-props"],
+      "recommended": "inherit-all",
+      "outcome": "inherit-plus-with",
+      "note": "Revised 2026-08-28 from `text-link-treatment`, which came back OPEN. Round-one note: \u201cunderline should be a boolean prop, and the base styles of the type should inherit from the parent element. if it's easier or better to have Link inherit the Typography props directly, that would be great. external should also be a prop, which would place an icon to the right of the text.\u201d Decided against the recommendation; precedence resolved in the outcome as explicit `with` beating the inherited type."
+    },
+    {
+      "id": "router-integration",
+      "title": "How a consumer swaps in their router's link",
+      "options": ["render-prop", "class-export", "nothing"],
+      "recommended": "render-prop",
+      "outcome": "render-prop",
+      "note": null
+    },
+    {
+      "id": "underline-default",
+      "title": "What the underline prop defaults to",
+      "options": ["default-true-hard", "default-true-hover", "default-false"],
+      "recommended": "default-true-hard",
+      "outcome": "default-true-hard",
+      "note": "Scope flagged in the outcome: `underline` applies to variant=\"text\" only."
+    },
+    {
+      "id": "external-affordance",
+      "title": "What the external prop does",
+      "options": ["marker-and-rel", "full-bundle", "marker-only"],
+      "recommended": "marker-and-rel",
+      "outcome": "full-bundle",
+      "note": "Decided against the recommendation. Carried forward from the unchosen option and flagged in the outcome: `external` owns the end icon slot, so iconPosition=\"end\" alongside it is a type error."
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists --
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

@@ -1,6 +1,7 @@
 import { style } from '@vanilla-extract/css';
 import { color, radius, spacing, type } from '@jig-ui/styles/tokens';
 import { focusRing } from '../focus-ring';
+import { linkHoverFor } from '../link/link-hover.css';
 
 export const root = style({
   boxSizing: 'border-box',
@@ -21,14 +22,14 @@ export const bar = style({
   // Holds the copy button to the right whether or not there is a label.
   justifyContent: 'space-between',
   gap: spacing[300],
-  color: color.text.secondary,
+  ...linkHoverFor('secondary'),
   padding: `${spacing[400]} ${spacing[400]}`,
 });
 
 export const label = style({
   fontFamily: type.family.mono,
   fontSize: type.caption02.size,
-  color: color.text.secondary,
+  ...linkHoverFor('secondary'),
   // Long file paths give up their space to the copy button rather than
   // pushing it out of the bar.
   overflow: 'hidden',

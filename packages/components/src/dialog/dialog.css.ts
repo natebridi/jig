@@ -1,6 +1,7 @@
 import { style, styleVariants } from "@vanilla-extract/css";
 import { color, elevation, radius, size, spacing, type } from "@jig-ui/styles/tokens";
 import { focusRing } from "../focus-ring";
+import { linkHoverFor } from "../link/link-hover.css";
 import { gutter as scrollGutter } from "../scrollarea/scrollarea.css";
 
 /**
@@ -115,7 +116,10 @@ export const description = style({
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[200]}`,
   lineHeight: 1.45,
-  color: color.text.secondary,
+  // A description is prose and routinely carries a link ("see our terms"), so
+  // it declares the hover pair for `secondary` rather than leaving a link
+  // inside it to fall back to primary's.
+  ...linkHoverFor('secondary'),
   margin: 0,
 });
 

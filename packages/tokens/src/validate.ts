@@ -117,6 +117,16 @@ export const REQUIRED_SEMANTICS = [
   'color.text.muted',
   'color.text.accent',
   'color.text.danger',
+  // The hover pairs. Link reads `primary-hover` by name as its fallback, and
+  // Typography, Dialog and Tooltip each declare one alongside the role they
+  // set — so a missing one is an unstyled hover, not a build error, unless it
+  // is caught here.
+  'color.text.primary-hover',
+  'color.text.secondary-hover',
+  'color.text.inverse-hover',
+  'color.text.muted-hover',
+  'color.text.accent-hover',
+  'color.text.danger-hover',
 ];
 
 export function validateRequired(label: string, doc: Json): string[] {

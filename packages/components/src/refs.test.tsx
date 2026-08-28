@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Dialog, Grid, Icon, IconButton, ScrollArea, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Dialog, Grid, Icon, IconButton, Link, ScrollArea, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -25,6 +25,13 @@ describe('refs', () => {
       ['Token', createRef<HTMLSpanElement>(), (r: never) => <Token ref={r}>x</Token>, 'SPAN'],
       ['Token as link', createRef<HTMLAnchorElement>(), (r: never) => <Token ref={r} href="/x">x</Token>, 'A'],
       ['Token with both', createRef<HTMLSpanElement>(), (r: never) => <Token ref={r} href="/x" onRemove={() => {}}>x</Token>, 'SPAN'],
+      ['Link', createRef<HTMLAnchorElement>(), (r: never) => <Link ref={r} href="/x">x</Link>, 'A'],
+      // Still the anchor when the element is the caller's: 0009 D4's `render`
+      // composes with what it is given rather than handing the ref elsewhere.
+      ['Link with render', createRef<HTMLAnchorElement>(), (r: never) => <Link ref={r} href="/x" render={<a data-router="" />}>x</Link>, 'A'],
+      // A box-variant Link is still an anchor, which is the whole of 0009's
+      // context: it looks like a button and is announced as a link.
+      ['Link as button', createRef<HTMLAnchorElement>(), (r: never) => <Link ref={r} href="/x" variant="primary">x</Link>, 'A'],
       // The root, not the viewport — the root is the element a caller sizes.
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
       // The panel — the visible frame — not Base UI's positioning popup.

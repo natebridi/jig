@@ -13,6 +13,17 @@ export type TypographyElement =
   | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   | 'label' | 'blockquote' | 'figcaption';
 
+/**
+ * The semantic text roles.
+ *
+ * A register rather than a colour: `danger` is not red, it is *danger*, and it
+ * resolves to a different red in each theme. Named `tone` rather than `color`
+ * because `Token`'s `color` prop names a hue, and 0006 D2 keeps those two
+ * ideas apart. Decided in apps/docs/decisions/0010-typography-tone.html (D2).
+ */
+export type TypographyTone =
+  | 'primary' | 'secondary' | 'muted' | 'accent' | 'danger' | 'inverse';
+
 /** The type presets. Exported so consumers building wrappers can name one. */
 export type TypeStyles =
   | 'display01' | 'display02' | 'display03' | 'display04' | 'display05' | 'display06'
@@ -30,6 +41,20 @@ export interface TypographyOwnProps extends SpacingProps {
    * paragraph.
    */
   balance?: boolean;
+  /**
+   * Which semantic text role the text takes. Sets the colour, and with it the
+   * hover colour of any `Link` inside — so a link in muted prose hovers to
+   * muted's own partner rather than to body copy's.
+   *
+   * **`inverse` needs an inverted surface.** It is the one role that is a
+   * context rather than a register: it paints light ink for a dark panel
+   * (`color.surfaces.inverse`), and on the ordinary body surface it renders
+   * text the same colour as the page. Nothing can check this — whether the
+   * background behind is inverted is not knowable from here, at render time or
+   * from computed style, because any ancestor may have painted it. 0010 D3
+   * exposed it anyway, and this note is the guard.
+   */
+  tone?: TypographyTone;
 }
 
 export type TypographyProps<E extends TypographyElement = 'div'> =
@@ -38,6 +63,7 @@ export type TypographyProps<E extends TypographyElement = 'div'> =
 export function Typography<E extends TypographyElement = 'div'>({
   with: typeStyle = 'body01',
   balance = false,
+  tone = 'primary',
   as,
   className,
   children,
@@ -50,7 +76,7 @@ export function Typography<E extends TypographyElement = 'div'>({
   return (
     <Component
       className={[
-        typography({ style: typeStyle, balance }),
+        typography({ style: typeStyle, balance, tone }),
         spacing,
         className,
       ].filter(Boolean).join(' ')}

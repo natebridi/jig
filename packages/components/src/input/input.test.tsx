@@ -44,6 +44,32 @@ describe('Input', () => {
     );
   });
 
+  it('puts className and style on the wrapper, which is what the layout sees', () => {
+    const { container } = render(
+      <Input label="Notes" className="mine" style={{ flexGrow: 1 }} />
+    );
+
+    const input = screen.getByRole('textbox', { name: 'Notes' });
+    const wrapper = container.firstElementChild as HTMLElement;
+
+    // The wrapper is the flex or grid child; the control is nested inside it
+    // alongside the label. Styling the control meant a flexGrow landed on an
+    // element the parent layout never touches and silently did nothing.
+    expect(wrapper).toHaveClass('mine');
+    expect(wrapper).toHaveStyle({ flexGrow: '1' });
+    expect(wrapper).toContainElement(input);
+    expect(input).not.toHaveClass('mine');
+  });
+
+  it('still spreads everything else onto the control', () => {
+    render(<Input label="Notes" className="mine" placeholder="Type here" readOnly />);
+
+    const input = screen.getByRole('textbox', { name: 'Notes' });
+
+    expect(input).toHaveAttribute('placeholder', 'Type here');
+    expect(input).toHaveAttribute('readonly');
+  });
+
   it('forwards the ref to the input element', () => {
     const ref = createRef<HTMLInputElement>();
     render(<Input label="Email" ref={ref} />);

@@ -1,5 +1,6 @@
 import { keyframes, style, styleVariants } from '@vanilla-extract/css';
 import { color, radius, spacing, type } from '@jig-ui/styles/tokens';
+import { linkHoverFor } from '../link/link-hover.css';
 
 const fadeIn = keyframes({
   from: { opacity: 0 },
@@ -31,7 +32,10 @@ export const bubble = style({
   width: 'max-content',
   maxWidth: '18rem',
   background: color.surfaces.inverse,
-  color: color.text.inverse,
+  // Inverted chrome, so a link inside would otherwise hover to the dark ink
+  // meant for a light surface and disappear. Declaring the pair is one line
+  // and costs nothing if no link ever appears here.
+  ...linkHoverFor('inverse'),
   borderRadius: radius[300],
   fontFamily: type.caption02.family,
   fontSize: type.caption02.size,

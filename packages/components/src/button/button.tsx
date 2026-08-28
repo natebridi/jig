@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, Ref } from 'react';
 import { Icon, type IconName } from '../icon';
 import { button, buttonIconSize } from './button.css';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'smoke';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

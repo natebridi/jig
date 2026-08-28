@@ -1,5 +1,5 @@
 import { Field } from '@base-ui/react/field';
-import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
+import type { CSSProperties, InputHTMLAttributes, ReactNode, Ref } from 'react';
 import {
   control,
   description as descriptionClass,
@@ -32,8 +32,22 @@ export interface InputProps
    */
   error?: ReactNode;
   size?: InputSize;
-  /** Applied to the control, not the surrounding field. */
+  /**
+   * Applied to the field wrapper, not the control.
+   *
+   * The wrapper is the element the surrounding layout sees — it is the flex or
+   * grid child, and it is what holds the label and the description as well as
+   * the input. Styling the control instead meant a `flexGrow` or a `gridColumn`
+   * landed on an element the parent layout never touches, and silently did
+   * nothing. `Slider` has always worked this way; Input was the outlier.
+   *
+   * Everything else spreads onto the control, so `placeholder`, `onChange`,
+   * `id` and the rest reach the `<input>` as they read.
+   */
   className?: string;
+  /** Applied to the field wrapper, for the same reason as `className`. */
+  style?: CSSProperties;
+  /** The control — the element you would focus, select or measure. */
   ref?: Ref<HTMLInputElement>;
 }
 
@@ -53,11 +67,13 @@ export function Input({
   disabled,
   name,
   className,
+  style,
   ...props
 }: InputProps) {
   return (
     <Field.Root
-      className={field}
+      className={[field, className].filter(Boolean).join(' ')}
+      {...(style ? { style } : {})}
       disabled={disabled}
       name={name}
       // Undefined rather than false: passing `false` would assert the field is
@@ -67,11 +83,7 @@ export function Input({
     >
       {label != null && <Field.Label className={labelClass}>{label}</Field.Label>}
 
-      <Field.Control
-        {...props}
-        disabled={disabled}
-        className={[control({ size }), className].filter(Boolean).join(' ')}
-      />
+      <Field.Control {...props} disabled={disabled} className={control({ size })} />
 
       {description != null && (
         <Field.Description className={descriptionClass}>{description}</Field.Description>

@@ -1,0 +1,1757 @@
+<title>0010 &middot; Typography tone</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes -- real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option -- a
+     measurement table, a diagram -- sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way -- dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose -- localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied out of packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack; every
+     colour and size is the shipped number. */
+
+  .jig {
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-rad-400: 4.3px;
+
+    --j-body:  oklch(94.3% 0.005 83);      /* surfaces.body   warm.25 */
+
+    /* the six text roles, each with the hover it now carries */
+    --j-primary:    oklch(31.3% 0.012 83);     /* warm.600  */
+    --j-primary-h:  oklch(20.9% 0.013 83);     /* warm.700  */
+    --j-secondary:  oklch(45.4% 0 0);          /* gray.500  */
+    --j-secondary-h:oklch(26.1% 0 0);          /* gray.650  */
+    --j-muted:      oklch(61.1% 0 0);          /* gray.400  */
+    --j-muted-h:    oklch(38.3% 0 0);          /* gray.550  */
+    --j-accent:     oklch(38.3% 0.179 262.2);  /* blue.550  */
+    --j-accent-h:   oklch(26.1% 0.152 264.4);  /* blue.650  */
+    --j-danger:     oklch(38.31% 0.1549 23.92);/* red.550   */
+    --j-danger-h:   oklch(26.1% 0.105 22.8);   /* red.650   */
+    --j-inverse:    oklch(94.3% 0.005 83);     /* warm.25   */
+    --j-inverse-h:  oklch(100% 0 0);           /* white     */
+    --j-inverse-bg: oklch(31.3% 0.012 83);     /* surfaces.inverse */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:       oklch(20.9% 0 0);          /* gray.700 */
+      --j-primary:    oklch(92.3% 0 0);          /* gray.100 */
+      --j-primary-h:  oklch(100% 0 0);           /* white    */
+      --j-secondary:  oklch(85.9% 0 0);          /* gray.200 */
+      --j-secondary-h:oklch(93.7% 0 0);          /* gray.50  */
+      --j-muted:      oklch(75.3% 0 0);          /* gray.300 */
+      --j-muted-h:    oklch(89.1% 0 0);          /* gray.150 */
+      --j-accent:     oklch(75.3% 0.127 256.7);  /* blue.300 */
+      --j-accent-h:   oklch(85.9% 0.07 254.4);   /* blue.200 */
+      --j-danger:     oklch(75.3% 0.148 26.7);   /* red.300  */
+      --j-danger-h:   oklch(85.9% 0.076 27.8);   /* red.200  */
+      --j-inverse:    oklch(20.9% 0 0);          /* gray.700 */
+      --j-inverse-h:  oklch(14.6% 0 0);          /* gray.800 */
+      --j-inverse-bg: oklch(92.3% 0 0);
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:       oklch(20.9% 0 0);
+    --j-primary:    oklch(92.3% 0 0);
+    --j-primary-h:  oklch(100% 0 0);
+    --j-secondary:  oklch(85.9% 0 0);
+    --j-secondary-h:oklch(93.7% 0 0);
+    --j-muted:      oklch(75.3% 0 0);
+    --j-muted-h:    oklch(89.1% 0 0);
+    --j-accent:     oklch(75.3% 0.127 256.7);
+    --j-accent-h:   oklch(85.9% 0.07 254.4);
+    --j-danger:     oklch(75.3% 0.148 26.7);
+    --j-danger-h:   oklch(85.9% 0.076 27.8);
+    --j-inverse:    oklch(20.9% 0 0);
+    --j-inverse-h:  oklch(14.6% 0 0);
+    --j-inverse-bg: oklch(92.3% 0 0);
+  }
+
+  .jig .stage {
+    width: 100%;
+    background: var(--j-body);
+    border-radius: var(--j-rad-400);
+    padding: var(--j-sp-500);
+    font-family: var(--sans);
+  }
+
+  .jig p.line {
+    margin: 0 0 var(--j-sp-400);
+    font-size: var(--j-ts-300);
+    line-height: 1.5;
+    max-width: none;
+  }
+  .jig p.line:last-child { margin-bottom: 0; }
+
+  /* Each role, and the link inside it, which takes the role's own hover. */
+  .jig .t-primary   { color: var(--j-primary);   }
+  .jig .t-secondary { color: var(--j-secondary); }
+  .jig .t-muted     { color: var(--j-muted);     }
+  .jig .t-accent    { color: var(--j-accent);    }
+  .jig .t-danger    { color: var(--j-danger);    }
+  .jig .t-inverse   { color: var(--j-inverse); background: var(--j-inverse-bg); padding: var(--j-sp-300) var(--j-sp-400); border-radius: var(--j-rad-400); }
+
+  .jig a.lnk {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    border-radius: 2px;
+  }
+  .jig .t-primary   a.lnk:hover { color: var(--j-primary-h);   }
+  .jig .t-secondary a.lnk:hover { color: var(--j-secondary-h); }
+  .jig .t-muted     a.lnk:hover { color: var(--j-muted-h);     }
+  .jig .t-accent    a.lnk:hover { color: var(--j-accent-h);    }
+  .jig .t-danger    a.lnk:hover { color: var(--j-danger-h);    }
+  .jig .t-inverse   a.lnk:hover { color: var(--j-inverse-h);   }
+
+  /* Role swatch pairs, for the coverage decision. */
+  .jig .pairs { display: grid; gap: 0.45rem; width: 100%; }
+  .jig .pair { display: grid; grid-template-columns: 5.5rem 1fr 1fr; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.66rem; }
+  .jig .pair b { color: var(--j-primary); font-weight: 500; }
+  .jig .sw { height: 1.5rem; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+  .jig .pair.out { opacity: 0.34; }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0010</p>
+    <h1>A colour axis on Typography</h1>
+    <p class="standfirst">
+      Typography can only render one colour. Every other shade of prose in the system is
+      a hardcoded <code>color:</code> somewhere &mdash; which is now also the only way to
+      get a link's hover wrong.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-08-28</li>
+      <li>4 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      <code>TypographyOwnProps</code> is <code>with</code>, <code>balance</code> and the
+      spacing props. There is no colour among them, and the recipe's base paints
+      <code>color.text.primary</code> unconditionally. So Typography renders exactly one
+      colour, and secondary, muted, accent and danger prose is reached by setting
+      <code>color:</code> by hand &mdash; in a component's own <code>.css.ts</code>, or
+      in a consumer's stylesheet.
+    </p>
+    <p>
+      That was a tolerable gap until last week. 0009 D3 decided the text Link inherits
+      its colour from whatever encloses it, and the follow-up work added a
+      <code>&lt;role&gt;-hover</code> token beside each of the six text roles, plus a
+      <code>linkHoverFor(role)</code> helper that sets a colour and its hover pair
+      together. A link can only hover correctly if the thing that set the colour also
+      declared the pair.
+    </p>
+    <p>
+      Three Jig components declare it today &mdash; <code>Typography</code>
+      (<code>primary</code>), <code>Dialog</code>'s description
+      (<code>secondary</code>) and <code>Tooltip</code> (<code>inverse</code>). Four do
+      not, and two of those are prose slots that plainly carry links:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>declares the pair &mdash; a link inside hovers correctly</i>
+typography.css.ts   base          <span class="in">primary</span>
+dialog.css.ts       description   <span class="in">secondary</span>
+tooltip.css.ts      popup         <span class="in">inverse</span>
+
+<i>sets a text colour and does not &mdash; a link inside rests on the
+role and hovers to primary's partner, which is near-black ink</i>
+input.css.ts:107    description   <span class="no">muted</span>
+input.css.ts:114    error         <span class="no">danger</span>   <i>&larr; "Invalid card. See accepted cards"</i>
+codeblock.css.ts:24 bar           <span class="no">secondary</span>
+codeblock.css.ts:31 label         <span class="no">secondary</span>
+adorn.css.ts        with=         <span class="no">muted accent danger</span></pre>
+      </div>
+      <figcaption>
+        Wiring these four is six mechanical lines and closes the gap <em>inside</em> Jig.
+        It does nothing for a consumer who writes <code>color:</code> in their own
+        stylesheet, which they must, because Typography offers them no other way to
+        make a paragraph muted.
+      </figcaption>
+    </figure>
+
+    <p>
+      So the question is not really about hovers. It is whether the system has a
+      supported way to say &ldquo;this prose is secondary&rdquo; at all. The hover pair
+      is the thing that made its absence visible.
+    </p>
+    <p>
+      One complication worth stating before the options. <code>Adorn</code> already has a
+      colour axis &mdash; <code>with="muted | accent | danger"</code>, plus
+      <code>mono</code>, which is a font-family switch riding the same prop. And
+      <code>with</code> is also Typography's prop name, where it means a type preset. The
+      system therefore already spells one concept two ways, and a new axis on Typography
+      cannot be called <code>with</code> even if that would have been the consistent
+      choice.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li>Whichever option wins <b>applies <code>linkHoverFor</code> automatically</b>. Pairing the colour with its hover is the entire reason this is being proposed; it is not a fork.</li>
+      <li>The default is <code>primary</code>, which is what Typography paints today. No consumer's markup changes appearance.</li>
+      <li>The roles come from the existing <code>color.text.*</code> semantics. No new tokens &mdash; the <code>-hover</code> siblings already shipped.</li>
+      <li>The prop type is a <b>hand-written union</b>, not derived from the token object. Same reason the spacing props are hand-declared: a generated union renders as an unreadable blob in Storybook's docs table.</li>
+      <li>No change to <code>as</code>. Colour and semantics stay independent, exactly as <code>with</code> and <code>as</code> already are.</li>
+      <li>Adorn keeps its <code>mono</code> option wherever the colours land. It switches font family, not colour, and D4 is about the colours only.</li>
+      <li><code>@jig-ui/react</code> is <code>0.1.0</code>. A breaking rename is cheap now and will not be later.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English.
+    </p>
+    <p>
+      All four came back accepted in one round, two of them against the recommendation
+      &mdash; D3 took every role rather than holding <code>inverse</code> back, and D4
+      left Adorn's prop name alone. Both outcomes record what that costs and how the
+      cost is being handled. Every option is kept, including the ones not taken.
+    </p>
+  </section>
+
+  <!-- ============================== D1 ============================== -->
+  <section class="decision" data-decision="colour-axis-home" data-title="Where a paragraph's colour comes from">
+    <p class="decision-id">D1 &middot; colour-axis-home</p>
+    <h2>Where a paragraph's colour comes from</h2>
+    <p>
+      Hover each link in the specimens: the first two give a link the hover that belongs
+      to the text around it, and do so without the call site knowing that hovers exist.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="typography-tone" data-label="A colour axis on Typography">
+        <div class="option-head">
+          <h3>A colour axis on Typography</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">One prop; the hover pair rides along</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <p class="line t-primary">Primary prose, with <a href="#" class="lnk">a link</a> in it.</p>
+            <p class="line t-secondary">Secondary prose, with <a href="#" class="lnk">a link</a> in it.</p>
+            <p class="line t-muted">Muted prose, with <a href="#" class="lnk">a link</a> in it.</p>
+            <p class="line t-danger">Danger prose, with <a href="#" class="lnk">a link</a> in it.</p>
+          </div>
+          <p class="caption">&lt;Typography tone="muted"&gt; &middot; hover a link &mdash; each takes its own role's partner</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Closes the gap for consumers, not just for Jig. Today an app that wants muted prose must write <code>color:</code> itself, which is precisely the case no amount of internal wiring can reach.</li>
+          <li class="pro">The pairing becomes impossible to forget rather than merely easy to remember: there is no way to set the colour that does not also set the hover.</li>
+          <li class="pro">Removes four of the seven hardcoded sites outright &mdash; Input's description and error, and CodeBlock's two, all become a <code>Typography</code> with a tone.</li>
+          <li class="pro">Typography is already the component that owns how text looks. A colour axis is less of an addition than it is a missing half.</li>
+          <li class="con">A second prop that overlaps with <code>as</code> and <code>with</code> on the same component, on a signature that is currently three props wide.</li>
+          <li class="con">Leaves Adorn spelling the same concept differently unless D4 also lands, which is a rename.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="adorn-block" data-label="Make Adorn block-capable">
+        <div class="option-head">
+          <h3>Make Adorn block-capable</h3>
+        </div>
+
+        <p class="specimen-label">The colour axis already exists &mdash; widen what can wear it</p>
+        <div class="specimen block">
+<pre class="tree"><i>today &mdash; inline only</i>
+AdornElement =
+  'span' | 'strong' | 'em' | 'b'
+  | 'i' | 'code' | 'mark' | 'abbr'
+
+<i>widened</i>
+AdornElement = &hellip; | <b>'p'</b> | <b>'div'</b>
+
+&lt;Adorn as="p" with="muted"&gt;
+  Muted prose, with
+  &lt;Link href&gt;a link&lt;/Link&gt; in it.
+&lt;/Adorn&gt;
+
+<i>but the type preset lives on the other
+component, so both are needed anyway</i>
+&lt;Typography with="body02"&gt;
+  &lt;Adorn with="muted"&gt;&hellip;&lt;/Adorn&gt;
+&lt;/Typography&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No new axis anywhere. The colour vocabulary stays in one component, which is where a reader would look for it second.</li>
+          <li class="pro">Adorn's colours already pair cleanly with the new hover tokens; only the element list widens.</li>
+          <li class="con">Splits one paragraph's styling across two components &mdash; size and family from Typography, colour from Adorn &mdash; so the common case needs both and a nested element.</li>
+          <li class="con">Adorn is built for phrases: its whole doc comment argues that <code>as</code> should not render &ldquo;something that has no business holding a phrase&rdquo;. A <code>&lt;div&gt;</code> is exactly that.</li>
+          <li class="con">Still leaves Typography unable to say what colour it is, so the consumer writing plain muted prose reaches for <code>color:</code> anyway.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="wire-sites" data-label="No axis; wire the call sites">
+        <div class="option-head">
+          <h3>No axis; wire the call sites</h3>
+        </div>
+
+        <p class="specimen-label">Six mechanical lines, and the status quo otherwise</p>
+        <div class="specimen block">
+<pre class="tree">input.css.ts
+- color: color.text.muted,
++ ...linkHoverFor('muted'),
+
+- color: color.text.danger,
++ ...linkHoverFor('danger'),
+
+codeblock.css.ts   <i>x2</i>
+adorn.css.ts       <i>x3 variants</i>
+
+<i>and for anyone outside Jig</i>
+.myProse {
+  color: var(--color-text-muted);
+  <span class="no">/* nothing tells them this line
+     exists, or what to set it to */</span>
+}</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Smallest possible change, entirely mechanical, and it does fix every case that exists inside Jig today.</li>
+          <li class="pro">Adds no API surface, so nothing new to document, name or version.</li>
+          <li class="con">Fixes the symptom and leaves the cause. Typography still cannot express a colour, so consumers still hardcode, and hardcoded text is exactly where the pairing is missed.</li>
+          <li class="con">The coupling is permanent and unenforced: every future component that paints text has to remember a second line, and forgetting it produces a subtly wrong hover rather than an error.</li>
+          <li class="con">Leaves the system with no answer to &ldquo;how do I make this paragraph secondary&rdquo;, which is a question a design system should not need a decision document to answer.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>A colour axis on Typography.</b> The recipe's base stops painting a colour;
+      a <code>tone</code> variant paints it instead, and each case sets the role and
+      its hover partner together through <code>linkHoverFor</code>.
+      <p>
+        The consequence worth writing down is what it removes. Four of the seven
+        hardcoded text colours stop being hardcoded &mdash; <code>Input</code>'s
+        description and error, and <code>CodeBlock</code>'s bar and label all become a
+        <code>Typography</code> with a tone, and inherit the pairing rather than
+        declaring it. What is left is <code>Tooltip</code>, which needs
+        <code>inverse</code> on a popup that is not a Typography, and <code>Adorn</code>,
+        which D4 leaves in place.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D2 ============================== -->
+  <section class="decision" data-decision="axis-name" data-title="What the axis is called">
+    <p class="decision-id">D2 &middot; axis-name</p>
+    <h2>What the axis is called</h2>
+    <p>
+      <code>with</code> is unavailable: on Typography it already names the type preset.
+      Whatever is chosen here is the word the system will use for &ldquo;which semantic
+      text colour&rdquo; from now on, including in D4.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="tone" data-label="tone">
+        <div class="option-head">
+          <h3><code>tone</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Reads as a register, which is what these roles are</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Typography with="body01" <b>tone</b>="muted"&gt;
+  A caption.
+&lt;/Typography&gt;
+
+&lt;Typography as="p" <b>tone</b>="danger"&gt;
+  That card was declined.
+&lt;/Typography&gt;
+
+<i>the two axes read as different questions</i>
+with  &rarr; how big, what family
+<b>tone</b>  &rarr; how loud, what register</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Names the meaning rather than the mechanism. These roles are not colours a caller picks &mdash; <code>danger</code> is a register, and it is a different colour in each theme.</li>
+          <li class="pro">Free of collisions: no HTML attribute called <code>tone</code>, and it does not clash with <code>Token</code>'s <code>color</code>, which genuinely names a hue.</li>
+          <li class="pro">Reads correctly beside <code>with</code>, so the two axes look like two questions rather than two spellings of one.</li>
+          <li class="con">A word the system has not used before, so it has to be learned once.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="color" data-label="color">
+        <div class="option-head">
+          <h3><code>color</code></h3>
+        </div>
+
+        <p class="specimen-label">What CSS calls it, and what Token already calls its own axis</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Typography <b>color</b>="muted"&gt;A caption.&lt;/Typography&gt;
+
+<i>but Token's `color` names a hue&hellip;</i>
+&lt;Token <b>color</b>="fuschia"&gt;   <i>a hue</i>
+&lt;Typography <b>color</b>="muted"&gt; <i>a role</i>
+
+<i>&hellip;and the DOM has one too</i>
+&lt;font <b>color</b>&gt;  &lt;input <b>color</b>&gt;
+React will not warn if it leaks
+through a spread onto an element.</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Immediately guessable. Nobody has to be told what it does.</li>
+          <li class="pro">Matches <code>Token</code>'s prop name, so the system uses one word for &ldquo;the colour axis&rdquo;.</li>
+          <li class="con">Matches <code>Token</code>'s <em>name</em> while meaning something else &mdash; a hue there, a semantic role here. 0006 D2 went out of its way to keep those two ideas apart.</li>
+          <li class="con">A real HTML attribute, so it has to be excluded from the spread by hand on a polymorphic component that forwards element props.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="text" data-label="text">
+        <div class="option-head">
+          <h3><code>text</code></h3>
+        </div>
+
+        <p class="specimen-label">Names the token group the values come from</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Typography <b>text</b>="muted"&gt;A caption.&lt;/Typography&gt;
+
+<i>traces straight to the token</i>
+text="muted"  &rarr;  color.<b>text</b>.muted
+              &rarr;  color.<b>text</b>.mutedHover
+
+<i>but on a text component it reads as
+"the text", not "the text colour"</i>
+&lt;Typography text="danger"&gt;
+  &lt;-- looks like a content prop</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Traceable: the prop value and the token path are the same word, so there is nothing to map.</li>
+          <li class="con">On a component whose entire job is text, a prop called <code>text</code> reads as the content, not the colour of it. That is the sort of ambiguity that gets a prop misused once per new hire.</li>
+          <li class="con">Would leave <code>Adorn</code> under D4 with <code>text="muted"</code> on an element that might be a <code>&lt;code&gt;</code>, which reads worse still.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b><code>tone</code>.</b> The word the system uses for &ldquo;which semantic text
+      colour&rdquo;, sitting beside <code>with</code> for the type preset and
+      <code>as</code> for the semantics &mdash; three axes, three questions.
+      <p>
+        D4 then declined to spread it to Adorn, so <code>tone</code> is Typography's
+        alone for now. See D4's outcome for what that costs.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D3 ============================== -->
+  <section class="decision" data-decision="role-coverage" data-title="Which roles the axis exposes">
+    <p class="decision-id">D3 &middot; role-coverage</p>
+    <h2>Which roles the axis exposes</h2>
+    <p>
+      Six <code>color.text.*</code> roles exist. They were not all written for prose, and
+      exposing one that is not is how a prop gets used somewhere it cannot work. Each
+      specimen shows the roles included and, faded, the ones left out &mdash; both
+      themes, resting colour and hover partner.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="five-prose" data-label="Five prose roles">
+        <div class="option-head">
+          <h3>Five &mdash; every role but <code>inverse</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">rest &middot; hover</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="pairs">
+              <div class="pair"><b>primary</b><span class="sw t-primary" style="background:var(--j-primary);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-primary-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>secondary</b><span class="sw" style="background:var(--j-secondary);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-secondary-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>muted</b><span class="sw" style="background:var(--j-muted);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-muted-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>accent</b><span class="sw" style="background:var(--j-accent);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-accent-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>danger</b><span class="sw" style="background:var(--j-danger);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-danger-h);color:var(--j-body)">hover</span></div>
+              <div class="pair out"><b>inverse</b><span class="sw" style="background:var(--j-inverse);color:var(--j-inverse-bg)">excluded</span><span class="sw" style="background:var(--j-inverse-h);color:var(--j-inverse-bg)">excluded</span></div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro"><code>inverse</code> is the one role that is not a register but a <em>context</em>: it only works on an inverted surface, which the component cannot see. Offered as a tone it would look like a colour choice and produce invisible text on the body surface.</li>
+          <li class="pro">The other five are all legitimate on the page's own background, in both themes, with a hover partner that already exists.</li>
+          <li class="pro">Tooltip &mdash; the one component that genuinely needs <code>inverse</code> &mdash; already declares it directly in its own stylesheet and does not need a prop.</li>
+          <li class="con">The axis is then not a straight mirror of the token group, so the mapping has one documented exception.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="all-six" data-label="All six roles">
+        <div class="option-head">
+          <h3>All six</h3>
+        </div>
+
+        <p class="specimen-label">rest &middot; hover &mdash; note where <code>inverse</code> lands</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="pairs">
+              <div class="pair"><b>primary</b><span class="sw" style="background:var(--j-primary);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-primary-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>secondary</b><span class="sw" style="background:var(--j-secondary);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-secondary-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>muted</b><span class="sw" style="background:var(--j-muted);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-muted-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>accent</b><span class="sw" style="background:var(--j-accent);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-accent-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>danger</b><span class="sw" style="background:var(--j-danger);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-danger-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>inverse</b><span class="sw" style="background:var(--j-inverse);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-inverse-h);color:var(--j-body)">hover</span></div>
+            </div>
+            <p class="line t-inverse" style="margin-top:0.8rem"><code>tone="inverse"</code> only works on an inverted surface like this one.</p>
+            <p class="line" style="color:var(--j-inverse);margin-top:0.5rem">On the body surface it is this, which is nothing.</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A straight mirror of <code>color.text.*</code>: no exception to remember, and no question about where the sixth went.</li>
+          <li class="pro">Legitimate for anyone building their own inverted panel, who currently has no way to reach the role at all.</li>
+          <li class="con">Five of the six work anywhere and the sixth works in one place. That is not a set; it is five options and a trap, as the second line of the specimen shows.</li>
+          <li class="con">Nothing can warn about the misuse: whether the surface behind is inverted is not knowable from the component.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="three-minimal" data-label="Three &mdash; the minimum">
+        <div class="option-head">
+          <h3>Three &mdash; <code>primary muted danger</code></h3>
+        </div>
+
+        <p class="specimen-label">Only the registers with an unambiguous job</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="pairs">
+              <div class="pair"><b>primary</b><span class="sw" style="background:var(--j-primary);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-primary-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>muted</b><span class="sw" style="background:var(--j-muted);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-muted-h);color:var(--j-body)">hover</span></div>
+              <div class="pair"><b>danger</b><span class="sw" style="background:var(--j-danger);color:var(--j-body)">rest</span><span class="sw" style="background:var(--j-danger-h);color:var(--j-body)">hover</span></div>
+              <div class="pair out"><b>secondary</b><span class="sw" style="background:var(--j-secondary);color:var(--j-body)">excluded</span><span class="sw" style="background:var(--j-secondary-h);color:var(--j-body)">excluded</span></div>
+              <div class="pair out"><b>accent</b><span class="sw" style="background:var(--j-accent);color:var(--j-body)">excluded</span><span class="sw" style="background:var(--j-accent-h);color:var(--j-body)">excluded</span></div>
+              <div class="pair out"><b>inverse</b><span class="sw" style="background:var(--j-inverse);color:var(--j-inverse-bg)">excluded</span><span class="sw" style="background:var(--j-inverse-h);color:var(--j-inverse-bg)">excluded</span></div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Three obviously distinct registers, with no pair a caller has to squint to tell apart.</li>
+          <li class="pro">Additive later: a role can be added to a union without breaking anyone, where removing one cannot.</li>
+          <li class="con">Excludes <code>secondary</code>, which <code>Dialog</code> and <code>CodeBlock</code> both already use for real prose &mdash; so those sites keep hardcoding and the change fixes less than it could.</li>
+          <li class="con"><code>secondary</code> and <code>muted</code> sit two ramp steps apart and are used for different things; collapsing to one loses a distinction the tokens deliberately draw.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>All six roles</b>, <code>inverse</code> included &mdash; against the
+      recommendation, which was to hold it back.
+      <p>
+        The cost is accepted with it, and it is the one this option named: five of the
+        six work on any surface and <code>inverse</code> works on exactly one, with
+        <b>no way to warn about the misuse</b>. Whether the surface behind is inverted
+        is not knowable from inside the component &mdash; not at render time, and not
+        from computed style either, since the background may be painted by any ancestor.
+        <code>tone="inverse"</code> on the body surface renders text the same colour as
+        the page, which is the failure the specimen above shows.
+      </p>
+      <p>
+        <b>So the guard has to be documentation, and it is being treated as part of the
+        build rather than as a nicety:</b> the prop's own JSDoc says <code>inverse</code>
+        requires an inverted surface, and the Storybook story for it renders on
+        <code>color.surfaces.inverse</code> rather than on the default canvas &mdash;
+        showing it anywhere else would teach the mistake. Flagged because it is a
+        resolution to a problem the option raised and did not settle.
+      </p>
+      <p>
+        <code>Tooltip</code> is <em>not</em> being refactored onto the prop. Its popup
+        is not a Typography, and it already declares the <code>inverse</code> pair in
+        its own stylesheet correctly.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D4 ============================== -->
+  <section class="decision" data-decision="adorn-alignment" data-title="What happens to Adorn's colour axis">
+    <p class="decision-id">D4 &middot; adorn-alignment</p>
+    <h2>What happens to Adorn's colour axis</h2>
+    <p>
+      Adorn colours a phrase; Typography would colour a block. They are both needed, and
+      after D1 they would both name the same three roles &mdash; under two different prop
+      names, because Adorn spells it <code>with</code>.
+    </p>
+    <p>
+      Adorn's <code>with</code> also carries <code>mono</code>, which is a font-family
+      switch rather than a colour. Every option below leaves <code>mono</code> on
+      <code>with</code>, where it belongs.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="rename-adorn" data-label="Rename Adorn's colours to match">
+        <div class="option-head">
+          <h3>Rename Adorn's colours to match</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">One word for one concept, at both scales</p>
+        <div class="specimen block">
+<pre class="tree"><i>before</i>
+&lt;Adorn <span class="no">with</span>="muted"&gt;   <i>a colour</i>
+&lt;Adorn <span class="no">with</span>="mono"&gt;    <i>a family</i>
+&lt;Typography with="body01"&gt; <i>a preset</i>
+
+<i>after</i>
+&lt;Adorn <b class="in">tone</b>="muted"&gt;
+&lt;Adorn with="mono"&gt;         <i>unchanged</i>
+&lt;Typography with="body01" <b class="in">tone</b>="muted"&gt;
+
+<i>and they compose</i>
+&lt;Typography tone="muted"&gt;
+  Mostly quiet, with a
+  &lt;Adorn tone="danger"&gt;warning&lt;/Adorn&gt;.
+&lt;/Typography&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One word for one concept at both scales, so a reader who learns <code>tone</code> on a paragraph already knows it on a phrase.</li>
+          <li class="pro">Untangles Adorn's <code>with</code>, which currently means &ldquo;colour, or else a font family&rdquo; &mdash; two unrelated ideas on one prop.</li>
+          <li class="pro">A breaking change that costs almost nothing at <code>0.1.0</code>, and cannot be made cheaply after 1.0.</li>
+          <li class="con">It is still a breaking change, and Adorn's colours are the only part of its API most callers use.</li>
+          <li class="con">Adorn then has two style props, <code>with</code> and <code>tone</code>, where one of them holds a single option.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="leave-adorn" data-label="Leave Adorn alone">
+        <div class="option-head">
+          <h3>Leave Adorn alone</h3>
+        </div>
+
+        <p class="specimen-label">Two names, one concept</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Typography <b>tone</b>="muted"&gt;
+  Mostly quiet, with a
+  &lt;Adorn <b>with</b>="danger"&gt;warning&lt;/Adorn&gt;.
+&lt;/Typography&gt;
+
+<i>so `with` means, depending on where</i>
+Typography with  &rarr; a type preset
+Adorn      with  &rarr; a colour <i>or</i> a family
+Typography tone  &rarr; a colour
+Adorn      <span class="no">tone</span>  &rarr; <span class="no">does not exist</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No breaking change, and no migration for anyone already using Adorn.</li>
+          <li class="pro">Defers the rename until there is a reason to touch Adorn anyway.</li>
+          <li class="con">Ships the inconsistency the specimen shows, and makes it worse rather than merely inherited: today <code>with</code> is ambiguous, and afterwards it is ambiguous <em>next to</em> a clearer name for the same idea.</li>
+          <li class="con">Every later decision about Adorn inherits the awkwardness, and the rename only gets more expensive.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="fold-adorn" data-label="Fold Adorn's colours into Typography">
+        <div class="option-head">
+          <h3>Fold Adorn's colours in</h3>
+        </div>
+
+        <p class="specimen-label">Adorn keeps only what Typography cannot do</p>
+        <div class="specimen block">
+<pre class="tree"><i>Adorn drops its colours entirely</i>
+AdornStyle = <span class="no">'muted' | 'accent' | 'danger' |</span> 'mono'
+
+<i>so a coloured phrase becomes</i>
+&lt;Typography as="span" tone="danger"&gt;
+  warning
+&lt;/Typography&gt;
+
+<i>which loses the semantics Adorn exists for</i>
+&lt;Adorn as="strong" with="danger"&gt;  <span class="no">gone</span>
+&lt;Adorn as="em" with="accent"&gt;      <span class="no">gone</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly one place in the system names a text colour, which is the cleanest possible answer to the naming question.</li>
+          <li class="con">Adorn's element list &mdash; <code>strong</code>, <code>em</code>, <code>code</code>, <code>mark</code>, <code>abbr</code> &mdash; is the point of it, and Typography's list does not overlap. Colouring an emphasised phrase would become impossible without losing the emphasis.</li>
+          <li class="con">Reduces Adorn to a single <code>mono</code> option, at which point it is a font-family class wearing a component.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Leave Adorn alone</b> &mdash; against the recommendation, which was to rename.
+      <code>Adorn</code> keeps <code>with="muted | accent | danger | mono"</code>, and no
+      caller has to migrate.
+      <p>
+        The accepted cost is that the system now spells one concept two ways:
+        <code>&lt;Typography tone="muted"&gt;</code> and
+        <code>&lt;Adorn with="muted"&gt;</code> mean the same thing. That is deliberate
+        as of today, so it should not be quietly &ldquo;fixed&rdquo; later without a
+        decision that supersedes this one.
+      </p>
+      <p>
+        <b>One thing this decision does not cover, resolved here and flagged as
+        carried:</b> D4 was a question about the prop <em>name</em>, not about whether
+        Adorn declares hover pairs. Its three colour variants set
+        <code>color: color.text.X</code> today and nothing else, so a Link inside
+        <code>&lt;Adorn with="danger"&gt;</code> would rest on danger and hover to
+        primary's partner &mdash; the exact bug this document exists to remove. So
+        Adorn's three colour cases switch to <code>linkHoverFor</code> internally. That
+        is not a rename, not breaking, and not a migration, so it sits inside what
+        &ldquo;leave Adorn alone&rdquo; allows &mdash; but say so if the intent was to
+        leave it untouched entirely.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as decided</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree">&lt;Typography as="p" with="body01" <b>tone</b>="muted"&gt;
+  A caption, with &lt;Link href="/more"&gt;a link&lt;/Link&gt; that hovers to
+  muted&rsquo;s partner without this call site knowing hovers exist.
+&lt;/Typography&gt;
+
+<b>Typography</b>  as     p | span | div | h1&hellip;h6 | label | blockquote | figcaption
+             with   a type preset                                  <i>(default body01)</i>
+             <b>tone</b>   primary | secondary | muted | accent | danger | inverse
+                                                                   <i>(default primary)</i>
+             balance          <i>even out line lengths</i>
+             margin* padding* <i>the spacing props</i>
+             className style ref
+
+<b>Adorn</b>       as     span | strong | em | b | i | code | mark | abbr
+             with   muted | accent | danger | mono     <span class="in">unchanged (D4)</span>
+                    <i>&mdash; but its three colours now declare their hover pair too</i>
+
+<i>tone="inverse" needs an inverted surface. On the body surface it
+renders text the colour of the page.</i>
+&lt;div style={{ background: 'var(--color-surfaces-inverse)' }}&gt;
+  &lt;Typography tone="inverse"&gt;Legible here, and only here.&lt;/Typography&gt;
+&lt;/div&gt;</pre>
+      </div>
+      <figcaption>
+        <b>The point of the axis is the second line of the example.</b> Setting a tone
+        sets the colour <em>and</em> the <code>linkHover</code> custom property beside
+        it, so a Link anywhere inside inherits the right resting colour and the right
+        hover without anyone passing either. That pairing is what could not be enforced
+        while a paragraph's colour was a hand-written <code>color:</code>.
+        <br><br>
+        <b>Two names for one concept</b>, as of D4: <code>Typography tone="muted"</code>
+        and <code>Adorn with="muted"</code>. Deliberate, not an oversight.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A generated tone union.</strong> Deriving the prop type from the <code>color.text.*</code> object would keep the two in step automatically, and renders as an unreadable expanded type in Storybook's props table. Same reason the spacing props are hand-declared. The parity check in <code>validate.ts</code> is where a missing role gets caught instead.</li>
+      <li><strong>Arbitrary colours.</strong> <code>tone</code> names a role from the semantic set; it is not a way to pass <code>#ff0000</code>. Anything outside the set goes through <code>style</code>, and takes responsibility for its own link hover.</li>
+      <li><strong>A matching <code>background</code> axis.</strong> Inverted panels, callouts and cards are a surface question, not a type one, and would want <code>color.surfaces.*</code>. Worth its own proposal if wanted; adding it here would smuggle a layout decision into a typography one.</li>
+      <li><strong>Removing <code>linkHoverFor</code>.</strong> It stays regardless. Tooltip needs it for <code>inverse</code>, which D3 recommends keeping off the prop, and any consumer painting their own text still needs a supported way to declare the pair.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-28. Both decisions taken against the recommendation went in as
+      accepted. One line of D1's outcome turned out to be wrong and is corrected below.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><b>Changed</b> <code>typography/typography.css.ts</code> &mdash; colour moves off the base onto a <code>tone</code> variant built from <code>linkHoverFor</code>, defaulting to <code>primary</code>.</li>
+      <li><b>Changed</b> <code>typography/typography.tsx</code> &mdash; the <code>tone</code> prop and the <code>TypographyTone</code> union, exported from both index files.</li>
+      <li><b>Changed</b> <code>adorn/adorn.css.ts</code> &mdash; its three colour cases and <code>mono</code> now declare hover pairs. Prop name untouched, per D4.</li>
+      <li><b>Changed</b> <code>input/input.css.ts</code>, <code>codeblock/codeblock.css.ts</code> &mdash; four sites wired. See the correction below for why they were wired rather than converted.</li>
+      <li><b>Changed</b> <code>typography.stories.tsx</code> &mdash; <code>Tones</code>, <code>InverseTone</code> and <code>ProseWithLinks</code>. <code>api.types.test.tsx</code> &mdash; four assertions on the tone union and on Adorn keeping <code>with</code>.</li>
+    </ul>
+
+    <h3>A correction to D1's outcome</h3>
+    <p>
+      D1's outcome said Input's description and error and CodeBlock's bar and label
+      &ldquo;become a <code>Typography</code> with a tone&rdquo;. <b>They cannot, and
+      they have not.</b>
+    </p>
+    <ul class="notes">
+      <li>Input's two are rendered by Base UI as <code>Field.Description</code> and <code>Field.Error</code>, which accept a <code>className</code>, not a component. Replacing them with a <code>Typography</code> would drop the Field wiring that supplies <code>aria-describedby</code> and the error match &mdash; trading an accessibility guarantee for a styling tidy-up.</li>
+      <li>Their line-height is <code>1.4</code>; <code>caption01</code>, the preset at the same size, is <code>1</code>. Converting would have changed how every existing field renders.</li>
+      <li>CodeBlock's <code>bar</code> is a flex container holding the label and the copy button, not a run of text.</li>
+    </ul>
+    <p>
+      All four therefore keep their <code>style()</code> and call
+      <code>linkHoverFor</code>, which is what actually delivers the pairing &mdash; the
+      same treatment Dialog and Tooltip already had. The decision itself is unaffected:
+      D1 was about the axis existing, and it exists. What was wrong was a claim about
+      how far it would reach, and the honest count is that the axis serves consumers and
+      new code, while these four internal sites stay wired by hand.
+    </p>
+
+    <h3>What the proposal got right</h3>
+    <ul class="notes">
+      <li>The mechanism needed no adjustment. <code>tone</code> maps one-to-one onto <code>linkHoverFor</code>, and the recipe variant orders after the base without a specificity fight.</li>
+      <li>Moving colour off the base changed nothing visually, because <code>defaultVariants.tone = 'primary'</code> reproduces exactly what the base painted.</li>
+      <li>D4's carried consequence &mdash; wiring Adorn without renaming it &mdash; was correct and cost three lines.</li>
+    </ul>
+
+    <h3>The <code>inverse</code> guard, as built</h3>
+    <p>
+      D3's outcome committed to documentation as the only available guard, and this is
+      it: the <code>tone</code> prop's JSDoc states the precondition and why it cannot be
+      checked, and <code>InverseTone</code> is the one story that renders on
+      <code>color.surfaces.inverse</code>, with a caption underneath saying what happens
+      elsewhere. No story shows <code>inverse</code> on the default canvas.
+    </p>
+
+    <h3>Worth a future proposal</h3>
+    <ul class="notes">
+      <li><b>Nothing enforces the pairing.</b> A future component can still write <code>color: color.text.muted</code> and skip <code>linkHoverFor</code>. A lint rule &mdash; ban <code>color.text.*</code> outside <code>link-hover.css.ts</code> &mdash; would close it properly, and is a tooling decision rather than a design one.</li>
+      <li><b>Two names for one concept</b> is now shipped, deliberately (D4). If it grates in use, the rename is the same work it was today and no more.</li>
+      <li><b>Typography still cannot invert a surface</b>, only the ink on one. <code>tone="inverse"</code> needs a caller-supplied background, which is the surface axis explicitly deferred in &sect;04.</li>
+    </ul>
+
+    <h3>Verification</h3>
+    <p>
+      <code>pnpm turbo typecheck test</code>: 12 tasks, 136 tests, all passing. Hover was
+      measured in the browser rather than eyeballed &mdash; for each of primary,
+      secondary, muted and danger, in both themes, the hovered lightness moves away from
+      the surface and never matches the resting value.
+    </p>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0010
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">4 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0010-typography-tone",
+  "status": "built",
+  "decided": "2026-08-28",
+  "built": "2026-08-28",
+  "decisions": [
+    {
+      "id": "colour-axis-home",
+      "title": "Where a paragraph's colour comes from",
+      "options": ["typography-tone", "adorn-block", "wire-sites"],
+      "recommended": "typography-tone",
+      "outcome": "typography-tone",
+      "note": null
+    },
+    {
+      "id": "axis-name",
+      "title": "What the axis is called",
+      "options": ["tone", "color", "text"],
+      "recommended": "tone",
+      "outcome": "tone",
+      "note": null
+    },
+    {
+      "id": "role-coverage",
+      "title": "Which roles the axis exposes",
+      "options": ["five-prose", "all-six", "three-minimal"],
+      "recommended": "five-prose",
+      "outcome": "all-six",
+      "note": "Decided against the recommendation. inverse is exposed and cannot be guarded in code; the outcome records that the JSDoc and the Storybook story carry the constraint instead."
+    },
+    {
+      "id": "adorn-alignment",
+      "title": "What happens to Adorn's colour axis",
+      "options": ["rename-adorn", "leave-adorn", "fold-adorn"],
+      "recommended": "rename-adorn",
+      "outcome": "leave-adorn",
+      "note": "Decided against the recommendation. Adorn keeps `with`. Carried forward and flagged in the outcome: its three colour variants still switch to linkHoverFor internally, which is not a rename and not breaking."
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists --
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

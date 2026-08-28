@@ -1,6 +1,7 @@
 import { style } from "@vanilla-extract/css";
 import { recipe } from "@vanilla-extract/recipes";
 import { color, radius, size, spacing, type } from "@jig-ui/styles/tokens";
+import { linkHoverFor } from "../link/link-hover.css";
 
 export const field = style({
   display: "flex",
@@ -104,12 +105,20 @@ export const description = style({
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[100]}`,
   lineHeight: 1.4,
-  color: color.text.muted,
+  // Prose that routinely carries a link ("see accepted cards"), so it
+  // declares the hover pair rather than leaving a link inside it to fall
+  // back to body copy's. 0010 D1 recorded these as becoming a Typography;
+  // they cannot be — see the doc's As built.
+  ...linkHoverFor('muted'),
 });
 
 export const error = style({
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[100]}`,
   lineHeight: 1.4,
-  color: color.text.danger,
+  // Prose that routinely carries a link ("see accepted cards"), so it
+  // declares the hover pair rather than leaving a link inside it to fall
+  // back to body copy's. 0010 D1 recorded these as becoming a Typography;
+  // they cannot be — see the doc's As built.
+  ...linkHoverFor('danger'),
 });

@@ -89,6 +89,67 @@ export const ghostButtonSet = (lightOrDark: string) => {
 }
 
 /**
+ * A neutral veil — the translucent fill the smoke button is built from.
+ *
+ * Literal rather than an alias, for the same reason `surfaces.scrim` is: an
+ * alias cannot add an alpha channel and nothing in the palette is translucent.
+ * Chroma is zero so the veil darkens or lightens what it covers instead of
+ * tinting it a hue, which is what lets one set sit over any surface.
+ */
+const veil = (lightness: number, alpha: number) => ({
+  $type: 'color' as const,
+  $value: {
+    colorSpace: 'oklch' as const,
+    components: [lightness, 0, 0] as [number, number, number],
+    alpha
+  }
+});
+
+/**
+ * Smoked glass: a translucent fill that the recipe blurs, so whatever the
+ * button sits on shows through frosted rather than hidden.
+ *
+ * It carries a base and a disabled background where `ghostButtonSet` carries
+ * neither — that is the difference between the two variants. Ghost is absent
+ * until you touch it; smoke is always a pane, and reads as a control at rest
+ * without committing to an opaque fill over the content behind it.
+ *
+ * Ink in light and light in dark. The alphas were set by eye against a
+ * saturated backdrop: below about 0.08 the label loses its footing over
+ * mid-tone content, and much above these the pane stops reading as glass and
+ * starts reading as a solid grey button. Dark runs a touch heavier because a
+ * white veil lifts a dark backdrop less than a black one darkens a light one.
+ * They do not move when the ramps are retuned and have to be rechecked by eye.
+ */
+export const smokeButtonSet = (lightOrDark: string) => {
+  const ink = lightOrDark == 'light' ? 0.12 : 1;
+  const alphas: Record<string, number> = (lightOrDark == 'light') ? {
+    'base-bg': 0.1,
+    'hover-bg': 0.16,
+    'active-bg': 0.22,
+    'disabled-bg': 0.05
+  } : {
+    'base-bg': 0.14,
+    'hover-bg': 0.2,
+    'active-bg': 0.26,
+    'disabled-bg': 0.07
+  };
+
+  const text: Record<string, string> = (lightOrDark == 'light') ? {
+    'text': `{color.warm.600}`,
+    'disabled-text': `{color.warm.300}`
+  } : {
+    'text': `{color.gray.100}`,
+    'disabled-text': `{color.gray.500}`
+  };
+
+  return Object.assign(
+    Object.fromEntries(Object.entries(alphas).map(([key, alpha]) => [key, veil(ink, alpha)])),
+    toColorTokens(text)
+  );
+}
+
+/**
  * The hues a Token can be coloured with, and the order they are generated in.
  *
  * A Token's colour carries meaning rather than emphasis — a red token is not a

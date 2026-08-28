@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -128,7 +128,7 @@ export function App() {
               Grid claims a span of the outer one, and a Stack inside a Stack
               grows, with no Box in between to carry the number. */}
           <Grid spacing="300">
-            <Grid span={{ xs: 24, md: 16 }} columns={2} spacing="200" data-testid="grid-span-16">
+            <Grid span={{ xs: 24, md: 16 }} columns={2} spacing="300" data-testid="grid-span-16">
               <Input label="Nested A" />
               <Input label="Nested B" />
             </Grid>
@@ -202,6 +202,14 @@ export function App() {
             </Stack>
           </Stack>
 
+        </Stack>
+
+        <Stack spacing="400">
+          <Typography as="h2" with="heading04">Links</Typography>
+          <Typography as="p" with="body01">Here is some flowing body text with a <Link href="#">link</Link> in it. <Adorn with="muted">Muted text with a <Link href="#">link</Link> in it.</Adorn></Typography>
+          <Link underline={false} href="#" with="heading05">Standalone link</Link>
+          <Link underline={false} external href="#" with="body01">External link</Link>
+          <Link variant="primary" href="#" icon='arrow-right' iconPosition="end">Button link</Link>
         </Stack>
 
         <Stack spacing="400" align="stretch">

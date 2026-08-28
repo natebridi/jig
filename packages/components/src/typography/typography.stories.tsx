@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Typography } from './typography';
+import { Link } from '../link';
 
 const meta = {
   title: 'Components/Typography',
@@ -70,6 +71,84 @@ export const ResponsiveSpacing: Story = {
       <Typography as="p" with="caption01">The element that follows it.</Typography>
     </>
   ),
+};
+
+export const Tones: Story = {
+  render: () => (
+    <>
+      {(['primary', 'secondary', 'muted', 'accent', 'danger'] as const).map((tone) => (
+        <Typography key={tone} as="p" tone={tone} mb="300">
+          {tone} &mdash; the register this prose is in
+        </Typography>
+      ))}
+    </>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A register rather than a colour: `danger` is not red, it is *danger*, and it resolves to a different red in each theme. Setting a tone also sets the hover colour of any `Link` inside it \u2014 see the Prose story. `inverse` is deliberately absent here; it has its own story, on the surface it requires.',
+      },
+    },
+  },
+};
+
+/**
+ * `inverse` is rendered on `color.surfaces.inverse` rather than on the default
+ * canvas, and only ever should be. It is the one tone that is a context rather
+ * than a register, and a story showing it on the body surface would be a story
+ * teaching the mistake. 0010 D3's outcome makes this part of the build.
+ */
+export const InverseTone: Story = {
+  render: () => (
+    <>
+      <div
+        style={{
+          background: 'var(--color-surfaces-inverse)',
+          padding: '1.17rem',
+          borderRadius: '4.3px',
+        }}
+      >
+        <Typography as="p" tone="inverse">
+          Legible here, and only here.
+        </Typography>
+      </div>
+      <Typography as="p" with="caption01" tone="muted" mt="400">
+        On the body surface the same tone renders text the colour of the page. Nothing
+        can check that for you &mdash; whether the background behind is inverted is not
+        knowable from the component.
+      </Typography>
+    </>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`tone="inverse"` paints light ink for a dark panel. It is the only tone with a precondition, and the precondition cannot be checked in code \u2014 any ancestor may have painted the background. Use it on `color.surfaces.inverse`, and nowhere else.',
+      },
+    },
+  },
+};
+
+export const ProseWithLinks: Story = {
+  render: () => (
+    <>
+      {(['primary', 'secondary', 'muted', 'danger'] as const).map((tone) => (
+        <Typography key={tone} as="p" tone={tone} mb="300">
+          {tone.charAt(0).toUpperCase() + tone.slice(1)} prose, with{' '}
+          <Link href="#">a link in it</Link> to hover.
+        </Typography>
+      ))}
+    </>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The reason the axis exists. A `Link` inherits the colour of the text around it, and setting a tone sets the hover partner beside that colour \u2014 so a link in muted prose hovers to muted\u2019s own step, not to body copy\u2019s. Nothing is passed at either end.',
+      },
+    },
+  },
 };
 
 export const Balance: Story = {

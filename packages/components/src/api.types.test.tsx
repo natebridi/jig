@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Grid, IconButton, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Grid, IconButton, Link, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -41,6 +41,59 @@ describe('public API types', () => {
       <Typography with="heading01" balance />
       {/* @ts-expect-error balance is a boolean, not a wrap mode */}
       <Typography balance="pretty" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("constrains Typography's tone to the semantic roles", () => {
+    <>
+      <Typography tone="muted" with="caption01" />
+      <Typography tone="inverse" />
+      {/* @ts-expect-error a tone names a role, not a hue */}
+      <Typography tone="fuschia" />
+      {/* @ts-expect-error nor an arbitrary colour */}
+      <Typography tone="#ff0000" />
+      {/* @ts-expect-error `tone` is Typography's; Adorn kept `with` (0010 D4) */}
+      <Adorn tone="muted" />
+      <Adorn with="muted" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('requires a Link to have somewhere to go', () => {
+    <>
+      <Link href="/docs">Docs</Link>
+      {/* @ts-expect-error a link without a target is not a link */}
+      <Link>Docs</Link>
+      {/* @ts-expect-error :disabled never matches an anchor — use a Button */}
+      <Link href="/docs" disabled>Docs</Link>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps `external` and a trailing icon off the same slot', () => {
+    <>
+      <Link href="https://example.com" external>Base UI</Link>
+      {/* Both ends is legitimate: `external` only owns the trailing one. */}
+      <Link href="https://example.com" external icon="gear">Base UI</Link>
+      <Link href="/docs" icon="arrow-right" iconPosition="end">Docs</Link>
+      {/* @ts-expect-error `external` owns the end slot — 0009 D6's outcome */}
+      <Link href="https://example.com" external icon="gear" iconPosition="end">Base UI</Link>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('borrows only `with` from Typography, not the rest of its surface', () => {
+    <>
+      <Link href="/docs" with="caption01">Docs</Link>
+      {/* @ts-expect-error `with` names a preset, not a size */}
+      <Link href="/docs" with="tiny">Docs</Link>
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Link href="/docs" as="span">Docs</Link>
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Link href="/docs" marginTop="400">Docs</Link>
+      {/* @ts-expect-error `with` is the only Typography prop Link takes */}
+      <Link href="/docs" balance>Docs</Link>
     </>;
     expect(true).toBe(true);
   });

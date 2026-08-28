@@ -30,6 +30,7 @@ export const Variants: Story = {
       <IconButton {...args} variant="primary" />
       <IconButton {...args} variant="secondary" />
       <IconButton {...args} variant="danger" />
+      <IconButton {...args} variant="smoke" />
     </Stack>
   ),
   parameters: {
