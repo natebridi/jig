@@ -60,6 +60,30 @@ export interface TypographyOwnProps extends SpacingProps {
 export type TypographyProps<E extends TypographyElement = 'div'> =
   PolymorphicProps<E, TypographyOwnProps>;
 
+/**
+ * Text.
+ *
+ * `with` chooses how it looks and `as` chooses what it means, independently —
+ * a `heading01` preset on a `<p>` is a legitimate thing to want, and headings
+ * should be levelled for the document outline rather than for their size.
+ *
+ * `tone` sets the semantic colour, and with it the hover colour of any `Link`
+ * inside, so a link in muted prose stays in that register.
+ *
+ * `balance` evens out line lengths so a heading does not end on a single
+ * orphaned word; it is capped at a few lines, so it does nothing for a
+ * paragraph.
+ *
+ * Takes the margin and padding props for spacing around it.
+ *
+ * @example
+ * <Typography as="h2" with="heading03" balance mb="400">
+ *   A heading that wraps evenly
+ * </Typography>
+ * <Typography as="p" tone="muted">
+ *   Supporting copy, with <Link href="/more">a link</Link> in it.
+ * </Typography>
+ */
 export function Typography<E extends TypographyElement = 'div'>({
   with: typeStyle = 'body01',
   balance = false,

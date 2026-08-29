@@ -11,6 +11,7 @@ import type { Breakpoint } from '../breakpoints';
  */
 export const base = style({
   display: 'grid',
+  position: 'relative',
   gridTemplateColumns: `repeat(${GRID_COLUMNS}, minmax(0, 1fr))`,
   // `minmax(0, 1fr)` above caps this Grid's own children. This caps the Grid
   // itself once it is a child of a *Stack* — a flex item's automatic minimum

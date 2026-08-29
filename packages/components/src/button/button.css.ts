@@ -69,7 +69,7 @@ export const button = recipe({
       smoke: {
         background: color.button.smoke.baseBg,
         color: color.button.smoke.text,
-        backdropFilter: "blur(12px)",
+        backdropFilter: "blur(4px)",
         ":hover": {
           background: color.button.smoke.hoverBg,
         },

@@ -54,13 +54,31 @@ const snap = (value: number, min: number, max: number, step: number) =>
   Math.min(max, Math.max(min, Math.round((value - min) / step) * step + min));
 
 /**
- * A single-value slider.
+ * A slider for choosing one number from a range.
  *
- * `thumbAlignment` is fixed at `edge` and is deliberately not a prop: the thumb
- * insets at the extremes so the control occupies exactly its declared width,
- * which is what lets it align with the fields around it.
+ * `min`, `max` and `step` bound it; `largeStep` is the jump on Page Up and Page
+ * Down. `steppers` adds decrement and increment buttons at each end.
  *
- * Decided in apps/docs/decisions/0004-slider.html.
+ * `onValueChange` fires continuously while dragging; `onValueCommitted` fires
+ * once the drag or key press ends — use that one for anything expensive.
+ *
+ * `format` takes `Intl.NumberFormat` options, so the value can be shown as a
+ * percentage, a currency or a plain number, and is what assistive technology
+ * announces.
+ *
+ * The control occupies exactly the width you give it, so it lines up with the
+ * fields around it.
+ *
+ * @example
+ * <Slider
+ *   label="Quality"
+ *   min={0}
+ *   max={1}
+ *   step={0.05}
+ *   format={{ style: 'percent' }}
+ *   value={quality}
+ *   onValueCommitted={save}
+ * />
  */
 export function Slider({
   label,

@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Grid, IconButton, Link, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Combobox, Grid, IconButton, Link, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -56,6 +56,23 @@ describe('public API types', () => {
       {/* @ts-expect-error `tone` is Typography's; Adorn kept `with` (0010 D4) */}
       <Adorn tone="muted" />
       <Adorn with="muted" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("correlates a Combobox's value with its selection mode", () => {
+    const items = [{ value: 'ada', label: 'Ada Lovelace' }];
+    <>
+      <Combobox label="Assignee" items={items} value="ada" />
+      <Combobox label="Reviewers" items={items} multiple value={['ada']} />
+      {/* @ts-expect-error single selection takes one value, not an array */}
+      <Combobox label="Assignee" items={items} value={['ada']} />
+      {/* @ts-expect-error multiple takes an array, not one value */}
+      <Combobox label="Reviewers" items={items} multiple value="ada" />
+      {/* @ts-expect-error filtering is internal — 0011 D4 */}
+      <Combobox label="Assignee" items={items} filter={null} />
+      {/* @ts-expect-error and there is no route to the query either */}
+      <Combobox label="Assignee" items={items} onInputValueChange={() => {}} />
     </>;
     expect(true).toBe(true);
   });

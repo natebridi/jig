@@ -101,9 +101,20 @@ export type TokenProps = LinkTokenProps | RemovableTokenProps | PlainTokenProps;
  * A small labelled value — a chip. A filter, a tag, a selected entry in a
  * multi-value field.
  *
- * Its height is derived from `size.control`, so a Token of a given size nests
- * inside an Input of the same size with a spacing step of air around it. That
- * is the constraint the component is shaped by; standalone it is just the pill.
+ * `color` names a hue rather than an emphasis, because a token's colour says
+ * what kind of thing it is, not how important it is.
+ *
+ * Passing `onRemove` adds a remove button, whose accessible name is derived
+ * from the label; set `removeLabel` when the label is not a string. Passing
+ * `href` makes it a link. With both, the link shrinks to the label so the two
+ * controls stay separate.
+ *
+ * The label truncates with an ellipsis and never wraps — cap the width with
+ * `style` where that matters. Its height matches an `Input` of the same `size`,
+ * so it nests inside one cleanly.
+ *
+ * @example
+ * <Token color="teal" icon="user" onRemove={() => remove(person)}>{person.name}</Token>
  */
 export function Token({
   color = 'warm',

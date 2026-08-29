@@ -21,25 +21,22 @@ export interface BoxOwnProps extends SpacingProps, LayoutChildProps {}
 export type BoxProps<E extends BoxElement = 'div'> = PolymorphicProps<E, BoxOwnProps>;
 
 /**
- * A layout child.
+ * A layout child: an element that positions itself inside a Stack or a Grid.
  *
- * Stack and Grid describe themselves; nothing described how an individual
- * child sits inside them, so a bare `div` with an inline style was doing it.
- * Box is that `div`, typed — which keeps the child-side layout props off
- * components like Button and Input.
+ * Reach for it when the thing you are placing is not itself a layout
+ * container — a bare div, a Typography, a form control that needs to claim a
+ * column span. Stack and Grid already accept these props directly, so nesting
+ * one inside another needs no Box.
  *
- * One Box serves both containers. `span` applies inside a Grid, `grow` inside
- * a Stack, and `alignSelf` in either; a prop that does not apply to the parent
- * is inert rather than an error. That was chosen deliberately over a second,
- * Grid-specific container.
+ * `span` applies inside a Grid, `grow` inside a Stack, and `alignSelf` in
+ * either. A prop that does not apply to the parent is ignored rather than an
+ * error, and all three take responsive values.
  *
- * Stack and Grid now carry the same three props, because a container is a
- * child as soon as it is nested in another one and wrapping it in a Box to say
- * so adds an element that carries nothing but a number. Box remains the answer
- * for anything that is *not* itself a layout container — a bare div, a
- * Typography, a form control that needs to claim a span.
- *
- * Decided in apps/docs/decisions/0003-layout-children.html.
+ * @example
+ * <Grid columns={12} spacing="400">
+ *   <Box span={8}><Article /></Box>
+ *   <Box span={4}><Sidebar /></Box>
+ * </Grid>
  */
 export function Box<E extends BoxElement = 'div'>({
   as,

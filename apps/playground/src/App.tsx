@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link, Combobox } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -96,7 +96,16 @@ export function App() {
                   {/* Uneven spans, so each child carries its own breakpoint.
                       3 + 3 + 9 + 9 = 24. */}
                   <Grid spacing="300">
-                    <Box span={{ xs: 24, md: 3 }}><Input label="Measure" /></Box>
+                    <Box span={{ xs: 24, md: 3 }}><Combobox label="Measure" items={
+                      [
+                        { value: 'tsp', label: 'tsp' },
+                        { value: 'tbsp', label: 'Tbsp' },
+                        { value: 'clove', label: 'Clove' },
+                        { value: 'sprig', label: 'Sprig' },
+                        { value: 'oz', label: 'Oz' },
+                        { value: 'cup', label: 'Cup' },
+                      ]} />
+                    </Box>
                     <Box span={{ xs: 24, md: 3 }}><Input label="Quantity" /></Box>
                     <Box span={{ xs: 24, md: 9 }}><Input label="Ingredient" /></Box>
                     <Box span={{ xs: 24, md: 9 }}><Input label="Preparation" /></Box>

@@ -1,0 +1,1743 @@
+<title>0011 &middot; Combobox</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes -- real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option -- a
+     measurement table, a diagram -- sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way -- dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose -- localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied out of packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack. */
+
+  .jig {
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-rad: 4.3px;
+    --j-h-md: 2.41rem;              /* size.control.md */
+
+    --j-body:      oklch(94.3% 0.005 83);   /* surfaces.body     warm.25  */
+    --j-popover:   oklch(92.3% 0 0);        /* surfaces.popover  gray.100 */
+    --j-ctrl-bg:   oklch(100% 0 0);         /* control.base-bg   white    */
+    --j-ctrl-tx:   oklch(31.3% 0.012 83);   /* control.text      warm.600 */
+    --j-ctrl-ph:   oklch(61.1% 0 0);        /* control.placeholder gray.400 */
+    --j-ctrl-bd:   oklch(85.9% 0.007 83);   /* control.border    warm.200 */
+    --j-ctrl-act:  oklch(53.2% 0.201 260);  /* control.active-border blue.450 */
+    --j-muted:     oklch(61.1% 0 0);        /* text.muted */
+    --j-chip-bg:   oklch(92.3% 0.006 83);   /* token.warm.base-bg warm.100 */
+    --j-chip-tx:   oklch(38.3% 0.011 83);   /* token.warm.text    warm.550 */
+    --j-hi:        oklch(92.3% 0.006 83);   /* highlighted row */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:     oklch(20.9% 0 0);
+      --j-popover:  oklch(45.4% 0 0);       /* gray.500 */
+      --j-ctrl-bg:  oklch(31.3% 0 0);       /* gray.600 */
+      --j-ctrl-tx:  oklch(92.3% 0 0);       /* gray.100 */
+      --j-ctrl-ph:  oklch(75.3% 0 0);       /* gray.300 */
+      --j-ctrl-bd:  oklch(45.4% 0 0);       /* gray.500 */
+      --j-ctrl-act: oklch(45.4% 0.196 261.1);
+      --j-muted:    oklch(75.3% 0 0);
+      --j-chip-bg:  oklch(26.1% 0 0);       /* token.warm dark base-bg */
+      --j-chip-tx:  oklch(85.9% 0 0);
+      --j-hi:       oklch(38.3% 0 0);
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:     oklch(20.9% 0 0);
+    --j-popover:  oklch(45.4% 0 0);
+    --j-ctrl-bg:  oklch(31.3% 0 0);
+    --j-ctrl-tx:  oklch(92.3% 0 0);
+    --j-ctrl-ph:  oklch(75.3% 0 0);
+    --j-ctrl-bd:  oklch(45.4% 0 0);
+    --j-ctrl-act: oklch(45.4% 0.196 261.1);
+    --j-muted:    oklch(75.3% 0 0);
+    --j-chip-bg:  oklch(26.1% 0 0);
+    --j-chip-tx:  oklch(85.9% 0 0);
+    --j-hi:       oklch(38.3% 0 0);
+  }
+
+  .jig .stage {
+    width: 100%;
+    background: var(--j-body);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-400);
+    font-family: var(--sans);
+    color: var(--j-ctrl-tx);
+  }
+
+  /* the field itself */
+  .jig .ctrl {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--j-sp-200);
+    min-height: var(--j-h-md);
+    padding: 0 var(--j-sp-400);
+    background: var(--j-ctrl-bg);
+    border: 1px solid var(--j-ctrl-bd);
+    border-radius: var(--j-rad);
+    font-size: var(--j-ts-300);
+    color: var(--j-ctrl-tx);
+  }
+  .jig .ctrl.open { border-color: var(--j-ctrl-act); }
+  .jig .ctrl .ph { color: var(--j-ctrl-ph); }
+  .jig .ctrl .caret { margin-left: auto; opacity: 0.6; flex: none; }
+
+  /* chips, at Token's own colours and derived height */
+  .jig .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    background: var(--j-chip-bg);
+    color: var(--j-chip-tx);
+    border-radius: var(--j-rad);
+    font-size: var(--j-ts-200);
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+  }
+  .jig .chip i { opacity: 0.65; font-style: normal; }
+
+  /* the popup list */
+  .jig .list {
+    margin-top: var(--j-sp-200);
+    background: var(--j-popover);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-200);
+    font-size: var(--j-ts-300);
+  }
+  .jig .row {
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-300);
+    padding: var(--j-sp-300) var(--j-sp-400);
+    border-radius: var(--j-rad);
+  }
+  .jig .row.hi { background: var(--j-hi); }
+  .jig .row .tick { margin-left: auto; opacity: 0.75; }
+  .jig .glabel {
+    padding: var(--j-sp-300) var(--j-sp-400) var(--j-sp-200);
+    font-size: var(--j-ts-200);
+    color: var(--j-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .jig .empty { padding: var(--j-sp-400); color: var(--j-muted); font-size: var(--j-ts-200); }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0011</p>
+    <h1>Combobox</h1>
+    <p class="standfirst">
+      A filterable field with grouped options and multiple selection, on Base UI's
+      Combobox. Most of it is settled by the field conventions Input already set &mdash;
+      what is open is how the caller hands over items, and what selection looks like.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-08-28</li>
+      <li>4 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Base UI ships a Combobox at <code>@base-ui/react/combobox</code>. Verified against
+      the registry rather than from memory: <code>@base-ui/react</code> is on
+      <code>1.7.0</code>, published 2026-08-04, not deprecated, and it is the version
+      already pinned in <code>packages/components/package.json</code> as
+      <code>~1.7.0</code>. Minors have landed roughly monthly &mdash; 1.3.0 in March,
+      1.7.0 in August. No new dependency.
+    </p>
+    <p>
+      Both features asked for are first-class parts, not things to build:
+      <code>Combobox.Group</code> and <code>Combobox.GroupLabel</code> for grouping, and
+      <code>Combobox.Chips</code>, <code>Combobox.Chip</code> and
+      <code>Combobox.ChipRemove</code> for multiple selection. The root takes
+      <code>multiple</code>, and its <code>items</code> prop is typed
+      <code>readonly any[] | readonly Group&lt;any&gt;[]</code>, where a group is
+      <code>{ items: readonly Item[], &hellip; }</code> &mdash; so grouped data is a
+      shape Base UI already understands rather than one Jig would invent.
+    </p>
+    <p>
+      Virtualization is out of scope by request. Base UI has a <code>virtualized</code>
+      prop; this component will not set it, and the list renders every item it is given.
+      That is a real ceiling and it is being accepted knowingly.
+    </p>
+    <p>
+      The surface is already drawn. <code>color.control.*</code> exists and its own
+      comment in <code>packages/tokens/src/utils.ts</code> says it is shared by every
+      field-like control &ldquo;so Select and Combobox inherit this surface without
+      another decision&rdquo;. The control height comes from <code>size.control.*</code>,
+      derived in 0002 D1 precisely so a bordered control lines up with a Button of the
+      same size. Nothing here needs a token.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li><b>Base UI's own positioning is correct here.</b> 0001 D3 scoped the native anchor-positioning rule <em>by origin</em>: hand-rolled overlays use CSS anchor positioning and the Popover API, Base UI overlays use Base UI's. <code>Combobox.Popup</code> requires <code>ComboboxPositionerContext</code> and both pull <code>floating-ui-react</code>, and that is not debt. Tooltip stays hand-rolled and is not booked for migration.</li>
+      <li>No new tokens. <code>color.control.*</code> for the field, <code>color.surfaces.popover</code> for the list, <code>color.token.*</code> for any chip.</li>
+      <li><code>size</code> is <code>sm | md | lg</code>, with the control height from <code>size.control.*</code> rather than from padding (0002 D1).</li>
+      <li><b>Focus highlights the border, and <code>focusRing</code> is not spread.</b> A bordered control matches <code>:focus-visible</code> on click as well as on keyboard focus, so doing both double-paints it. <code>color.control.activeBorder</code> is the treatment (0002 D4).</li>
+      <li><code>label</code>, <code>description</code> and <code>error</code> are props, not composable parts &mdash; so the accessible wiring between them cannot be left out. 0002 D2, and Dialog reaffirmed it in 0008 D1.</li>
+      <li><code>className</code> and <code>style</code> land on the field <em>wrapper</em>; everything else spreads to the control. Input records why: a <code>flexGrow</code> aimed at the layout child silently did nothing when it landed on the input.</li>
+      <li>The popup list scrolls in a <code>ScrollArea</code> (0007), not a bare overflow region.</li>
+      <li>No <code>as</code>, no spacing props. The ref types to the input element and <code>refs.test.tsx</code> pins it.</li>
+      <li>Ships the five-file set plus an export from <code>packages/components/src/index.ts</code>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      All four accepted in one round. D4 went against the recommendation with a note
+      challenging one of the document's own claims; the claim was wrong, the option's
+      tradeoffs are corrected in place, and D4's outcome records what actually remains.
+      Every option is kept, including the ones not taken.
+    </p>
+  </section>
+
+  <!-- ============================== D1 ============================== -->
+  <section class="decision" data-decision="api-shape" data-title="How the caller hands over items">
+    <p class="decision-id">D1 &middot; api-shape</p>
+    <h2>How the caller hands over items</h2>
+    <p>
+      Base UI exposes about two dozen parts. Input and Dialog both chose props over
+      parts, but neither had to carry a caller's <em>data</em>. A Combobox does, and the
+      items are the whole component &mdash; so the question is whether they arrive as an
+      array or as children.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="items-prop" data-label="An items array">
+        <div class="option-head">
+          <h3>An <code>items</code> array</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Data in, field out &mdash; the parts stay inside</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox
+  label="Assignee"
+  <b>items</b>={[
+    { value: 'ada',  label: 'Ada Lovelace' },
+    { value: 'alan', label: 'Alan Turing' },
+  ]}
+  value={value}
+  onValueChange={setValue}
+/&gt;
+
+<i>Base UI's own data path: `items` is typed</i>
+<i>readonly any[] | readonly Group&lt;any&gt;[]</i>
+<i>and drives filtering and the input's label</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The same argument 0002 D2 and 0008 D1 already made, applied once more: the wiring that must not be forgotten is not the caller's to assemble.</li>
+          <li class="pro">Uses Base UI's own <code>items</code> path, which is what drives internal filtering and what <code>itemToStringLabel</code> reads. Rendering items as children means re-implementing filtering to match.</li>
+          <li class="pro">Grouping falls out for free, because a group is just a different shape in the same array &mdash; see D2.</li>
+          <li class="con">An item that needs custom content &mdash; an avatar, a two-line row, a trailing badge &mdash; has no way in without a further prop.</li>
+          <li class="con">Hides two dozen Base UI parts behind one signature, so a caller who needs one of them has to drop to Base UI wholesale.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="compound" data-label="Composable parts">
+        <div class="option-head">
+          <h3>Composable parts</h3>
+        </div>
+
+        <p class="specimen-label">Jig-styled parts, mirroring Base UI</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox.Root value={v} onValueChange={setV}&gt;
+  &lt;Combobox.Label&gt;Assignee&lt;/Combobox.Label&gt;
+  &lt;Combobox.Input /&gt;
+  &lt;Combobox.List&gt;
+    &lt;Combobox.Group&gt;
+      &lt;Combobox.GroupLabel&gt;
+        Engineering
+      &lt;/Combobox.GroupLabel&gt;
+      &lt;Combobox.Item value="ada"&gt;
+        &lt;Avatar src={ada} /&gt; Ada Lovelace
+      &lt;/Combobox.Item&gt;
+    &lt;/Combobox.Group&gt;
+  &lt;/Combobox.List&gt;
+&lt;/Combobox.Root&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Any item content a caller can imagine, which is the one thing the array cannot give them.</li>
+          <li class="pro">Base UI's own docs transfer directly, and nothing is hidden.</li>
+          <li class="con">A Combobox with no <code>Combobox.Label</code> renders happily and is announced unlabelled. The type cannot require a child, so the failure is silent &mdash; the exact argument 0002 D2 settled against.</li>
+          <li class="con">Ten or more exports to document and to keep in step with Base UI's part list across minors that land roughly monthly.</li>
+          <li class="con">Contradicts two decided documents without new evidence, leaving three components in one system answering the same question differently.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="items-render" data-label="items, plus a render prop">
+        <div class="option-head">
+          <h3><code>items</code>, plus <code>renderItem</code></h3>
+        </div>
+
+        <p class="specimen-label">The array, with an escape hatch for the row</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox
+  label="Assignee"
+  items={people}
+  <b>renderItem</b>={(person) =&gt; (
+    &lt;&gt;
+      &lt;Avatar src={person.avatar} /&gt;
+      &lt;Stack&gt;
+        {person.name}
+        &lt;Typography tone="muted"&gt;
+          {person.email}
+        &lt;/Typography&gt;
+      &lt;/Stack&gt;
+    &lt;/&gt;
+  )}
+/&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Keeps the props API and its guarantees, and answers the custom-row case the plain array cannot.</li>
+          <li class="pro">Additive later: shipping without it and adding it when a real consumer needs it costs nothing and breaks nobody.</li>
+          <li class="con">Two ways to describe an item from the first release, and a caller has to decide which before they know the difference.</li>
+          <li class="con">A render prop is where filtering and display quietly diverge &mdash; Base UI filters on <code>itemToStringLabel</code>, not on what the render prop drew.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>An <code>items</code> array.</b> Data in, field out; the two dozen Base UI parts
+      stay inside the component.
+      <p>
+        The cost stands as named: an item that needs custom content &mdash; an avatar, a
+        two-line row &mdash; has no way in. <code>renderItem</code> was the third option
+        and is strictly additive, so it can be built the day a real consumer needs it
+        rather than guessed at now.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D2 ============================== -->
+  <section class="decision" data-decision="grouping-shape" data-title="How grouping is expressed">
+    <p class="decision-id">D2 &middot; grouping-shape</p>
+    <h2>How grouping is expressed</h2>
+    <p>
+      Base UI accepts either a flat array or an array of groups, where a group is an
+      object carrying an <code>items</code> array. The question is what Jig asks the
+      caller to hand over, and every specimen renders the same result &mdash; so judge
+      the call site, not the picture.
+    </p>
+
+    <div class="specimen block jig" style="margin-bottom:1.5rem">
+      <div class="stage">
+        <div class="ctrl open"><span class="ph">Search people&hellip;</span><span class="caret">&#9662;</span></div>
+        <div class="list">
+          <p class="glabel">Engineering</p>
+          <div class="row hi">Ada Lovelace</div>
+          <div class="row">Alan Turing</div>
+          <p class="glabel">Design</p>
+          <div class="row">Grace Hopper</div>
+        </div>
+      </div>
+      <p class="caption">the shared target &mdash; all three options render this</p>
+    </div>
+
+    <div class="options">
+
+      <article class="option" data-option="nested-groups" data-label="Nested groups in items">
+        <div class="option-head">
+          <h3>Nested groups in <code>items</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">The shape Base UI already reads</p>
+        <div class="specimen block">
+<pre class="tree">items={[
+  { <b>label</b>: 'Engineering', <b>items</b>: [
+    { value: 'ada',  label: 'Ada Lovelace' },
+    { value: 'alan', label: 'Alan Turing' },
+  ]},
+  { <b>label</b>: 'Design', <b>items</b>: [
+    { value: 'grace', label: 'Grace Hopper' },
+  ]},
+]}
+
+<i>Base UI's Group&lt;Item&gt; is exactly</i>
+<i>{ [key: string]: unknown; items: Item[] }</i>
+<i>so this needs no translation layer</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Handed straight to Base UI. No mapping, no place for Jig's idea of a group to drift from the one doing the filtering.</li>
+          <li class="pro">Group order and item order within a group are both explicit, which a derived grouping cannot express.</li>
+          <li class="pro">One prop covers both cases: the same <code>items</code> is flat or grouped, and the type discriminates on the presence of <code>items</code>.</li>
+          <li class="con">Data that arrives flat &mdash; which is how an API usually returns it &mdash; has to be reshaped by the caller before it can be passed.</li>
+          <li class="con">A union type on the most important prop, so a mistyped group is reported against the whole array rather than the offending entry.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="group-by" data-label="A groupBy accessor">
+        <div class="option-head">
+          <h3>A <code>groupBy</code> accessor</h3>
+        </div>
+
+        <p class="specimen-label">Flat data, grouped by a key</p>
+        <div class="specimen block">
+<pre class="tree">items={[
+  { value: 'ada',   label: 'Ada Lovelace',
+    team: 'Engineering' },
+  { value: 'alan',  label: 'Alan Turing',
+    team: 'Engineering' },
+  { value: 'grace', label: 'Grace Hopper',
+    team: 'Design' },
+]}
+<b>groupBy</b>={(person) =&gt; person.team}</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Takes the shape an API actually returns, with no reshaping at the call site.</li>
+          <li class="pro">One flat array type rather than a union, so a bad item is reported where it is.</li>
+          <li class="con">Jig has to group and order the result itself, then hand Base UI the nested shape anyway &mdash; a translation layer that exists only to undo the caller's convenience.</li>
+          <li class="con">Group order becomes an accident of item order, or needs a <em>second</em> prop to control. That is the usual next request.</li>
+          <li class="con">Re-groups on every render unless memoised, and the memo key is a function the caller supplies inline.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="group-children" data-label="Group children">
+        <div class="option-head">
+          <h3>Group children</h3>
+        </div>
+
+        <p class="specimen-label">Groups as markup, items still as data</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox label="Assignee"&gt;
+  &lt;Combobox.Group label="Engineering"
+    items={engineers} /&gt;
+  &lt;Combobox.Group label="Design"
+    items={designers} /&gt;
+&lt;/Combobox&gt;
+
+<i>but Base UI needs the whole set on the</i>
+<i>root to filter, so this has to be read</i>
+<i>back out of children before render</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Reads well, and group order is obvious and explicit.</li>
+          <li class="pro">Leaves room for per-group props later without touching the item shape.</li>
+          <li class="con">Base UI filters from <code>items</code> on the root, so the children would have to be walked and flattened before render &mdash; the most machinery of the three for the same result.</li>
+          <li class="con">Introduces a compound part after D1 recommends against compound parts, so the API would be half of each.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Nested groups in <code>items</code>.</b> A group is
+      <code>{ label, items }</code>, handed to Base UI unchanged &mdash; no mapping layer
+      and nowhere for Jig's idea of a group to drift from the one doing the filtering.
+      <p>
+        <code>items</code> therefore takes a union, and flat data has to be reshaped by
+        the caller. Both were named and both are accepted.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D3 ============================== -->
+  <section class="decision" data-decision="multiple-display" data-title="What multiple selection looks like">
+    <p class="decision-id">D3 &middot; multiple-display</p>
+    <h2>What multiple selection looks like</h2>
+    <p>
+      With <code>multiple</code>, something has to show what is already chosen. Base UI
+      provides <code>Combobox.Chips</code> for this, and Jig has a
+      <code>Token</code> whose height was derived from <code>size.control</code> in 0006
+      <em>specifically</em> so it nests inside a field of the same size with a spacing
+      step of air around it. The question is whether that intent gets used.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="token-chips" data-label="Jig Tokens as the chips">
+        <div class="option-head">
+          <h3>Jig <code>Token</code>s as the chips</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Base UI's <code>Chips</code> slot, wearing Token's colours and derived height</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="ctrl open">
+              <span class="chip">Ada Lovelace <i>&times;</i></span>
+              <span class="chip">Alan Turing <i>&times;</i></span>
+              <span class="ph">Add another&hellip;</span>
+              <span class="caret">&#9662;</span>
+            </div>
+            <div class="list">
+              <div class="row hi">Grace Hopper<span class="tick">&nbsp;</span></div>
+              <div class="row">Ada Lovelace<span class="tick">&check;</span></div>
+              <div class="row">Alan Turing<span class="tick">&check;</span></div>
+            </div>
+          </div>
+          <p class="caption">token.warm.base-bg &middot; height from size.control &mdash; 0006's stated reason</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Cashes in a decision already made. 0006 derived Token's height from <code>size.control</code> for exactly this, and until now nothing consumed it.</li>
+          <li class="pro">A removable chip in a field is a Token with <code>onRemove</code> &mdash; the component, the remove control and its accessible name all exist and are tested.</li>
+          <li class="pro">One chip in the system, so a filter pill and a selected value look like the same object because they are.</li>
+          <li class="con">Couples Combobox to Token's colour set, so retuning <code>color.token.*</code> moves the inside of a field.</li>
+          <li class="con">Token was drawn to sit on a page; inside a field at <code>sm</code> it is close to the control's own height and may need a size step of its own.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="native-chips" data-label="Base UI chips, styled fresh">
+        <div class="option-head">
+          <h3>Base UI chips, styled fresh</h3>
+        </div>
+
+        <p class="specimen-label">The same slot, with its own smaller treatment</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="ctrl open">
+              <span class="chip" style="background:transparent;border:1px solid var(--j-ctrl-bd);color:var(--j-ctrl-tx)">Ada Lovelace <i>&times;</i></span>
+              <span class="chip" style="background:transparent;border:1px solid var(--j-ctrl-bd);color:var(--j-ctrl-tx)">Alan Turing <i>&times;</i></span>
+              <span class="ph">Add another&hellip;</span>
+              <span class="caret">&#9662;</span>
+            </div>
+          </div>
+          <p class="caption">outlined from control.border &mdash; quieter inside an already-bordered box</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Free to be quieter than a Token. A filled pill inside a bordered field is two boxes deep, and an outline reads as one.</li>
+          <li class="pro">No coupling: retuning <code>color.token.*</code> cannot move a field.</li>
+          <li class="con">A second chip in the system that looks almost but not quite like Token, which is how two vocabularies start.</li>
+          <li class="con">Rebuilds the remove button, its hit area and its accessible name &mdash; all of which Token already has and 0006 D4 already argued through.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="summary-text" data-label="A count summary">
+        <div class="option-head">
+          <h3>A count summary</h3>
+        </div>
+
+        <p class="specimen-label">No chips; the field states how many</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="ctrl open"><span>2 selected</span><span class="caret">&#9662;</span></div>
+            <div class="list">
+              <div class="row hi">Grace Hopper<span class="tick">&nbsp;</span></div>
+              <div class="row">Ada Lovelace<span class="tick">&check;</span></div>
+              <div class="row">Alan Turing<span class="tick">&check;</span></div>
+            </div>
+          </div>
+          <p class="caption">fixed height whatever is selected</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The field never changes height, so a form does not reflow as the user selects &mdash; the real cost of chips, and it is not small.</li>
+          <li class="pro">Simplest thing that works, and it stays legible at <code>sm</code>.</li>
+          <li class="con">What is selected is only visible with the list open, so reviewing a filled form means opening every multi-select in it.</li>
+          <li class="con">No way to remove one selection without opening the list and hunting for it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Jig <code>Token</code>s as the chips</b>, in Base UI's <code>Combobox.Chips</code>
+      slot &mdash; which finally consumes the height 0006 derived from
+      <code>size.control</code> for exactly this purpose.
+      <p>
+        Two things to watch during the build, both named by the option. The field
+        <b>reflows as chips are added</b>, which is the real cost the count-summary
+        option avoided; and Token at <code>sm</code> sits close to the control's own
+        height, so if it crowds, a size step for a nested Token is a follow-up proposal
+        rather than an inline fix.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D4 ============================== -->
+  <section class="decision" data-decision="filtering-ownership" data-title="Who owns filtering">
+    <p class="decision-id">D4 &middot; filtering-ownership</p>
+    <h2>Who owns filtering</h2>
+    <p>
+      Base UI filters <code>items</code> internally by default, and also accepts
+      <code>filter</code> (a match function) and <code>filteredItems</code> (a
+      pre-filtered list, for filtering done elsewhere). Whether Jig exposes those decides
+      whether this component can ever back a server-side search, and that is easier to
+      settle now than to retrofit.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="internal-only" data-label="Internal only">
+        <div class="option-head">
+          <h3>Internal only</h3>
+        </div>
+
+        <p class="specimen-label">Items in, filtering handled</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox label="Assignee" items={people} /&gt;
+
+<i>no filtering props at all</i>
+<i>Base UI matches on the item label</i>
+
+<i>a server-backed search would have to</i>
+<i>drop to Base UI, or re-pass items on</i>
+<i>every keystroke and fight the internal</i>
+<i>filter that runs over them again</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Smallest surface, and correct for the case this is being built for: a known list of options.</li>
+          <li class="pro">Nothing to document and no way to configure it wrongly.</li>
+          <li class="con">Double filtering is the failure mode: a caller who fetches matches from a server passes an already-filtered list, which Base UI then filters <em>again</em> against the query and empties.</li>
+          <li class="con"><ins>Corrected 2026-08-28: this originally read &ldquo;the retrofit is a breaking change to the most-used prop's semantics, not an addition&rdquo;. That is wrong, and the note challenging it was right. Base UI's <code>filter</code> is <code>null | fn | undefined</code> and it branches on <code>filterProp !== undefined</code>, so adding the passthrough later is an optional prop whose absence preserves today's behaviour exactly &mdash; additive, not breaking. The real residual cost is smaller: until those props exist, a field that needs server-side search has no route inside Jig at all, and the caller drops to Base UI for that one field, where it will not match the others without duplicating the control styling.</ins></li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="filter-escape" data-label="Internal, with an opt-out">
+        <div class="option-head">
+          <h3>Internal, with an opt-out</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Filtered by default; <code>filter={null}</code> hands it over</p>
+        <div class="specimen block">
+<pre class="tree"><i>the common case, unchanged</i>
+&lt;Combobox label="Assignee" items={people} /&gt;
+
+<i>and when the server already filtered</i>
+&lt;Combobox
+  items={results}
+  <b>filter</b>={null}
+  onInputValueChange={search}
+/&gt;
+
+<i>filter={null} is Base UI's own signal to</i>
+<i>stop matching &mdash; not an invention here</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Two props, both Base UI's own: <code>filter</code> accepts a matcher or <code>null</code>, and <code>onInputValueChange</code> already exists on the root.</li>
+          <li class="pro">Removes the double-filtering trap by making &ldquo;I already filtered these&rdquo; sayable, which is the failure a consumer would otherwise report as a bug.</li>
+          <li class="pro">Costs nothing when unused. The default is the internal filter, so the common call site is identical to the option above.</li>
+          <li class="con">Opens the door to async search without answering it &mdash; no loading state, no debounce, no request cancellation. Those stay the caller's.</li>
+          <li class="con">A <code>null</code> that means &ldquo;off&rdquo; on a prop that otherwise takes a function is a shape worth documenting carefully.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="async-first" data-label="Async as a first-class mode">
+        <div class="option-head">
+          <h3>Async as a first-class mode</h3>
+        </div>
+
+        <p class="specimen-label">Jig owns the search lifecycle</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Combobox
+  label="Assignee"
+  <b>onSearch</b>={async (q) =&gt; fetchPeople(q)}
+  <b>loading</b>={pending}
+  <b>debounce</b>={250}
+  emptyMessage="No one matches"
+/&gt;
+
+<i>a loading row while in flight</i>
+<i>and a debounce Jig decides on</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Answers the whole problem, including the loading state that the opt-out leaves to the caller.</li>
+          <li class="pro">One correct implementation of debouncing and out-of-order response handling, rather than one per consuming app.</li>
+          <li class="con">Speculative. Nothing in the request needs it, and a search lifecycle designed without a real consumer is designed against a guess.</li>
+          <li class="con">Request cancellation, retry, error display and stale-response handling all become Jig's, and none of them are typography.</li>
+          <li class="con">Strictly additive later &mdash; it can be built on top of the opt-out without breaking anything, which is an argument for not building it now.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-28</span>
+      <b>Internal only</b> &mdash; against the recommendation, and the note that came with
+      it was right on the point it challenged:
+      <p>
+        &ldquo;<i>Given I am the only consumer of this library, I don't see the risk in a
+        future retrofit if the need arises, but I am open to reconsidering if it can be
+        made clearer why this will be a dangerous change in the future.</i>&rdquo;
+      </p>
+      <p>
+        <b>It cannot be made clearer, because it is not true.</b> The document claimed the
+        retrofit would be &ldquo;a breaking change to the most-used prop's semantics&rdquo;.
+        Checking Base UI rather than restating the claim: <code>filter</code> is typed
+        <code>null | fn | undefined</code> and the root branches on
+        <code>filterProp !== undefined</code>, so a later passthrough is an optional prop
+        whose absence reproduces today's behaviour exactly. Additive. The option's
+        tradeoff list is corrected above rather than only here.
+      </p>
+      <p>
+        What survives is smaller and worth stating so it is recognised if it happens:
+        with no <code>onInputValueChange</code> exposed either, a consumer cannot observe
+        the query, so <b>server-side search is not merely unconfigured but unreachable</b>
+        &mdash; the field would have to drop to Base UI wholesale, and would then not match
+        the other controls without duplicating their styling. That is a day's work once,
+        not a migration, which is the trade being accepted.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as decided</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>flat</i>
+&lt;Combobox
+  label="Assignee"
+  items={[
+    { value: 'ada',  label: 'Ada Lovelace' },
+    { value: 'alan', label: 'Alan Turing' },
+  ]}
+  value={value}
+  onValueChange={setValue}
+/&gt;
+
+<i>grouped &mdash; same prop, a group is { label, items }</i>
+&lt;Combobox
+  label="Assignee"
+  items={[
+    { label: 'Engineering', items: [ada, alan] },
+    { label: 'Design',      items: [grace] },
+  ]}
+/&gt;
+
+<i>multiple &mdash; selections render as Jig Tokens inside the field</i>
+&lt;Combobox label="Reviewers" <b>multiple</b> items={people}
+  value={people} onValueChange={setPeople} /&gt;
+
+<b>Combobox</b>  items          <i>flat, or groups of { label, items }</i>
+          value onValueChange  <i>the controlled pair; omit for uncontrolled</i>
+          defaultValue
+          multiple       <i>boolean                          (default false)</i>
+          label          <i>required in practice &mdash; the accessible name</i>
+          description    <i>hint text, wired with aria-describedby</i>
+          error          <i>marks the field invalid and shows the message</i>
+          placeholder
+          size           <i>sm | md | lg                     (default md)</i>
+          disabled required name
+          emptyMessage   <i>shown when nothing matches the query</i>
+          className style      <i>on the field wrapper, not the control</i>
+          ref            <i>the input &mdash; the element you would focus</i>
+
+<i>not offered, per D4</i>
+          <span class="no">filter</span> <span class="no">filteredItems</span> <span class="no">onInputValueChange</span>
+          <i>&mdash; filtering is internal; see D4's outcome for the retrofit</i>
+
+<i>not offered, per &sect;04</i>
+          <span class="no">virtualized</span> <span class="no">grid</span> <span class="no">renderItem</span></pre>
+      </div>
+      <figcaption>
+        <b>Inherited wholesale from the field conventions</b>, and not re-decided here:
+        the control height comes from <code>size.control.*</code> (0002 D1), focus
+        highlights the border with <code>color.control.activeBorder</code> rather than
+        spreading <code>focusRing</code> (0002 D4), and <code>className</code> /
+        <code>style</code> land on the wrapper because that is the element the
+        surrounding layout sees.
+        <br><br>
+        <b>The popup is Base UI's</b>, positioned by Base UI, per 0001 D3's scoping of
+        the native-anchor rule by origin. The list inside it scrolls in a
+        <code>ScrollArea</code> (0007).
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>Virtualization.</strong> Out of scope by request. Base UI's <code>virtualized</code> prop stays unset and the list renders every item. The ceiling is real &mdash; a few hundred rows &mdash; and turning it on later means owning row measurement, so it is a proposal rather than a flag.</li>
+      <li><strong>A <code>Select</code>.</strong> A Combobox with the input made read-only is <em>not</em> a Select: different ARIA role, different keyboard model. Base UI ships a separate <code>Select</code>, and it shares this component's tokens and field props but not its implementation.</li>
+      <li><strong>Creatable options</strong> &mdash; &ldquo;add <em>foo</em>&rdquo; when nothing matches. It needs an answer for what the created value <em>is</em> before it can have a UI, and that is a data question the design system does not get to settle.</li>
+      <li><strong>The <code>grid</code> and <code>row</code> parts.</strong> Base UI supports a grid layout for items. No consumer, and it interacts with grouping in ways worth deciding separately.</li>
+      <li><strong>Refactoring Tooltip.</strong> Reaffirming 0001 D3: two positioning systems is the settled state, not debt.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-28. All four decisions went in as accepted. D3 could not be built as
+      literally described and the divergence is set out below; the rest was accurate.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><b>Added</b> <code>packages/components/src/combobox/</code> &mdash; <code>combobox.tsx</code>, <code>combobox.css.ts</code>, <code>combobox.stories.tsx</code>, <code>combobox.test.tsx</code>, <code>index.ts</code>.</li>
+      <li><b>Changed</b> <code>src/index.ts</code> &mdash; exports <code>Combobox</code> and its five types.</li>
+      <li><b>Changed</b> <code>refs.test.tsx</code>, <code>api.types.test.tsx</code> &mdash; the ref lands on the input, the value type correlates with <code>multiple</code>, and <code>filter</code> / <code>onInputValueChange</code> are asserted absent.</li>
+      <li>No token changes. <code>color.control.*</code>, <code>color.surfaces.popover</code>, <code>color.token.*</code>, <code>size.control.*</code> and <code>elevation.med</code> all existed.</li>
+    </ul>
+
+    <h3>D3 could not be built as described</h3>
+    <p>
+      The option said &ldquo;Jig <code>Token</code>s as the chips&rdquo;, and argued it on
+      the grounds that &ldquo;the component, the remove control and its accessible name
+      all exist and are tested&rdquo;. <b>The remove control is the part that does not
+      transfer.</b>
+    </p>
+    <ul class="notes">
+      <li><code>Combobox.ChipRemove</code> is a real button &mdash; <code>useButton</code>, <code>nativeButton: true</code> &mdash; and it is the only thing wired to the combobox's own removal. Base UI exposes no imperative remove: <code>actionsRef</code> carries <code>unmount</code> and nothing else.</li>
+      <li><code>Token</code> renders <em>its own</em> remove <code>&lt;button&gt;</code>. Nesting the two is invalid HTML, and using Token's button instead would mean Jig owning the multiple-selection value state to compute removals itself &mdash; duplicating what <code>ChipRemove</code> already does, including its focus handling.</li>
+      <li><b>As built the chip wears Token's styles, not the Token component:</b> <code>token()</code>, <code>label</code>, <code>remove</code> and <code>tokenIconSize</code> are imported from <code>token.css.ts</code>, and the button inside is Base UI's. Visually and in tokens this is what the specimen showed; what is not reused is the component.</li>
+    </ul>
+    <p>
+      The accessible name is preserved by hand &mdash; <code>aria-label={`Remove ${label}`}</code>,
+      matching what Token derives &mdash; and is asserted in <code>combobox.test.tsx</code>.
+    </p>
+
+    <h3>Three bugs the tests caught that a screenshot would not have</h3>
+    <ul class="notes">
+      <li><b>The field had no accessible name.</b> <code>Field.Label</code> wrapping <code>Combobox.Label</code> broke both: <code>Combobox.Label</code> and <code>Combobox.Input</code> each call <code>useFieldRootContext</code> and wire themselves into the surrounding <code>Field.Root</code>, so the Combobox parts are used directly and <code>Field.Label</code> is not.</li>
+      <li><b><code>onValueChange</code> reported item objects, not values.</b> Passing <code>value={option}</code> on each item made Base UI's currency the object while the public API promised <code>Value</code>. Items now carry <code>value={option.value}</code>; because <code>{ value, label }</code> is Base UI's own <code>LabeledItem</code> shape, it resolves labels for display and filtering unaided, and <code>itemToStringLabel</code> and <code>isItemEqualToValue</code> both turned out to be unnecessary.</li>
+      <li><b>Chips rendered nothing</b>, for the same reason &mdash; the selected array holds values, so the chip label is looked up from <code>items</code>.</li>
+    </ul>
+
+    <h3>And one only the browser caught</h3>
+    <p>
+      With <code>multiple</code>, the popup hung off the middle of the field. A plain
+      <code>&lt;div&gt;</code> wrapper is not the anchor: Base UI anchors to
+      <code>inputGroupElement</code>, and absent one it falls back to the input &mdash;
+      which, after two chips, starts a third of the way across. The wrapper is
+      <code>Combobox.InputGroup</code>, which registers itself as the anchor and carries
+      Field's state as data attributes, so <code>[data-invalid]</code> and
+      <code>[data-disabled]</code> now track the same source the error message does
+      rather than being sniffed off the input with <code>:has()</code>.
+    </p>
+
+    <h3>Worth a future proposal</h3>
+    <ul class="notes">
+      <li><b>Token has no field-sized step.</b> D3 predicted this. At <code>sm</code> a chip sits close to the control's own height; it is legible but tight, and a nested size step is the fix if it grates.</li>
+      <li><b>A generic component fights Storybook's <code>Meta</code>.</b> <code>satisfies Meta&lt;typeof Combobox&gt;</code> erases <code>Value</code> to <code>unknown</code>, so spreading <code>args</code> cannot narrow the single/multiple union &mdash; the two multiple stories write their props out instead. The same shape as the union-versus-spread cost recorded in 0009's As built, and a second instance is the point at which it is worth a rule rather than a workaround.</li>
+      <li><b>No <code>Select</code> yet.</b> This shares its tokens and field props but not its implementation, as &sect;04 says.</li>
+    </ul>
+
+    <h3>Verification</h3>
+    <p>
+      <code>pnpm turbo typecheck test</code>: 12 tasks, 144 tests, all passing. Grouping,
+      filtering, chip removal, the invalid state and the ref are covered in
+      <code>combobox.test.tsx</code>; the popup's anchoring and both themes were checked
+      in the browser, where the popup's left edge and width now match the field's to
+      within the border.
+    </p>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0011
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">4 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0011-combobox",
+  "status": "built",
+  "decided": "2026-08-28",
+  "built": "2026-08-28",
+  "decisions": [
+    { "id": "api-shape", "title": "How the caller hands over items",
+      "options": ["items-prop", "compound", "items-render"],
+      "recommended": "items-prop", "outcome": "items-prop", "note": null },
+    { "id": "grouping-shape", "title": "How grouping is expressed",
+      "options": ["nested-groups", "group-by", "group-children"],
+      "recommended": "nested-groups", "outcome": "nested-groups", "note": null },
+    { "id": "multiple-display", "title": "What multiple selection looks like",
+      "options": ["token-chips", "native-chips", "summary-text"],
+      "recommended": "token-chips", "outcome": "token-chips", "note": null },
+    { "id": "filtering-ownership", "title": "Who owns filtering",
+      "options": ["internal-only", "filter-escape", "async-first"],
+      "recommended": "filter-escape", "outcome": "internal-only",
+      "note": "Decided against the recommendation. Note: \u201cGiven I am the only consumer of this library, I don't see the risk in a future retrofit if the need arises, but I am open to reconsidering if it can be made clearer why this will be a dangerous change in the future.\u201d The note was right: the document's claim that the retrofit would be breaking was wrong, and the option's tradeoffs are corrected in the body. Base UI's `filter` is optional and branches on !== undefined, so a later passthrough is additive." }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists --
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

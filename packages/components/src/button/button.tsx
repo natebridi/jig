@@ -18,6 +18,26 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: Ref<HTMLButtonElement>;
 }
 
+/**
+ * A button.
+ *
+ * `variant` sets how loud it is: `primary` for the main action in a view,
+ * `secondary` beside it, `danger` for destructive actions, `ghost` for utility
+ * actions on another surface, and `smoke` for controls over imagery or video,
+ * where a translucent blurred pane keeps the content behind visible.
+ *
+ * `icon` takes a name from the curated set and is sized and spaced by the
+ * button; it is decorative, so the label is what names the control. For a
+ * button with no visible label, use `IconButton`, which requires one.
+ *
+ * Defaults to `type="button"`. Pass `type="submit"` explicitly to submit a
+ * form. To navigate rather than act, use `Link` with a button variant.
+ *
+ * @example
+ * <Button variant="primary" icon="arrow-right" iconPosition="end" onClick={save}>
+ *   Save changes
+ * </Button>
+ */
 export function Button({
   variant = 'primary',
   size = 'md',

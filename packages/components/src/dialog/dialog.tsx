@@ -75,14 +75,32 @@ export interface DialogProps {
 /**
  * A modal panel over a scrim.
  *
- * Every frame prop is optional. Passing none of them leaves a plain panel
- * around whatever the children are, which is also how a dialog that should
- * scroll as one page is reached — with nothing pinned above or below it, the
- * body is the whole frame. Decided in apps/docs/decisions/0008-dialog.html.
+ * `trigger` takes the element that opens it and is wired for you; pass `open`
+ * and `onOpenChange` instead to drive it from elsewhere, such as a route or
+ * form state.
  *
- * The popup is two elements: Base UI's `Popup` positions and reserves space,
- * and an inner panel carries the surface. That is what lets the close button
- * sit outside the frame without escaping the popup's own box (D1's note).
+ * `title` gives the dialog its accessible name — set it, or pass `aria-label`
+ * when the design has no visible title. `description` and `actions` are
+ * optional slots; `actions` holds the button row. With none of them set, the
+ * dialog is a plain panel around its children.
+ *
+ * The body scrolls when the content is taller than the viewport, keeping the
+ * title and actions in view. Closes on Escape and on a press outside.
+ *
+ * @example
+ * <Dialog
+ *   trigger={<Button variant="danger">Delete</Button>}
+ *   title="Discard changes?"
+ *   description="Your edits will be lost."
+ *   actions={
+ *     <>
+ *       <Button variant="secondary">Cancel</Button>
+ *       <Button variant="danger" onClick={discard}>Discard</Button>
+ *     </>
+ *   }
+ * >
+ *   Sixteen ingredients and two substitutions will be lost.
+ * </Dialog>
  */
 export function Dialog({
   children,

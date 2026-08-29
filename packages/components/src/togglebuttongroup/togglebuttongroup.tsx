@@ -51,15 +51,27 @@ export interface ToggleButtonGroupProps<Value extends string = string> {
 }
 
 /**
- * A set of `ToggleButton`s that share one value, with roving focus and arrow-key
- * navigation between them.
+ * A set of `ToggleButton`s sharing one value, with arrow-key navigation between
+ * them and a single tab stop.
  *
- * The children are plain `ToggleButton`s — there is no separate item component.
- * Each one needs a `value` identifying it within the group.
+ * The children are plain `ToggleButton`s — there is no separate item
+ * component — and each needs a `value` identifying it within the group.
  *
- * Carries no visual treatment of its own by decision: buttons look exactly as
- * they do standalone, and spacing or a connected/segmented appearance is a
- * later proposal. See apps/docs/decisions/0005-toggle-button-group.html.
+ * The group's value is an array. By default one button is pressed at a time;
+ * `multiple` allows several. Set `aria-label` or `aria-labelledby` to name the
+ * group, since it has no visible label of its own.
+ *
+ * `orientation` sets which arrow keys move focus, and `loopFocus` wraps from
+ * the last button to the first.
+ *
+ * Carries no visual treatment of its own: the buttons look as they do
+ * standalone, so wrap it in a `Stack` for spacing.
+ *
+ * @example
+ * <ToggleButtonGroup aria-label="Theme" value={theme} onValueChange={setTheme}>
+ *   <ToggleButton value="light" isIconOnly icon="sun" label="Light" />
+ *   <ToggleButton value="dark" isIconOnly icon="moon" label="Dark" />
+ * </ToggleButtonGroup>
  */
 export function ToggleButtonGroup<Value extends string = string>({
   value,

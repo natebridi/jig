@@ -25,6 +25,15 @@ export { IconButton } from './iconbutton';
 export type { IconButtonProps } from './iconbutton';
 export { Link } from './link';
 export type { LinkProps, LinkVariant } from './link';
+export { Combobox } from './combobox';
+export type {
+  ComboboxProps,
+  ComboboxSingleProps,
+  ComboboxMultipleProps,
+  ComboboxItem,
+  ComboboxGroup,
+  ComboboxSize,
+} from './combobox';
 export { Input } from './input';
 export type { InputProps, InputSize } from './input';
 export { Token } from './token';

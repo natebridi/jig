@@ -19,6 +19,25 @@ export interface IconButtonProps
   ref?: Ref<HTMLButtonElement>;
 }
 
+/**
+ * A button whose content is a single icon.
+ *
+ * `label` is required and is the accessible name — there is no visible text to
+ * fall back on. Write what the button does ("Close", "Add to favourites"), not
+ * what the icon depicts.
+ *
+ * Square padding at every size, so it sits at matching dimensions beside a
+ * `Button` or an input of the same `size`. Takes Button's variants and defaults
+ * to `ghost`, since an icon-only control is usually a utility action beside
+ * something else.
+ *
+ * Consider pairing it with a `Tooltip`, since the label is not visible.
+ *
+ * @example
+ * <Tooltip content="Close">
+ *   <IconButton icon="x" label="Close" onClick={close} />
+ * </Tooltip>
+ */
 export function IconButton({
   icon,
   label,

@@ -26,6 +26,22 @@ export interface AdornOwnProps {
 
 export type AdornProps<E extends AdornElement = 'span'> = PolymorphicProps<E, AdornOwnProps>;
 
+/**
+ * Colours or emphasises a phrase inside a run of text.
+ *
+ * `with` sets the semantic colour; `as` sets the meaning and brings the
+ * matching weight or slant with it, so use `as="strong"` for importance and
+ * `as="em"` for stress rather than reaching for a visual-only prop.
+ *
+ * `with="mono"` switches to the monospace family without implying code — pair
+ * it with `as="code"` when the content really is code.
+ *
+ * @example
+ * <Typography as="p">
+ *   Deleting this is <Adorn as="strong" with="danger">permanent</Adorn>.
+ *   Run <Adorn as="code" with="mono">pnpm build</Adorn> first.
+ * </Typography>
+ */
 export function Adorn<E extends AdornElement = 'span'>({
   as,
   with: adornStyle,

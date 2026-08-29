@@ -54,10 +54,26 @@ export interface InputProps
 /**
  * A single-line text field.
  *
- * The label, description and error are props rather than composable parts:
- * anyone who wants to assemble the pieces by hand is better served by Base UI
- * directly, and making them props means the accessible wiring between them
- * cannot be left out by accident.
+ * `label` is the accessible name and should always be set; it renders a real
+ * `<label>` bound to the control. `description` and `error` are wired to it
+ * with `aria-describedby` for you.
+ *
+ * Passing `error` marks the field invalid and shows the message
+ * unconditionally — use it for a server response or a form library. Leave it
+ * undefined to let native constraint validation (`required`, `type="email"`,
+ * `pattern`) drive the invalid state instead.
+ *
+ * `className` and `style` land on the field wrapper, which is the element the
+ * surrounding layout sees; every other prop reaches the `<input>`.
+ *
+ * @example
+ * <Input
+ *   label="Email"
+ *   type="email"
+ *   required
+ *   description="We'll only use this to sign you in."
+ *   error={serverError}
+ * />
  */
 export function Input({
   label,

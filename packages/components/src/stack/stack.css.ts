@@ -7,6 +7,7 @@ import { style } from '@vanilla-extract/css';
  */
 export const base = style({
   display: 'flex',
+  position: 'relative',
   maxWidth: '100%',
   // Load-bearing now that a Stack can be a child of another Stack. A flex
   // item's automatic minimum size is its content, so a Stack holding a long

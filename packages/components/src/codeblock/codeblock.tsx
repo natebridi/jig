@@ -34,6 +34,25 @@ function dedent(source: string): string {
   return indent === Infinity ? lines.join('\n') : lines.map((line) => line.slice(indent)).join('\n');
 }
 
+/**
+ * A block of source code with a copy button.
+ *
+ * `children` is the code as a plain string — not markup, and not a
+ * `<pre>`/`<code>` pair, which the component renders for you. Indentation is
+ * preserved exactly, so template literals should be trimmed before they are
+ * passed.
+ *
+ * `label` names the snippet in the bar above it: a file path, a language, or
+ * whatever identifies it. The copy button confirms in place for two seconds
+ * and needs a secure context, since it uses the async clipboard API.
+ *
+ * Long lines scroll horizontally rather than wrapping.
+ *
+ * @example
+ * <CodeBlock label="vite.config.ts">
+ *   {`export default defineConfig({\n  plugins: [react()],\n})`}
+ * </CodeBlock>
+ */
 export function CodeBlock({ label, className, children, ...props }: CodeBlockProps) {
   const source = dedent(children);
   const [copied, setCopied] = useState(false);

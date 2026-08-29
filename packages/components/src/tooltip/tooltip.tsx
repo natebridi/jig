@@ -64,6 +64,26 @@ function chain<E extends { defaultPrevented: boolean }>(
   };
 }
 
+/**
+ * A short label that appears on hover or focus.
+ *
+ * `children` is the trigger and must be a single element that accepts a ref and
+ * event handlers. `content` must be plain, non-interactive text: a tooltip
+ * cannot be reached by pointer or keyboard, so anything focusable inside it
+ * would be announced but unusable.
+ *
+ * It supplements the trigger rather than naming it — an `IconButton` still
+ * needs its own `label`. Do not put information here that is only available on
+ * hover, since touch users will never see it.
+ *
+ * `delay` is the hover wait before opening, and `placement` flips to the
+ * opposite side when there is not room.
+ *
+ * @example
+ * <Tooltip content="Copy to clipboard">
+ *   <IconButton icon="copy" label="Copy" onClick={copy} />
+ * </Tooltip>
+ */
 export function Tooltip({
   content,
   placement = 'top',

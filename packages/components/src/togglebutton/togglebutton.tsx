@@ -88,10 +88,21 @@ export type ToggleButtonProps = ToggleButtonBaseProps &
 /**
  * A button that stays pressed.
  *
- * Built on Base UI's `Toggle`, which serves both modes from one component:
- * standalone it holds its own pressed state, and inside a `ToggleButtonGroup`
- * it derives that state from the group's value and writes back to it. That is
- * why there is no separate group-item component.
+ * Manages its own state by default; pass `pressed` and `onPressedChange` to
+ * control it. `onPressedChange` fires before the change is applied, so calling
+ * `details.cancel()` inside it vetoes the toggle.
+ *
+ * `icon` shows while unpressed and `pressedIcon` while pressed, defaulting to
+ * the same glyph — either way the pressed state renders at the `fill` weight.
+ *
+ * `isIconOnly` drops the label and takes square padding, matching `IconButton`;
+ * it requires both `label` and `icon`.
+ *
+ * Inside a `ToggleButtonGroup` the pressed state comes from the group instead,
+ * and each button needs a `value` identifying it.
+ *
+ * @example
+ * <ToggleButton icon="star" pressedIcon="star" isIconOnly label="Favourite" />
  */
 export function ToggleButton({
   size = 'md',

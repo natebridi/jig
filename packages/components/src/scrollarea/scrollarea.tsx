@@ -26,20 +26,21 @@ const bar = (axis: string, isScrolling: boolean) =>
   [scrollbar, axis, isScrolling && scrolling].filter(Boolean).join(' ');
 
 /**
- * A region that scrolls, with a scrollbar Jig draws rather than the platform.
+ * A region that scrolls, with a styled scrollbar in place of the platform's.
  *
- * One component rather than Base UI's six parts: five of them are invariant
- * boilerplate, and 0002 D2's rule is that anyone who wants to assemble the
- * pieces by hand is better served by Base UI directly.
+ * The height is yours to set: it only scrolls once something constrains it, so
+ * give it a `maxHeight`, or put it in a flex or grid parent that bounds it
+ * (remembering `min-height: 0` on the flex child above it).
  *
- * The height is the caller's. A scroll area scrolls because something
- * constrains it — `style={{ maxHeight }}`, or a flex parent with
- * `min-height: 0` — and that constraint is not a prop.
+ * No chrome at rest. The scrollbar appears on hover, on focus within, and
+ * while scrolling; a gradient mask at the cropped edges shows there is more in
+ * the meantime. Space for the scrollbar is always reserved, so content does not
+ * shift when it appears.
  *
- * At rest it shows no chrome at all. The scrollbar appears on hover, on focus
- * within, and while scrolling; what says the content is cropped in the
- * meantime is the gradient mask at the two edges. Decided in
- * apps/docs/decisions/0007-scroll-area.html.
+ * @example
+ * <ScrollArea style={{ maxHeight: '20rem' }}>
+ *   {messages.map((m) => <Message key={m.id} {...m} />)}
+ * </ScrollArea>
  */
 export function ScrollArea({ className, children, ref, ...props }: ScrollAreaProps) {
   return (

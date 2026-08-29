@@ -34,6 +34,23 @@ export interface IconProps
   ref?: Ref<SVGSVGElement>;
 }
 
+/**
+ * An icon from the curated set.
+ *
+ * Sized in `em` and inheriting `currentColor`, so it matches the text it sits
+ * in without being told to. Pass `size` for any CSS length when it should not.
+ *
+ * Icons are decorative by default and kept out of the accessibility tree. Set
+ * `label` only when the icon is the sole carrier of meaning — if there is
+ * adjacent text saying the same thing, leave it off so it is not announced
+ * twice.
+ *
+ * `weight="fill"` reads as active, selected or pressed. For artwork outside
+ * the set, pass raw SVG as `children` along with its own `viewBox`.
+ *
+ * @example
+ * <Icon icon="check-circle" weight="fill" label="Saved" />
+ */
 export function Icon({
   icon,
   weight = 'regular',

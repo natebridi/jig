@@ -98,6 +98,34 @@ export type LinkProps = LinkOwnProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, Reserved | 'iconPosition'> &
   (ExternalProps | LocalProps);
 
+/**
+ * A link.
+ *
+ * `href` is required. Defaults to `variant="text"` — an underlined link that
+ * takes the colour and size of the text around it, so it fits whatever it is
+ * dropped into. Set `with` to name a type preset when there is no surrounding
+ * text to inherit from, or `underline={false}` where the link is already
+ * obviously one, such as a nav row.
+ *
+ * The other variants are Button's, for a call to action that navigates. It is
+ * still a link: announced as one, activated with Enter, and openable in a new
+ * tab.
+ *
+ * `external` marks a link that leaves the app — it adds a trailing icon, opens
+ * a new tab, and tells assistive technology that it will.
+ *
+ * Pass `render` to hand the markup to a router's own link component so
+ * client-side navigation works.
+ *
+ * @example
+ * <Typography as="p">
+ *   Released under the <Link href="https://opensource.org/license/mit" external>MIT licence</Link>.
+ * </Typography>
+ *
+ * <Link href="/dashboard" variant="primary" render={<NextLink href="/dashboard" />}>
+ *   Open dashboard
+ * </Link>
+ */
 export function Link({
   href,
   variant = 'text',

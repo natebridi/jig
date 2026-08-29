@@ -53,6 +53,27 @@ const distributionClasses = (columns: Responsive<GridColumns>): string[] =>
         ([breakpoint, value]) => distribute[breakpoint as Breakpoint][`${value as GridColumns}`]
       );
 
+/**
+ * A grid container.
+ *
+ * `columns` sets how many equal tracks the row is divided into — 1, 2, 3, 4, 6,
+ * 8, 12 or 24, all of which divide the 24-column base evenly. Children claim
+ * width with `span`, either through `Box` or directly on a nested Stack or
+ * Grid.
+ *
+ * `spacing` is a step on the shared scale and applies in both directions.
+ * `columns`, `spacing`, `align` and `justify` all take responsive values keyed
+ * by breakpoint.
+ *
+ * Grid is also a layout child, so it takes `span`, `grow` and `alignSelf` for
+ * its own position inside a parent.
+ *
+ * @example
+ * <Grid columns={{ xs: 1, md: 12 }} spacing="500">
+ *   <Box span={{ xs: 1, md: 8 }}><Article /></Box>
+ *   <Box span={{ xs: 1, md: 4 }}><Sidebar /></Box>
+ * </Grid>
+ */
 export function Grid<E extends GridElement = 'div'>({
   as,
   spacing: spacingProp = '300',

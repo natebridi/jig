@@ -36,6 +36,29 @@ export interface StackOwnProps extends SpacingProps, LayoutChildProps {
 
 export type StackProps<E extends StackElement = 'div'> = PolymorphicProps<E, StackOwnProps>;
 
+/**
+ * A flex container that spaces its children evenly.
+ *
+ * `direction` defaults to `column`. `spacing` is a step on the shared scale
+ * rather than a length, and `direction`, `spacing`, `align` and `justify` all
+ * take responsive values keyed by breakpoint.
+ *
+ * Children take `grow` to absorb leftover space, either through `Box` or
+ * directly on a nested Stack or Grid. Stack is a layout child itself, so it
+ * also takes `span`, `grow` and `alignSelf` for its own position in a parent.
+ *
+ * Use `as` to make it a real list or section when that is what the content is.
+ *
+ * @example
+ * <Stack direction={{ xs: 'column', md: 'row' }} spacing="400" align="center">
+ *   <Icon icon="user" size="2rem" />
+ *   <Stack spacing="100" grow>
+ *     <Typography with="heading05">Ada Lovelace</Typography>
+ *     <Typography tone="muted">Engineering</Typography>
+ *   </Stack>
+ *   <Button variant="secondary">Message</Button>
+ * </Stack>
+ */
 export function Stack<E extends StackElement = 'div'>({
   as,
   direction = 'column',
