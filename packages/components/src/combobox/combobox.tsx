@@ -290,7 +290,7 @@ export function Combobox<Value = string>({
 
           <Base.Input
             ref={ref}
-            className={inputClass}
+            className={inputClass({ multiple: multiple === true })}
             placeholder={placeholder}
             disabled={disabled}
           />

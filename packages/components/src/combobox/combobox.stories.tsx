@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Combobox } from './combobox';
 import { Stack } from '../stack';
+import { Input } from '../input';
 
 const people = [
   { value: 'ada', label: 'Ada Lovelace' },
@@ -123,6 +124,30 @@ export const WiderPopup: Story = {
       },
     },
   },
+};
+
+/**
+ * A Combobox holding a single chip has to match an Input of the same size —
+ * Token's height is derived from `size.control` for exactly this. It only
+ * grows once the chips wrap to a second line.
+ */
+export const MatchesInputHeight: Story = {
+  render: () => (
+    <Stack direction="column" spacing="500">
+      {(['sm', 'md', 'lg'] as const).map((size) => (
+        <Stack key={size} direction="row" spacing="400" align="end">
+          <Input size={size} label={`Input ${size}`} defaultValue="Text" />
+          <Combobox
+            size={size}
+            label={`Combobox ${size}`}
+            items={people}
+            multiple
+            defaultValue={['ada']}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };
 
 export const WithDescription: Story = {

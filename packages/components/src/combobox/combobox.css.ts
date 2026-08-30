@@ -84,12 +84,27 @@ export const control = recipe({
      * With chips in the box the height stops being fixed: chips wrap, and the
      * field grows with them. That reflow is the accepted cost of 0011 D3 —
      * `minHeight` rather than `height` is where it is paid.
+     *
+     * The vertical padding is `spacing[100]` and cannot be chosen freely.
+     * Token derives its own height as `size.control - 2px - 2 * spacing[100]`
+     * — the field's height less its two borders and one spacing step of air
+     * on each side — so this is the other half of that subtraction. Any other
+     * value and a field holding a single chip is taller than an Input beside
+     * it, which is exactly what 0006 derived the height to prevent.
      */
     multiple: {
       true: {
         flexWrap: "wrap",
-        paddingTop: spacing[200],
-        paddingBottom: spacing[200],
+        paddingTop: spacing[100],
+        paddingBottom: spacing[100],
+        // The same step on the leading edge and between the chips, so a chip
+        // is inset by one consistent amount on every side it has a neighbour
+        // — the trailing padding stays the size ramp's, because that edge
+        // holds the caret and the trigger rather than a chip. Longhands, and
+        // declared after `size`, so they win over its `padding` shorthand
+        // without disturbing the right-hand side.
+        paddingLeft: spacing[100],
+        gap: spacing[100],
       },
       false: {},
     },
@@ -105,28 +120,43 @@ export const control = recipe({
  * background and the height, so this contributes nothing but the caret and the
  * query — and has to shrink out of the chips' way rather than pushing them.
  */
-export const input = style({
-  appearance: "none",
-  flex: "1 1 4ch",
-  minWidth: "4ch",
-  border: "none",
-  outline: "none",
-  background: "transparent",
-  color: "inherit",
-  font: "inherit",
-  padding: 0,
-  "::placeholder": {
-    color: color.control.placeholder,
-  },
-  selectors: {
-    "&:disabled": {
-      color: color.control.disabledText,
-      cursor: "not-allowed",
+export const input = recipe({
+  base: {
+    appearance: "none",
+    flex: "1 1 4ch",
+    minWidth: "4ch",
+    border: "none",
+    outline: "none",
+    background: "transparent",
+    color: "inherit",
+    font: "inherit",
+    padding: 0,
+    "::placeholder": {
+      color: color.control.placeholder,
     },
-    "&:disabled::placeholder": {
-      color: color.control.disabledText,
+    selectors: {
+      "&:disabled": {
+        color: color.control.disabledText,
+        cursor: "not-allowed",
+      },
+      "&:disabled::placeholder": {
+        color: color.control.disabledText,
+      },
     },
   },
+  variants: {
+    /**
+     * The field's leading padding drops to `spacing[100]` when it holds chips,
+     * which is right against a chip and too tight against the caret. This buys
+     * the text its air back — from the last chip when there is one, and from
+     * the field's own edge when there is not.
+     */
+    multiple: {
+      true: { marginLeft: spacing[400] },
+      false: {},
+    },
+  },
+  defaultVariants: { multiple: false },
 });
 
 /** Holds the selected Tokens ahead of the input, in source order. */
@@ -229,7 +259,7 @@ export const item = style({
   // Sets the colour and its link-hover partner together (0010). A row is not
   // a link, but it is text, and the rule is that anything painting a text
   // colour declares the pair beside it.
-  ...linkHoverFor('primary'),
+  ...linkHoverFor("primary"),
   selectors: {
     // Highlight follows the keyboard *and* the pointer, which is Base UI's
     // job to track — one attribute, so the two can never disagree.
@@ -273,7 +303,7 @@ export const groupLabel = style({
   fontSize: `${type.scale[200]}`,
   fontWeight: `${type.weight[500]}`,
   lineHeight: type.body01.lineHeight,
-  ...linkHoverFor('muted'),
+  ...linkHoverFor("muted"),
 });
 
 /**
@@ -292,7 +322,7 @@ export const emptyMessage = style({
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[200]}`,
   lineHeight: type.body01.lineHeight,
-  ...linkHoverFor('muted'),
+  ...linkHoverFor("muted"),
 });
 
 /**
