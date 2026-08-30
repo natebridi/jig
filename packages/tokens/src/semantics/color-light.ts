@@ -35,7 +35,7 @@ export default {
             },
             popover: {
                 '$type': 'color',
-                '$value': '{color.gray.100}'
+                '$value': '{color.white}'
             },
             // Inverted chrome — tooltips and anything else that must read as
             // sitting above the page rather than on it. Mirrors the body

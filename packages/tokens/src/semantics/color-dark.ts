@@ -22,15 +22,15 @@ export default {
             },
             body: {
                 '$type': 'color',
-                '$value': '{color.gray.700}'
+                '$value': '{color.warm.750}'
             },
             card: {
                 '$type': 'color',
-                '$value': '{color.gray.650}'
+                '$value': '{color.warm.650}'
             },
             popover: {
                 '$type': 'color',
-                '$value': '{color.gray.500}'
+                '$value': '{color.warm.500}'
             },
             // Inverted chrome — tooltips and anything else that must read as
             // sitting above the page rather than on it. Mirrors the body

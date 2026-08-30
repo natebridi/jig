@@ -14,13 +14,14 @@ import {
   control,
   description as descriptionClass,
   empty as emptyClass,
+  emptyMessage as emptyMessageClass,
   error as errorClass,
   field,
   groupLabel as groupLabelClass,
   iconSize,
   indicator as indicatorClass,
   input as inputClass,
-  item as itemRecipe,
+  item as itemClass,
   label as labelClass,
   list as listClass,
   popup as popupClass,
@@ -80,6 +81,12 @@ interface ComboboxOwnProps<Value> {
   error?: ReactNode;
   /** Shown in the popup when the query matches nothing. */
   emptyMessage?: ReactNode;
+  /**
+   * A floor for the popup's width, as any CSS length. The popup matches the
+   * field by default, which is too narrow when the options are longer than the
+   * control — set this to let it grow past the field rather than truncate.
+   */
+  popupMinWidth?: string | number;
   placeholder?: string;
   size?: ComboboxSize;
   disabled?: boolean;
@@ -157,6 +164,7 @@ export function Combobox<Value = string>({
   description,
   error,
   emptyMessage = 'No results',
+  popupMinWidth,
   placeholder,
   size = 'md',
   disabled,
@@ -192,12 +200,12 @@ export function Combobox<Value = string>({
       // API declares.
       value={option.value}
       disabled={option.disabled}
-      className={itemRecipe({ size })}
+      className={itemClass}
     >
-      {option.label}
-      <Base.ItemIndicator className={indicatorClass}>
+      <Base.ItemIndicator className={indicatorClass} keepMounted>
         <Icon icon="check" size={iconSize} />
       </Base.ItemIndicator>
+      {option.label}
     </Base.Item>
   );
 
@@ -213,6 +221,17 @@ export function Combobox<Value = string>({
     >
       <Base.Root
         items={items as readonly never[]}
+        // Resolves what the input shows after a selection, and what filtering
+        // matches against. It is called with two different shapes: an entry
+        // from `items` while filtering, and the bare selected value when the
+        // input's text is derived — so it has to handle both. Without it the
+        // input falls back to serialising the value and shows `alan` where it
+        // should show `Alan Turing`.
+        itemToStringLabel={(entry: ComboboxItem<Value> | Value) =>
+          entry !== null && typeof entry === 'object' && 'label' in entry
+            ? (entry as ComboboxItem<Value>).label
+            : labelOf(entry as Value)
+        }
         multiple={multiple as never}
         value={value as never}
         defaultValue={defaultValue as never}
@@ -284,9 +303,27 @@ export function Combobox<Value = string>({
         </Base.InputGroup>
 
         <Base.Portal>
-          <Base.Positioner className={positionerClass} sideOffset={4}>
-            <Base.Popup className={popupClass}>
-              <Base.Empty className={emptyClass}>{emptyMessage}</Base.Empty>
+          {/* `align="start"` because the Positioner centres on the anchor by
+              default, which is invisible while the popup matches the field and
+              throws it off-centre the moment `popupMinWidth` makes it wider. */}
+          <Base.Positioner className={positionerClass} sideOffset={4} align="start">
+            <Base.Popup
+              className={popupClass}
+              {...(popupMinWidth !== undefined
+                ? {
+                    style: {
+                      '--jig-combobox-min-width':
+                        typeof popupMinWidth === 'number' ? `${popupMinWidth}px` : popupMinWidth,
+                    } as CSSProperties,
+                  }
+                : {})}
+            >
+              {/* The span, not the Empty element, carries the padding: Base UI
+                  keeps Empty mounted as a live region and renders no children
+                  while there are results. */}
+              <Base.Empty className={emptyClass}>
+                <span className={emptyMessageClass}>{emptyMessage}</span>
+              </Base.Empty>
               <ScrollArea>
                 <Base.List className={listClass}>
                   {(entry: ComboboxItem<Value> | ComboboxGroup<Value>) =>

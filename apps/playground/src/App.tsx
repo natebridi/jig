@@ -96,14 +96,17 @@ export function App() {
                   {/* Uneven spans, so each child carries its own breakpoint.
                       3 + 3 + 9 + 9 = 24. */}
                   <Grid spacing="300">
-                    <Box span={{ xs: 24, md: 3 }}><Combobox label="Measure" items={
+                    <Box span={{ xs: 24, md: 3 }}><Combobox label="Measure" multiple popupMinWidth={160} items={
                       [
                         { value: 'tsp', label: 'tsp' },
                         { value: 'tbsp', label: 'Tbsp' },
                         { value: 'clove', label: 'Clove' },
                         { value: 'sprig', label: 'Sprig' },
                         { value: 'oz', label: 'Oz' },
+                        { value: 'os', label: 'Oz (Imperial)' },
                         { value: 'cup', label: 'Cup' },
+                        { value: 'bun', label: 'Bundle' },
+                        { value: 'gal', label: 'Gallon (Standard)' },
                       ]} />
                     </Box>
                     <Box span={{ xs: 24, md: 3 }}><Input label="Quantity" /></Box>

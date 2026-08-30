@@ -46,19 +46,19 @@ export const controlSet = (lightOrDark: string) => {
     'base-bg': `{color.white}`,
     'text': `{color.warm.600}`,
     'placeholder': `{color.gray.400}`,
-    'border': `{color.warm.200}`,
+    'border': `{color.warm.100}`,
     'hover-border': `{color.warm.300}`,
-    'active-border': `{color.blue.450}`,
+    'active-border': `{color.warm.600}`,
     'invalid-border': `{color.red.450}`,
     'disabled-bg': `{color.warm.150}`,
     'disabled-text': `{color.warm.300}`
   } : {
-    'base-bg': `{color.gray.600}`,
-    'text': `{color.gray.100}`,
-    'placeholder': `{color.gray.300}`,
-    'border': `{color.gray.500}`,
-    'hover-border': `{color.gray.400}`,
-    'active-border': `{color.blue.500}`,
+    'base-bg': `{color.warm.700}`,
+    'text': `{color.warm.100}`,
+    'placeholder': `{color.warm.300}`,
+    'border': `{color.warm.600}`,
+    'hover-border': `{color.warm.550}`,
+    'active-border': `{color.warm.50}`,
     'invalid-border': `{color.red.500}`,
     'disabled-bg': `{color.gray.650}`,
     'disabled-text': `{color.gray.400}`
@@ -79,10 +79,10 @@ export const ghostButtonSet = (lightOrDark: string) => {
     'disabled-text': `{color.warm.300}`,
     'text': `{color.warm.600}`
   } : {
-    'hover-bg': `{color.gray.600}`,
-    'active-bg': `{color.gray.550}`,
-    'disabled-text': `{color.gray.500}`,
-    'text': `{color.gray.100}`
+    'hover-bg': `{color.warm.600}`,
+    'active-bg': `{color.warm.550}`,
+    'disabled-text': `{color.warm.500}`,
+    'text': `{color.warm.100}`
   };
 
   return toColorTokens(colors);

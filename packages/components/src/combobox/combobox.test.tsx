@@ -77,6 +77,34 @@ describe('Combobox', () => {
     expect(screen.getByRole('button', { name: 'Remove Alan Turing' })).toBeInTheDocument();
   });
 
+  it('shows the label in the input after selection, not the value', async () => {
+    const user = userEvent.setup();
+    render(<Combobox label="Assignee" items={people} />);
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(await screen.findByRole('option', { name: 'Alan Turing' }));
+
+    // The input's text is derived from the selected value, which is a
+    // primitive — so without an explicit label resolver it serialises to
+    // `alan`. See the itemToStringLabel comment in combobox.tsx.
+    expect(screen.getByRole('combobox')).toHaveValue('Alan Turing');
+  });
+
+  it('shows the label for a controlled value it was given', () => {
+    render(<Combobox label="Assignee" items={people} value="alan" />);
+    expect(screen.getByRole('combobox')).toHaveValue('Alan Turing');
+  });
+
+  it('resolves a label from inside a group', async () => {
+    const user = userEvent.setup();
+    render(<Combobox label="Assignee" items={grouped} />);
+
+    await user.click(screen.getByRole('combobox'));
+    await user.click(await screen.findByRole('option', { name: 'Grace Hopper' }));
+
+    expect(screen.getByRole('combobox')).toHaveValue('Grace Hopper');
+  });
+
   it('marks the field invalid and shows an error from outside', () => {
     render(<Combobox label="Assignee" items={people} error="Pick someone" />);
 

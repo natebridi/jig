@@ -91,6 +91,40 @@ export const GroupedMultiple: Story = {
   },
 };
 
+const measures = [
+  'tsp', 'Tbsp', 'Clove', 'Sprig', 'Oz', 'Cup', 'Bundle', 'Oz (Imperial)',
+  'Pinch', 'Dash', 'Gram', 'Kilogram', 'Millilitre', 'Litre', 'Pound',
+].map((m) => ({ value: m.toLowerCase(), label: m }));
+
+export const LongList: Story = {
+  args: { label: 'Measure', items: measures, placeholder: '' },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The popup caps at 20rem or the space available below the field, whichever is smaller, and the list scrolls inside it.',
+      },
+    },
+  },
+};
+
+export const WiderPopup: Story = {
+  args: {
+    label: 'Measure',
+    items: measures,
+    placeholder: '',
+    popupMinWidth: '18rem',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'The popup matches the field by default. `popupMinWidth` sets a floor, for when the options are longer than the control is wide.',
+      },
+    },
+  },
+};
+
 export const WithDescription: Story = {
   args: { description: 'Only people with write access appear here.' },
 };

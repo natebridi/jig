@@ -81,17 +81,17 @@ export const control = recipe({
     size: {
       sm: {
         height: size.control.sm,
-        padding: `0 ${spacing[400]}`,
+        padding: `0 ${spacing[300]}`,
         fontSize: `${type.scale[200]}`,
       },
       md: {
         height: size.control.md,
-        padding: `0 ${spacing[500]}`,
+        padding: `0 ${spacing[400]}`,
         fontSize: `${type.scale[300]}`,
       },
       lg: {
         height: size.control.lg,
-        padding: `0 ${spacing[500]}`,
+        padding: `0 ${spacing[400]}`,
         fontSize: `${type.scale[400]}`,
       },
     },

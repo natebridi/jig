@@ -63,19 +63,19 @@ export const control = recipe({
     size: {
       sm: {
         minHeight: size.control.sm,
-        padding: `0 ${spacing[400]}`,
+        padding: `0 ${spacing[300]}`,
         gap: spacing[200],
         fontSize: `${type.scale[200]}`,
       },
       md: {
         minHeight: size.control.md,
-        padding: `0 ${spacing[500]}`,
+        padding: `0 ${spacing[400]}`,
         gap: spacing[300],
         fontSize: `${type.scale[300]}`,
       },
       lg: {
         minHeight: size.control.lg,
-        padding: `0 ${spacing[500]}`,
+        padding: `0 ${spacing[400]}`,
         gap: spacing[300],
         fontSize: `${type.scale[400]}`,
       },
@@ -147,7 +147,9 @@ export const trigger = style({
   border: "none",
   background: "transparent",
   color: color.control.placeholder,
-  cursor: "pointer",
+  cursor: "text",
+  fontSize: '1.125em',
+  lineHeight: 1,
   padding: 0,
   selectors: {
     '&[data-popup-open]': {
@@ -159,12 +161,24 @@ export const trigger = style({
 /** The popup surface. Elevation and popover colour, both already in the system. */
 export const popup = style({
   boxSizing: "border-box",
-  width: "var(--anchor-width)",
+  // Matches the field, and never narrower. `minWidth` is set inline from the
+  // `popupMinWidth` prop when a caller needs the list wider than the control.
+  width: "max(var(--anchor-width), var(--jig-combobox-min-width, 0px))",
   maxHeight: "min(20rem, var(--available-height))",
   background: color.surfaces.popover,
   borderRadius: radius[400],
   boxShadow: elevation.med,
   overflow: "hidden",
+  /*
+   * A flex column, and load-bearing. The ScrollArea inside sizes its viewport
+   * by filling a flex parent — as a block child it has no definite height to
+   * shrink against, so a long list grew past `maxHeight` and was clipped by
+   * `overflow: hidden` with nothing to scroll. Its root already carries
+   * `min-height: 0`, so the default `flex: 0 1 auto` lets it shrink when the
+   * list is long and stay content-sized when it is short.
+   */
+  display: "flex",
+  flexDirection: "column",
 });
 
 export const positioner = style({
@@ -173,63 +187,122 @@ export const positioner = style({
   zIndex: 1,
 });
 
-/** One option row. */
-export const item = recipe({
-  base: {
-    display: "flex",
-    alignItems: "center",
-    gap: spacing[300],
-    borderRadius: radius[400],
-    cursor: "default",
-    // Sets the colour and its link-hover partner together (0010). A row is not
-    // a link, but it is text, and the rule is that anything painting a text
-    // colour declares the pair beside it.
-    ...linkHoverFor('primary'),
-    selectors: {
-      // Highlight follows the keyboard *and* the pointer, which is Base UI's
-      // job to track — one attribute, so the two can never disagree.
-      "&[data-highlighted]": {
-        background: color.button.ghost.hoverBg,
-      },
-    },
-  },
-  variants: {
-    size: {
-      sm: { padding: `${spacing[200]} ${spacing[300]}`, fontSize: `${type.scale[200]}` },
-      md: { padding: `${spacing[300]} ${spacing[400]}`, fontSize: `${type.scale[300]}` },
-      lg: { padding: `${spacing[300]} ${spacing[400]}`, fontSize: `${type.scale[400]}` },
-    },
-  },
-  defaultVariants: { size: "md" },
-});
+/** Icons in the field and in a row, sized to the text they sit with. */
+export const iconSize = "1.15em";
 
-/** The tick on a selected row. Pushed to the trailing edge. */
-export const indicator = style({
-  marginLeft: "auto",
+/**
+ * The tick's column, and the gap between it and the label.
+ *
+ * Declared once because three rules depend on the same number: the indicator
+ * is this wide, the row's `gap` is what separates it from the label, and a
+ * group label has to clear both to line up with the option text. In absolute
+ * terms rather than `em` so the group label — which is smaller than an option
+ * — indents by the same distance rather than by its own smaller em.
+ */
+const gutter = `calc(1.15 * ${type.body01.size})`;
+const gutterGap = spacing[300];
+
+/** How far the option text sits from the row's own leading padding. */
+const textOffset = `calc(${gutter} + ${gutterGap})`;
+
+/**
+ * A row's leading padding. One value at every size — the popup is its own
+ * surface, so a row is running text rather than part of the control's ramp,
+ * and the type does not scale here either.
+ */
+const itemPadInline = spacing[200];
+
+/** One option row. */
+export const item = style({
   display: "flex",
   alignItems: "center",
-  color: color.text.accent,
+  gap: gutterGap,
+  borderRadius: radius[400],
+  cursor: "default",
+  padding: `${spacing[300]} ${spacing[300]} ${spacing[300]} ${itemPadInline}`,
+  // The popup is portalled to the body, so it inherits nothing from the
+  // app's own type. Every text part in here declares its own.
+  fontFamily: type.body01.family,
+  fontSize: type.body01.size,
+  fontWeight: type.body01.weight,
+  lineHeight: type.body01.lineHeight,
+  // Sets the colour and its link-hover partner together (0010). A row is not
+  // a link, but it is text, and the rule is that anything painting a text
+  // colour declares the pair beside it.
+  ...linkHoverFor('primary'),
+  selectors: {
+    // Highlight follows the keyboard *and* the pointer, which is Base UI's
+    // job to track — one attribute, so the two can never disagree.
+    "&[data-highlighted]": {
+      background: color.button.ghost.hoverBg,
+    },
+  },
 });
 
+/**
+ * The tick, in a gutter at the leading edge that every row reserves whether or
+ * not it is selected — so the labels form one column instead of shifting by a
+ * tick's width as the selection changes.
+ *
+ * The element is `keepMounted` so it holds the gutter open on unselected rows;
+ * `visibility` rather than `display` is what hides the tick, because the box
+ * still has to take up its space.
+ */
+export const indicator = style({
+  flex: "none",
+  width: gutter,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: color.text.primary,
+  visibility: "hidden",
+  selectors: {
+    "&[data-selected]": {
+      visibility: "visible",
+    },
+  },
+});
+
+/**
+ * A group's heading, indented past the tick's gutter so it sits in the same
+ * column as the option text rather than out on its own.
+ */
 export const groupLabel = style({
-  padding: `${spacing[300]} ${spacing[400]} ${spacing[200]}`,
+  padding: `${spacing[300]} ${spacing[300]} ${spacing[200]} calc(${itemPadInline} + ${textOffset})`,
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[200]}`,
   fontWeight: `${type.weight[500]}`,
+  lineHeight: type.body01.lineHeight,
   ...linkHoverFor('muted'),
 });
 
-export const empty = style({
+/**
+ * The empty-state element, which Base UI keeps mounted whatever the list holds
+ * — it is a polite live region, and unmounting or hiding it stops screen
+ * readers announcing the change. So it carries no padding of its own: with
+ * results showing it renders no children, and an empty box with padding is the
+ * dead band that used to sit at the top of the popup. The padding is on
+ * `emptyMessage` below, which only exists when there is something to say.
+ */
+export const empty = style({});
+
+export const emptyMessage = style({
+  display: "block",
   padding: `${spacing[400]}`,
   fontFamily: `${type.family.sans}`,
   fontSize: `${type.scale[200]}`,
+  lineHeight: type.body01.lineHeight,
   ...linkHoverFor('muted'),
 });
 
-/** Padding lives here rather than on the popup, so the ScrollArea crops at the edge. */
+/**
+ * Padding lives here rather than on the popup, so the ScrollArea crops at the
+ * popup's edge rather than inside an inset box.
+ *
+ * No leading padding: it would stack with the row's own and push the tick off
+ * centre in its gutter. The rows run to the popup's left edge and their own
+ * padding is what positions the tick.
+ */
 export const list = style({
-  padding: spacing[200],
+  padding: `${spacing[200]}`,
 });
-
-/** Icons in the field and in a row, sized to the text they sit with. */
-export const iconSize = "1.15em";
