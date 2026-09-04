@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, Link, Combobox, Separator } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, ListItem, SideNav, SideNavSection, Link, Combobox, Separator } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -522,6 +522,116 @@ export function App() {
           <Collapsible label="Disabled" disabled>
             <Typography as="p" with="body01" tone="muted">Never reachable.</Typography>
           </Collapsible>
+        </Stack>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">ListItem</Typography>
+
+        {/* `start` is inside the anchor so it must not be interactive; `end` is
+            a sibling so it can be. Tab through the second row — the link and
+            the button are both reachable. 0014 D1. */}
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing="600" align="start">
+          <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem' }}>
+            <ListItem href="#li-install" start={<Icon icon="star" />}>Installation</ListItem>
+            <ListItem
+              href="#li-combobox"
+              start={<Icon icon="list" />}
+              end={<IconButton icon="trash" label="Remove Combobox" size="sm" variant="ghost" />}
+            >
+              Combobox
+            </ListItem>
+            <ListItem href="#li-token" start={<Icon icon="info" />} end={<Token color="blue" size="sm">new</Token>}>
+              Token
+            </ListItem>
+            <ListItem href="#li-long" start={<Icon icon="bell" />}>
+              A label long enough that it has to be cut off somewhere
+            </ListItem>
+          </ul>
+
+          {/* The gutter is reserved on every row whether or not that row is the
+              selected one, so the labels hold one column. 0014 D3. */}
+          <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem' }}>
+            <ListItem href="#li-a" selectedIcon="check" start={<Icon icon="star" />}>Installation</ListItem>
+            <ListItem href="#li-b" selectedIcon="check" start={<Icon icon="moon" />} selected>Theming</ListItem>
+            <ListItem href="#li-c" selectedIcon="check" start={<Icon icon="gear" />}>Tokens</ListItem>
+          </ul>
+        </Stack>
+
+        {/* The ramp is padding, not height — so the avatar row is simply
+            taller rather than clipped. 0014 D5. */}
+        <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem' }}>
+          <ListItem href="#li-sm" size="sm" start={<Icon icon="star" />}>Small</ListItem>
+          <ListItem href="#li-md" size="md" start={<Icon icon="star" />}>Medium</ListItem>
+          <ListItem href="#li-lg" size="lg" start={<Icon icon="star" />}>Large</ListItem>
+          <ListItem
+            href="#li-avatar"
+            start={<span style={{ width: '1.75rem', height: '1.75rem', borderRadius: '999px', background: color.token.blue.baseBg }} />}
+          >
+            With an avatar
+          </ListItem>
+          <ListItem onClick={() => {}} start={<Icon icon="trash" />} disabled>Disabled button row</ListItem>
+        </ul>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">SideNav</Typography>
+
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing="600" align="start">
+          {/* The whole set: pinned header and footer, a scrolling middle, one
+              collapsing section, one static, one row current. */}
+          <SideNav
+            aria-label="Documentation"
+            data-testid="sidenav-docs"
+            style={{ width: '17rem', height: '26rem', backgroundColor: color.surfaces.card, borderRadius: '4.3px' }}
+            header={<Input size="sm" placeholder="Search the docs" aria-label="Search the docs" />}
+            footer={
+              <ListItem
+                as="div"
+                size="sm"
+                start={<Icon icon="user" />}
+                end={<IconButton icon="gear" label="Account settings" size="sm" variant="ghost" />}
+              >
+                Nate Bridi
+              </ListItem>
+            }
+          >
+            <SideNavSection label="Getting started" collapsible defaultOpen>
+              <ListItem href="#nav-install" selectedIcon="check" start={<Icon icon="star" />}>Installation</ListItem>
+              <ListItem href="#nav-theming" selectedIcon="check" start={<Icon icon="moon" />} selected>Theming</ListItem>
+            </SideNavSection>
+            <SideNavSection label="Components" collapsible defaultOpen>
+              <ListItem href="#nav-button" selectedIcon="check" start={<Icon icon="gear" />}>Button</ListItem>
+              <ListItem
+                href="#nav-combobox"
+                selectedIcon="check"
+                start={<Icon icon="list" />}
+                end={<IconButton icon="trash" label="Remove Combobox" size="sm" variant="ghost" />}
+              >
+                Combobox
+              </ListItem>
+              <ListItem href="#nav-collapsible" selectedIcon="check" start={<Icon icon="minus" />}>Collapsible</ListItem>
+              <ListItem href="#nav-long" selectedIcon="check" start={<Icon icon="info" />}>
+                A label long enough to be cut off
+              </ListItem>
+            </SideNavSection>
+            <SideNavSection label="Reference">
+              <ListItem href="#nav-tokens" selectedIcon="check" start={<Icon icon="info" />}>Tokens</ListItem>
+            </SideNavSection>
+          </SideNav>
+
+          {/* No header or footer, and a section with no label — which is how a
+              run of ungrouped rows still gets its list semantics. */}
+          <SideNav
+            aria-label="Ungrouped example"
+            style={{ width: '15rem', height: '26rem', backgroundColor: color.surfaces.card, borderRadius: '4.3px' }}
+          >
+            <SideNavSection>
+              <ListItem href="#bare-a" start={<Icon icon="sun" />}>Overview</ListItem>
+              <ListItem href="#bare-b" start={<Icon icon="calendar" />} selected>Schedule</ListItem>
+              <ListItem href="#bare-c" start={<Icon icon="clock" />}>History</ListItem>
+            </SideNavSection>
+          </SideNav>
         </Stack>
       </Stack>
 

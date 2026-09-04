@@ -1,0 +1,2410 @@
+<title>0014 &middot; Sidebar navigation</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack.
+     Rows are real markup with real anchors and buttons, so the hit areas,
+     hover states and focus rings below are the ones being proposed. */
+
+  .jig {
+    --j-sp-100: 0.17rem;
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-sp-600: 1.89rem;
+
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+
+    --j-rad: 4.3px;
+
+    /* size.control, from packages/tokens/src/semantics/size.ts */
+    --j-ctrl-sm: 1.69rem;
+    --j-ctrl-md: 2.41rem;
+    --j-ctrl-lg: 2.65rem;
+
+    --j-body:   oklch(94.3% 0.005 83);      /* surfaces.body       warm.25  */
+    --j-card:   oklch(100% 0 0);            /* surfaces.card       white    */
+    --j-text:   oklch(31.3% 0.012 83);      /* text.primary        warm.600 */
+    --j-sec:    oklch(45.4% 0 0);           /* text.secondary      gray.500 */
+    --j-muted:  oklch(61.1% 0 0);           /* text.muted          gray.400 */
+    --j-accent: oklch(38.3% 0.179 262.2);   /* text.accent         blue.550 */
+    --j-line:   oklch(85.9% 0.007 83);      /* color.line          warm.200 */
+    --j-hover:  oklch(92.3% 0.006 83);      /* button.ghost.hoverBg  warm.100 */
+    --j-active: oklch(89.1% 0.007 83);      /* button.ghost.activeBg warm.150 */
+    --j-focus:  oklch(0% 0 0);              /* color.focus         black   */
+    --j-tok-bg:   oklch(92.3% 0.038 252.2); /* token.blue.baseBg   blue.100 */
+    --j-tok-text: oklch(38.3% 0.179 262.2); /* token.blue.text     blue.550 */
+    --j-bar:    oklch(53.2% 0.201 260);     /* blue.450 &mdash; the candidate indicator */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:   oklch(17.8% 0.013 83);    /* warm.750 */
+      --j-card:   oklch(26.1% 0.012 83);    /* warm.650 */
+      --j-text:   oklch(92.3% 0 0);         /* gray.100 */
+      --j-sec:    oklch(85.9% 0 0);         /* gray.200 */
+      --j-muted:  oklch(75.3% 0 0);         /* gray.300 */
+      --j-accent: oklch(75.3% 0.127 256.7); /* blue.300 */
+      --j-line:   oklch(31.3% 0.012 83);    /* warm.600 */
+      --j-hover:  oklch(31.3% 0.012 83);    /* warm.600 */
+      --j-active: oklch(38.3% 0.011 83);    /* warm.550 */
+      --j-focus:  oklch(100% 0 0);          /* white */
+      --j-tok-bg:   oklch(26.1% 0.152 264.4); /* blue.650 */
+      --j-tok-text: oklch(85.9% 0.07 254.4);  /* blue.200 */
+      --j-bar:    oklch(61.1% 0.206 258.9);   /* blue.400 */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:   oklch(17.8% 0.013 83);
+    --j-card:   oklch(26.1% 0.012 83);
+    --j-text:   oklch(92.3% 0 0);
+    --j-sec:    oklch(85.9% 0 0);
+    --j-muted:  oklch(75.3% 0 0);
+    --j-accent: oklch(75.3% 0.127 256.7);
+    --j-line:   oklch(31.3% 0.012 83);
+    --j-hover:  oklch(31.3% 0.012 83);
+    --j-active: oklch(38.3% 0.011 83);
+    --j-focus:  oklch(100% 0 0);
+    --j-tok-bg:   oklch(26.1% 0.152 264.4);
+    --j-tok-text: oklch(85.9% 0.07 254.4);
+    --j-bar:    oklch(61.1% 0.206 258.9);
+  }
+
+  /* ---- the sidebar shell ---- */
+
+  .jig .sidebar {
+    width: 100%;
+    max-width: 16rem;
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-400);
+    font-family: var(--sans);
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+    line-height: 1.4;
+  }
+
+  .jig .sidebar.wide { max-width: 20rem; }
+  .jig .onbody { background: var(--j-body); }
+
+  .jig ul.items { list-style: none; margin: 0; padding: 0; }
+
+  /* ---- the row ---- */
+
+  .jig .row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-400);
+    padding: var(--j-sp-300) var(--j-sp-400);
+    border-radius: var(--j-rad);
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+  }
+
+  .jig .row:hover { background: var(--j-hover); }
+
+  /* the fixed-width slot: what keeps labels aligned down the column */
+  .jig .row .slot {
+    flex: none;
+    width: 1.25em;
+    height: 1.25em;
+    display: grid;
+    place-items: center;
+  }
+
+  .jig .row .lbl {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .jig .row a { color: inherit; text-decoration: none; outline-offset: 2px; }
+  .jig .row a:focus-visible { outline: 2px solid var(--j-focus); }
+
+  .jig .gl { width: 1.25em; height: 1.25em; fill: currentColor; display: block; }
+  .jig .gl.sm { width: 1em; height: 1em; }
+
+  /* ---- D1: the three ways a row carries a link ---- */
+
+  /* (a) stretched link &mdash; the anchor spreads an overlay across the whole row */
+  .jig .stretch a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  /* Anything interactive after the label has to be lifted above that overlay. */
+  .jig .above { position: relative; z-index: 1; }
+
+  /* Shows the hit area while hovering, so the three options are comparable. */
+  /* (a) outlines the stretched overlay itself, (b) the row-sized hitbox,
+     (c) the anchor, which is all there is to click. */
+  .jig .stretch.showhit:hover .lbl a::after,
+  .jig .showhit:hover > .hitbox {
+    outline: 1px dashed var(--accent);
+    outline-offset: -1px;
+  }
+  .jig .siblings.showhit:hover .lbl a {
+    outline: 1px dashed var(--accent);
+    outline-offset: 2px;
+  }
+  .jig .showhit .hitbox { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+
+  /* (b) the row itself is the anchor */
+  .jig a.row { display: flex; color: inherit; text-decoration: none; }
+  .jig a.row:focus-visible { outline: 2px solid var(--j-focus); outline-offset: 2px; }
+
+  /* (c) siblings &mdash; the anchor wraps the label only */
+  .jig .siblings a { border-radius: 2px; }
+  .jig .siblings a:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ---- interactive end-slot furniture ---- */
+
+  .jig .iconbtn {
+    display: grid;
+    place-items: center;
+    width: 1.5em;
+    height: 1.5em;
+    padding: 0;
+    border: 0;
+    border-radius: var(--j-rad);
+    background: transparent;
+    color: var(--j-muted);
+    cursor: pointer;
+    font: inherit;
+  }
+  .jig .iconbtn:hover { background: var(--j-active); color: var(--j-text); }
+  .jig .iconbtn:focus-visible { outline: 2px solid var(--j-focus); outline-offset: 1px; }
+
+  .jig .count {
+    font-size: var(--j-ts-100);
+    color: var(--j-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .jig .pill {
+    font-size: var(--j-ts-100);
+    background: var(--j-tok-bg);
+    color: var(--j-tok-text);
+    border-radius: 999px;
+    padding: 0.1em 0.5em;
+    white-space: nowrap;
+  }
+
+  .jig .avatar {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 999px;
+    background: var(--j-tok-bg);
+    color: var(--j-tok-text);
+    display: grid;
+    place-items: center;
+    font-size: var(--j-ts-200);
+    flex: none;
+  }
+
+  /* ---- D3: three ways to paint the selected row ---- */
+
+  .jig .sel-reuse  { background: var(--j-active); color: var(--j-accent); }
+  .jig .sel-reuse:hover { background: var(--j-active); }
+
+  .jig .sel-nav {
+    background: var(--j-hover);
+  }
+  .jig .sel-nav::before {
+    content: "";
+    position: absolute;
+    inset-block: 15%;
+    inset-inline-start: 0;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--j-bar);
+  }
+  .jig .sel-nav:hover { background: var(--j-hover); }
+
+  .jig .sel-token { background: var(--j-tok-bg); color: var(--j-tok-text); }
+  .jig .sel-token:hover { background: var(--j-tok-bg); }
+
+  /* ---- D4: the section header ---- */
+
+  .jig .seclabel {
+    font-size: var(--j-ts-100);
+    color: var(--j-muted);
+    padding: var(--j-sp-300) var(--j-sp-400);
+    letter-spacing: 0.04em;
+  }
+
+  /* Collapsible's actual trigger geometry, from collapsible.css.ts */
+  .jig .collapsible-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-400);
+    width: 100%;
+    padding: var(--j-sp-400) 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--j-text);
+    cursor: pointer;
+    border-radius: var(--j-rad);
+    font: inherit;
+    font-size: var(--j-ts-300);
+  }
+  .jig .collapsible-trigger:hover { color: var(--j-muted); }
+  .jig .collapsible-trigger .gl { margin-inline-start: auto; }
+
+  /* a lighter, nav-native header */
+  .jig .sec-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-200);
+    width: 100%;
+    padding: var(--j-sp-300) var(--j-sp-400);
+    margin: 0;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--j-muted);
+    cursor: pointer;
+    border-radius: var(--j-rad);
+    font: inherit;
+    font-size: var(--j-ts-100);
+    letter-spacing: 0.04em;
+  }
+  .jig .sec-trigger:hover { background: var(--j-hover); color: var(--j-text); }
+  .jig .sec-trigger .gl { transition: transform 160ms ease-out; }
+  .jig details[open] > summary .rot { transform: rotate(90deg); }
+  .jig summary { list-style: none; }
+  .jig summary::-webkit-details-marker { display: none; }
+  .jig summary::marker { content: ""; }
+
+  /* ---- D5: the density ramp ---- */
+
+  .jig .sz-sm { padding: var(--j-sp-300) var(--j-sp-400); font-size: var(--j-ts-200); gap: var(--j-sp-200); }
+  .jig .sz-md { padding: var(--j-sp-400) var(--j-sp-500); font-size: var(--j-ts-300); gap: var(--j-sp-300); }
+  .jig .sz-lg { padding: var(--j-sp-400) var(--j-sp-500); font-size: var(--j-ts-400); gap: var(--j-sp-300); }
+
+  .jig .fx-sm { height: var(--j-ctrl-sm); padding-block: 0; }
+  .jig .fx-md { height: var(--j-ctrl-md); padding-block: 0; }
+  .jig .fx-lg { height: var(--j-ctrl-lg); padding-block: 0; }
+
+  /* ---- helpers ---- */
+
+  .jig .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+  .jig .stack { display: flex; flex-direction: column; gap: var(--j-sp-500); width: 100%; align-items: center; }
+  .jig .divider { height: 1px; background: var(--j-line); border: 0; margin: var(--j-sp-300) 0; }
+
+  /* The shape D1 was decided into: the anchor reclaims the row's padding and
+     covers everything except the trailing button. */
+  .jig .rowlink {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-400);
+    color: inherit;
+    text-decoration: none;
+    border-radius: var(--j-rad);
+    margin: calc(-1 * var(--j-sp-300)) calc(-1 * var(--j-sp-400));
+    padding: var(--j-sp-300) var(--j-sp-400);
+  }
+  .jig .rowlink:focus-visible { outline: 2px solid var(--j-focus); outline-offset: -2px; }
+  .jig .showhit:hover .rowlink { outline: 1px dashed var(--accent); outline-offset: -1px; }
+
+  /* D3: the reserved indicator gutter, exactly Combobox's mechanism. */
+  .jig .tick {
+    flex: none;
+    width: 1.25em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+  }
+  .jig .is-sel .tick { visibility: visible; }
+  .jig .is-sel { background: var(--j-active); }
+  .jig .tick-end { margin-inline-start: auto; }
+
+  /* A figure sits flush against the next heading otherwise. */
+  figure + h3 { margin-top: 2.25rem; }
+
+</style>
+
+<div class="wrap">
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+    <symbol id="i-gear" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"/></symbol>
+    <symbol id="i-star" viewBox="0 0 256 256"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 256 256"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 256 256"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"/></symbol>
+    <symbol id="i-caret-down" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
+    <symbol id="i-caret-right" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></symbol>
+  </defs></svg>
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0014</p>
+    <h1>Sidebar navigation</h1>
+    <p class="standfirst">
+      Three components &mdash; a generic row, a section, and the nav that holds them. Most
+      of it follows from precedent. What does not is a hard constraint in the HTML spec:
+      the brief asks for a row that is entirely a link <em>and</em> that can hold a button,
+      and those two things cannot both be true of the same element.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-04</li>
+      <li>5 decisions &middot; 2 revised over two rounds</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Twenty-one components in, Jig has nothing that lays out a row. Every list-like
+      arrangement in the playground and in Storybook is a hand-composed
+      <code>Stack direction="row"</code>, which is fine once and drift by the fourth time.
+      It also has no way to say <em>you are here</em>: no selected state, no
+      <code>aria-current</code>, and no colour for either.
+    </p>
+    <p>
+      The brief is a docs sidebar, built from a generic
+      <code>[start]&ndash;[label]&ndash;[end]</code> row that other things can reuse. So
+      the row is the piece worth getting right; the section and the nav around it are
+      mostly composition.
+    </p>
+
+    <h3>The constraint everything else bends around</h3>
+    <p>
+      The brief asks for two things that HTML does not allow together: &ldquo;the entire
+      item can be a link&hellip; although remember the start end items can be interactive as
+      well&rdquo;. Both quotes below are from the WHATWG HTML Standard, fetched rather
+      than recalled.
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>the a element &mdash; Content model</i>
+  <b>Transparent, but there must be no interactive content descendant,
+  a element descendant, or descendant with the tabindex attribute
+  specified.</b>
+
+<i>the button element &mdash; Content model</i>
+  <b>Phrasing content, but there must be no interactive content
+  descendant and no descendant with the tabindex attribute
+  specified.</b></pre>
+      </div>
+      <figcaption>
+        A checkbox, a button, or a second link inside a row that is itself a link or a
+        button is invalid &mdash; and not merely pedantically: browsers do not nest the
+        activation behaviours, so the inner control becomes unreachable or the outer one
+        swallows its clicks. D1 is how to have both anyway.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>Jig has met this exact collision once already.</b> 0011 D3 decided &ldquo;Jig
+      Tokens as the chips&rdquo; for the multiple Combobox, and the build found that
+      Token owns a remove <em>button</em> while <code>Combobox.ChipRemove</code> is also a
+      button and is the only one wired to the combobox's removal. Nesting them is invalid
+      HTML, so the chip wears Token's <em>styles</em> and the button inside it is Base
+      UI's. That is recorded in 0011's As built, and it is the same problem one document
+      earlier &mdash; which is why it is a decision here rather than something to discover
+      during the build.
+    </p>
+
+    <h3>Base UI, checked against 0001 D2</h3>
+    <p>
+      Registry rather than memory: <code>npm view @base-ui/react</code> reports
+      <code>1.7.0</code> as the latest version and the only dist-tag, with no
+      <code>deprecated</code> field. It is already pinned at <code>~1.7.0</code> in
+      <code>packages/components/package.json</code>, so nothing installs either way.
+    </p>
+    <p>
+      Base UI does ship a <code>NavigationMenu</code>, and it is not this. Its parts are
+      <code>Root, List, Item, Content, Trigger, Portal, Positioner, Viewport, Backdrop,
+      Popup, Arrow, Link, Icon</code> &mdash; a menu bar that opens portalled popups. The
+      one part that looks useful in isolation, <code>NavigationMenuLink</code>, cannot be
+      used in isolation:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>navigation-menu/link/NavigationMenuLink.js:37</i>
+  } = <b>useNavigationMenuRootContext()</b>;        <span class="no">// throws outside a Root</span>
+
+<i>navigation-menu/link/NavigationMenuLink.js:44</i>
+  <b>'aria-current': active ? 'page' : undefined,</b>  <span class="in">// the attribute to use</span></pre>
+      </div>
+      <figcaption>
+        Borrowing the link means dragging in the whole popup machinery a persistent
+        sidebar has no use for. 0001 D2's test &mdash; Base UI when a component needs
+        managed focus, portalling, or an ARIA relationship beyond a label &mdash; is met
+        by none of these three: a sidebar is a static list of anchors in normal document
+        flow, and the browser already handles tabbing through anchors. So all three are
+        hand-rolled. Line 44 is still worth having read: <code>aria-current="page"</code>
+        is what Base UI itself sets, and this document takes it as settled.
+      </figcaption>
+    </figure>
+
+    <h3>Two things the brief names that Jig does not have</h3>
+    <p>
+      The brief lists &ldquo;avatar, icon, text, image, button, token, etc.&rdquo; as slot
+      content. Jig has <code>Icon</code>, <code>Token</code>, <code>Typography</code> and
+      <code>IconButton</code>; it has <b>no Avatar and no Checkbox</b>. Both would be
+      caller-supplied markup today. That is not a blocker &mdash; the slots take
+      <code>ReactNode</code>, so anything renders &mdash; but it does mean the avatar and
+      checkbox cases below are drawn with hand-rolled stand-ins, and neither is proposed
+      here. Base UI ships an <code>Avatar</code> (<code>Root / Image / Fallback</code>)
+      whenever that becomes its own document.
+      <b>Superseded in part by D1's outcome:</b> the checkbox is no longer a
+      <code>start</code> candidate at all &mdash; that slot renders inside the anchor and
+      therefore takes non-interactive content only.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule and is <em>not</em> up for debate in this
+      document. Listing it is what keeps the decision count honest.
+    </p>
+    <ul class="notes">
+      <li>
+        <b>Hand-rolled, not Base UI.</b> 0001 D2's behaviour test, with the source above
+        as the evidence. No new dependency, and none of the three components portals,
+        traps focus, or needs an ARIA relationship beyond a label.
+      </li>
+      <li>
+        <b><code>aria-current="page"</code></b> marks the current item. It is what Base
+        UI's own <code>NavigationMenuLink</code> sets and what the APG disclosure-nav
+        pattern specifies. Only the <em>colour</em> is open, in D3.
+      </li>
+      <li>
+        Flat components with slot props, not compound parts &mdash; Dialog (0008),
+        Collapsible (0013). So <code>&lt;ListItem start={&hellip;} end={&hellip;}&gt;</code>, not
+        <code>&lt;ListItem.Start&gt;</code>.
+      </li>
+      <li>
+        The slots take <code>ReactNode</code> and reserve a fixed-width box so labels line
+        up down the column. What goes in the box is the caller's; the box is the
+        component's &mdash; the same division <code>buttonIconSize</code> establishes.
+      </li>
+      <li>
+        <code>SideNav</code> renders <code>&lt;nav&gt;</code> and takes an accessible
+        name; a second nav on the same page needs its own <code>aria-label</code>.
+      </li>
+      <li>
+        Header and footer are pinned and the item list scrolls between them, in a
+        <code>ScrollArea</code> &mdash; the arrangement Dialog already uses (0008 D3) and
+        which the playground demonstrates.
+      </li>
+      <li>
+        No <code>as</code> prop &mdash; polymorphism stays on layout and typography
+        components (<code>polymorphic.ts</code>).
+      </li>
+      <li>
+        No spacing props; spacing comes from the parent, and box dimensions go through
+        <code>style</code>.
+      </li>
+      <li>
+        Consumer props reach the root: each component extends
+        <code>HTMLAttributes</code> and spreads, per <code>ScrollArea</code> and the
+        correction recorded in 0013's As built.
+      </li>
+      <li>
+        Refs type to the rendered element and are asserted in <code>refs.test.tsx</code>.
+      </li>
+      <li>
+        Focus is the ring from <code>focus-ring.ts</code> &mdash; none of these draw a
+        field border, so 0002 D4 gives them the ring rather than a border highlight.
+      </li>
+      <li>
+        Any motion is hand-declared with a <code>prefers-reduced-motion</code> guard;
+        Jig has no motion tokens and a duration ramp is its own proposal (0013's As
+        built).
+      </li>
+      <li>
+        Theming stays <code>:root</code>-scoped, and each component ships
+        <code>.tsx</code>, <code>.css.ts</code>, <code>.stories.tsx</code>,
+        <code>.test.tsx</code>, <code>index.ts</code> plus the export from
+        <code>src/index.ts</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. The rows
+      in every specimen are real markup with real anchors and buttons, so hover, focus and
+      the hit areas are the ones being proposed &mdash; hover a row to see its clickable
+      region outlined.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="row-interactivity" data-title="How a whole-row link lives with interactive slots">
+    <p class="decision-id">D1 &middot; row-interactivity</p>
+    <h2>How a whole-row link lives with interactive slots</h2>
+    <p>
+      The spec quotes above rule out the obvious reading of the brief. A row that is an
+      <code>&lt;a&gt;</code> cannot contain the delete button, the checkbox, or the
+      overflow menu that the <code>end</code> slot is meant to hold. Three ways out, and
+      the choice sets what <code>ListItem</code> can be used for.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="stretched-link" data-label="Stretched link">
+        <div class="option-head">
+          <h3>Stretched link</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; hover a row</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items">
+              <li class="row stretch showhit">
+                <span class="slot"><svg class="gl"><use href="#i-star"/></svg></span>
+                <span class="lbl"><a href="#d1">Getting started</a></span>
+                <button type="button" class="iconbtn above" aria-label="Remove Getting started"><svg class="gl sm"><use href="#i-trash"/></svg></button>
+              </li>
+              <li class="row stretch showhit">
+                <span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span>
+                <span class="lbl"><a href="#d1">Notifications</a></span>
+                <span class="count above">12</span>
+              </li>
+            </ul>
+          </div>
+          <p class="caption">the anchor spreads <code>::after { inset: 0 }</code>; the button is lifted above it</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The whole row is the link &mdash; the hit target a sidebar needs &mdash; while the DOM holds one anchor and one button as siblings. Valid, and one link in the accessibility tree.</li>
+          <li class="pro">The trailing button stays reachable by mouse and by tab, because it is a real sibling rather than a descendant.</li>
+          <li class="pro">Degrades honestly: a row with no interactive <code>end</code> needs no lifting at all.</li>
+          <li class="con">The overlay eats text selection &mdash; a user cannot drag-select the label. Real, and the reason this pattern is wrong for a row of prose.</li>
+          <li class="con">Every interactive thing in a slot must be lifted with <code>position: relative</code>. The component can do that for its own slots, but not for arbitrary <code>ReactNode</code> a caller nests deeper.</li>
+          <li class="con"><b>A positioned ancestor breaks it silently.</b> The overlay escapes the label's <code>overflow: hidden</code> only because that label is <code>position: static</code>, so it is not the overlay's containing block. Giving the label <code>position: relative</code> &mdash; for a badge, a tooltip anchor &mdash; clips the overlay back to the text. Measured in this page: hit-testing the row's left edge returns the anchor normally, and the bare <code>li</code> once the label is positioned.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="row-is-link" data-label="Row is the anchor">
+        <div class="option-head">
+          <h3>Row is the anchor</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; hover a row</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items">
+              <li>
+                <a href="#d1" class="row showhit">
+                  <span class="hitbox"></span>
+                  <span class="slot"><svg class="gl"><use href="#i-star"/></svg></span>
+                  <span class="lbl">Getting started</span>
+                  <span class="pill">new</span>
+                </a>
+              </li>
+              <li>
+                <a href="#d1" class="row showhit">
+                  <span class="hitbox"></span>
+                  <span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span>
+                  <span class="lbl">Notifications</span>
+                  <span class="count">12</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <p class="caption">end slot restricted to non-interactive content &mdash; a Token, a count</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The simplest correct thing. No overlay, no stacking context, no lifting; text selection still works.</li>
+          <li class="pro">Impossible to build an invalid row, because the type refuses the case that would be invalid.</li>
+          <li class="con">Refuses a stated part of the brief. No delete button, no checkbox, no overflow menu in a linked row &mdash; which is a menu pattern the docs page itself may want later.</li>
+          <li class="con">The refusal can only be documented, not typed: <code>ReactNode</code> cannot express &ldquo;nothing focusable in here&rdquo;, so it is a runtime warning at best.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="siblings" data-label="Siblings, no stretch">
+        <div class="option-head">
+          <h3>Siblings, no stretch</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; hover a row</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items siblings">
+              <li class="row showhit">
+                <span class="slot"><svg class="gl"><use href="#i-star"/></svg></span>
+                <span class="lbl"><a href="#d1">Getting started</a></span>
+                <button type="button" class="iconbtn" aria-label="Remove Getting started"><svg class="gl sm"><use href="#i-trash"/></svg></button>
+              </li>
+              <li class="row showhit">
+                <span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span>
+                <span class="lbl"><a href="#d1">Notifications</a></span>
+                <span class="count">12</span>
+              </li>
+            </ul>
+          </div>
+          <p class="caption">the anchor is the label and nothing more</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing clever at all. No overlay, no z-index, no rule about what may go in a slot; text selection intact.</li>
+          <li class="pro">The hit area is honest &mdash; what looks clickable is clickable, and what is not, is not.</li>
+          <li class="con">The row stops feeling like a nav row. Clicking the padding, the icon, or the gap does nothing, which in a sidebar reads as broken.</li>
+          <li class="con">Small targets. In a narrow sidebar the label is most of the row, but on a short label like &ldquo;API&rdquo; the target is tiny &mdash; a WCAG 2.5.8 problem the other two options do not have.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-04</span>
+      <b>Siblings, no stretch &mdash; with the anchor taking everything that is not the button.</b>
+      <p>The note, verbatim:</p>
+      <p>
+        &ldquo;If the item is a link and has an action, I think it is safe to have the two
+        elements as siblings, but with the anchor encompassing everything that isn't the
+        button. Let's get rid of the checkbox as a &lsquo;start&rsquo; element to make that
+        easier. That way nothing interactive can be in the &lsquo;start&rsquo;, and it can be
+        included with the &lt;a&gt; tag.&rdquo;
+      </p>
+      <p>
+        That refinement answers the option's own strongest objection. The specimen above
+        drew the anchor around the label alone, which is what made the targets small; with
+        the <code>start</code> slot and the row's padding inside the anchor, the link is
+        everything up to the button and the tiny-target problem goes with it &mdash; no
+        overlay, no stacking context, and text selection intact.
+      </p>
+      <p>Two rules follow, and they are now part of the component's contract:</p>
+      <ul>
+        <li>
+          <b><code>start</code> takes non-interactive content only.</b> It renders inside
+          the anchor, so a checkbox or button there would be the exact spec violation this
+          decision exists to avoid. Checkboxes are out of the slot vocabulary.
+        </li>
+        <li>
+          <b><code>end</code> is the only interactive slot</b>, and it is a sibling of the
+          anchor rather than a descendant.
+        </li>
+      </ul>
+      <p class="specimen-label" style="margin-top:1rem">As decided &mdash; hover it</p>
+      <div class="jig">
+        <div class="sidebar" style="max-width:15rem">
+          <ul class="items">
+            <li class="row showhit">
+              <a href="#d1" class="rowlink">
+                <span class="slot"><svg class="gl"><use href="#i-star"/></svg></span>
+                <span class="lbl">Getting started</span>
+              </a>
+              <button type="button" class="iconbtn" aria-label="Remove Getting started"><svg class="gl sm"><use href="#i-trash"/></svg></button>
+            </li>
+            <li class="row showhit">
+              <a href="#d1" class="rowlink">
+                <span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span>
+                <span class="lbl">Notifications</span>
+                <span class="count">12</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="list-semantics" data-title="What element a row renders as" data-revised="2026-09-04">
+    <p class="decision-id">D2 &middot; list-semantics &middot; <b>revised</b></p>
+    <h2>What element a row renders as</h2>
+    <p>
+      <b>Rejected in the first round.</b> The note:
+      &ldquo;I don't want to get into full polymorphism, but could we allow &lsquo;as&rsquo;
+      with a tightly scoped list of possible elements? Thinking &lt;li&gt; by default, with
+      &lt;div&gt; as an option. I imagine there will be other aria attributes to consider
+      when building a navigation list.&rdquo;
+    </p>
+    <p>
+      The first round framed this as a choice between markup shapes and never offered the
+      obvious third thing: let the caller pick, from two. Reframed accordingly. All three
+      options below still put the list semantics on the container &mdash; that part was not
+      what was rejected.
+    </p>
+    <p>
+      <b>This amends a standing rule</b>, so it is worth saying plainly. The checklist reads:
+      &ldquo;Polymorphic <code>as</code>: layout and typography components only, via the
+      shared <code>PolymorphicProps</code> utility in <code>polymorphic.ts</code>.&rdquo;
+      <code>ListItem</code> is neither. Options A and B widen that rule; option C is the one
+      that leaves it alone. Whichever is taken, the rule's wording changes with it rather
+      than being quietly contradicted.
+    </p>
+    <p>
+      On the note's last point &mdash; the other ARIA to consider. With a real
+      <code>&lt;li&gt;</code> inside a list, the browser computes position and count, which
+      is what produces &ldquo;3 of 8&rdquo;. A <code>&lt;div&gt;</code> chain has to carry
+      <code>aria-setsize</code> and <code>aria-posinset</code> by hand, and only stays
+      correct if every consumer remembers. That is the real cost of the escape hatch, and it
+      is why every option below keeps <code>li</code> as the default rather than the option.
+      <code>aria-current="page"</code> is already settled; the section triggers carry
+      <code>aria-expanded</code> / <code>aria-controls</code> from Collapsible.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="as-li-div" data-label="as: li | div, on ListItem">
+        <div class="option-head">
+          <h3><code>as: 'li' | 'div'</code>, on ListItem</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the prop, and the tree each produces</p>
+        <div class="specimen block">
+<pre class="tree">as?: <b>'li' | 'div'</b>   <i>// default 'li'</i>
+
+<i>default &mdash; inside SideNav</i>
+  &lt;ul <b>role="list"</b>&gt;
+    &lt;li&gt; &lt;a&gt;Tokens&lt;/a&gt;
+  <b>link, Tokens, 2 of 8</b>
+
+<i>as="div" &mdash; a settings row, no list</i>
+  &lt;div class="row"&gt;
+    &lt;a&gt;Tokens&lt;/a&gt;
+  <b>link, Tokens</b></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly the two elements asked for, and the default is the one that carries the semantics &mdash; so the sidebar is right without anyone choosing.</li>
+          <li class="pro">Goes through the existing <code>PolymorphicProps</code> utility, so props and the ref stay correlated to the element; <code>refs.test.tsx</code> already asserts that shape for six components.</li>
+          <li class="pro">A two-member union is checkable at a glance and cannot drift into &ldquo;any element&rdquo;.</li>
+          <li class="con">Widens a rule that has held since <code>polymorphic.ts</code> was written, and the memory of it. The amendment has to be written into the checklist or it will read as an inconsistency later.</li>
+          <li class="con">Nothing stops <code>as="li"</code> outside a list, which is invalid markup the type cannot catch.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="as-pair" data-label="as on the item and its container">
+        <div class="option-head">
+          <h3><code>as</code> on the item <em>and</em> its container</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the pair moves together</p>
+        <div class="specimen block">
+<pre class="tree">&lt;ListGroup <b>as="ul"</b>&gt;
+  &lt;ListItem <b>as="li"</b>&gt;
+
+&lt;ListGroup <b>as="div"</b>&gt;
+  &lt;ListItem <b>as="div"</b>&gt;
+
+<i>the container sets role="list"
+only when it is a ul</i>
+
+<span class="no">nothing prevents the mismatch</span>
+  &lt;ListGroup as="div"&gt;
+    &lt;ListItem as="li"&gt;  <span class="no">invalid</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The invalid combination is at least visible at the call site, because both halves are written down.</li>
+          <li class="pro">A caller who wants a non-list arrangement changes two props rather than fighting a container that always emits <code>ul</code>.</li>
+          <li class="con">Twice the surface for one decision, and it still cannot stop the mismatched pair &mdash; it only makes it easier to see.</li>
+          <li class="con">Widens the <code>as</code> rule to two more components rather than one.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="context-element" data-label="No prop; context decides">
+        <div class="option-head">
+          <h3>No prop; context decides</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; same markup, two results</p>
+        <div class="specimen block">
+<pre class="tree"><i>inside a Jig list container</i>
+  &lt;ListItem&gt;  &rarr;  &lt;li&gt;
+
+<i>anywhere else</i>
+  &lt;ListItem&gt;  &rarr;  &lt;div&gt;
+
+<i>one React context, set by the
+container, read by the item</i>
+
+<span class="no">no way to override when the
+inference is wrong</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Leaves the <code>as</code> rule completely intact &mdash; no amendment, no memory to rewrite.</li>
+          <li class="pro">Always valid: an <code>li</code> can only appear where a list container put it.</li>
+          <li class="pro">Nothing to pass, so the common case has no ceremony at all.</li>
+          <li class="con">Implicit. The rendered element is invisible at the call site, which is the thing the no-polymorphism rule was protecting against in the first place.</li>
+          <li class="con">No override. A caller wrapping items in their own element between container and item silently loses the <code>li</code>.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-04</span>
+      <b><code>as: 'li' | 'div'</code> on ListItem, defaulting to <code>'li'</code>.</b>
+      Through the existing <code>PolymorphicProps</code> utility, so props and the ref stay
+      correlated to the element &mdash; the same route <code>Stack</code>,
+      <code>Grid</code>, <code>Typography</code> and <code>Adorn</code> take. The container
+      still emits <code>&lt;ul role="list"&gt;</code>, so the default configuration is the
+      one with full list semantics and nobody has to ask for them.
+      <p>
+        <b>This amends a standing rule, and the amendment is part of the build.</b> Two
+        places currently say <code>as</code> is for layout and typography components only,
+        and both are now wrong:
+      </p>
+      <ul>
+        <li>
+          <code>.claude/skills/propose/checklist.md</code> &mdash; &ldquo;Polymorphic
+          <code>as</code>: layout and typography components only&rdquo;. It governs the
+          <em>next</em> proposal, so leaving it stale would have the next document
+          contradict this one.
+        </li>
+        <li>
+          The project memory <code>jig-polymorphic-as-prop</code>, which records the
+          2026-08-14 decision and the instruction not to add <code>as</code> to a new
+          component without asking. That instruction held: it <em>was</em> asked, and this
+          is the answer.
+        </li>
+      </ul>
+      <p>
+        The new wording both should carry: <b>layout and typography components, plus
+        <code>ListItem</code>, whose union is exactly <code>'li' | 'div'</code></b>.
+        Polymorphism is still never reopened to arbitrary <code>ElementType</code>, and the
+        correlation tests in <code>api.types.test.tsx</code> and the packed-consumer fixture
+        extend to cover the new union.
+      </p>
+      <p>
+        The cost accepted with it: nothing stops <code>as="li"</code> outside a list, which
+        is invalid markup no type can catch. And a caller who takes the <code>div</code>
+        escape hatch owns <code>aria-setsize</code> and <code>aria-posinset</code> from
+        then on.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="selected-state" data-title="Where the selected icon sits" data-revised="2026-09-04">
+    <p class="decision-id">D3 &middot; selected-state &middot; <b>revised</b></p>
+    <h2>Where the selected icon sits</h2>
+    <p>
+      <b>Rejected in the first round.</b> The note:
+      &ldquo;Use the ghost button background, but do not use the accent color. Instead, I'd
+      like an additional &lsquo;selectedIcon&rsquo; prop (def=false), so I can set an icon
+      that only appears when a item is selected. When selectedIcon is true the space should
+      be preserved so list items line up.&rdquo;
+    </p>
+    <p>
+      Two of the three parts are now settled by the note and are not up for debate below:
+      the fill is <code>color.button.ghost.activeBg</code> with no colour change to the
+      label, and the prop is <code>selectedIcon?: IconName | false</code>, defaulting to
+      <code>false</code>. Using <code>activeBg</code> rather than <code>hoverBg</code> keeps
+      selected one step clear of a hovered neighbour; a hovered selected row stays at
+      <code>activeBg</code> rather than moving again.
+    </p>
+    <p>
+      <b>Jig has already solved the reserving half of this.</b> Combobox's tick does exactly
+      what the note asks for, and the comment in <code>combobox.css.ts</code> is worth
+      quoting because it also records <em>how</em>:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>combobox.css.ts &mdash; export const indicator</i>
+
+  <b>The tick, in a gutter at the leading edge that every row
+  reserves whether or not it is selected &mdash; so the labels form
+  one column instead of shifting by a tick's width as the
+  selection changes.</b>
+
+  <b>&hellip; `visibility` rather than `display` is what hides the
+  tick, because the box still has to take up its space.</b></pre>
+      </div>
+      <figcaption>
+        So the mechanism is settled too &mdash; <code>visibility: hidden</code> on a
+        fixed-width box, not <code>display: none</code>. What is genuinely open is where
+        that box goes, which Combobox answers for a popup list and not necessarily for a
+        nav row that now has an action button at its trailing edge (D1).
+      </figcaption>
+    </figure>
+    <p>
+      One wrinkle that applies to every option: the gutter is reserved per item, so a list
+      where only some items set <code>selectedIcon</code> will not line up. The stories and
+      prop docs say to set it consistently across a list; nothing in the type can enforce it.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="leading-gutter" data-label="Leading gutter, before start">
+        <div class="option-head">
+          <h3>Leading gutter, before <code>start</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; row 2 is current</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items">
+              <li class="row"><a href="#d3" class="rowlink"><span class="tick"><svg class="gl sm"><use href="#i-check"/></svg></span><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl">Getting started</span></a></li>
+              <li class="row is-sel"><a href="#d3" class="rowlink" aria-current="page"><span class="tick"><svg class="gl sm"><use href="#i-check"/></svg></span><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl">Components</span></a></li>
+              <li class="row"><a href="#d3" class="rowlink"><span class="tick"><svg class="gl sm"><use href="#i-check"/></svg></span><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl">Tokens</span></a></li>
+            </ul>
+          </div>
+          <p class="caption">Combobox's gutter, in front of the start slot &middot; labels hold one column</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The mechanism Jig already ships, in the position it already ships it &mdash; one convention for &ldquo;this is the chosen one&rdquo; across the popup list and the nav.</li>
+          <li class="pro">Never collides with the <code>end</code> slot, which D1 just made the only interactive one.</li>
+          <li class="pro">Reads down the leading edge like a bullet, which is where the eye goes when scanning a sidebar for where it is.</li>
+          <li class="con">Two leading columns &mdash; gutter then <code>start</code> &mdash; costs about 2.5em before the label begins, which is a lot in a narrow sidebar.</li>
+          <li class="con">The indent applies to every row, including rows in sections that have no selectable item.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="trailing-gutter" data-label="Trailing, inside the anchor">
+        <div class="option-head">
+          <h3>Trailing, inside the anchor</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; row 2 is current</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items">
+              <li class="row"><a href="#d3" class="rowlink"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl">Getting started</span><span class="tick tick-end"><svg class="gl sm"><use href="#i-check"/></svg></span></a></li>
+              <li class="row is-sel"><a href="#d3" class="rowlink" aria-current="page"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl">Components</span><span class="tick tick-end"><svg class="gl sm"><use href="#i-check"/></svg></span></a></li>
+              <li class="row"><a href="#d3" class="rowlink"><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl">Tokens</span><span class="tick tick-end"><svg class="gl sm"><use href="#i-check"/></svg></span></a></li>
+            </ul>
+          </div>
+          <p class="caption">inside the anchor, so a trailing action button still sits after it</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No extra leading indent &mdash; the label starts where it would have anyway, which matters most in a narrow sidebar.</li>
+          <li class="pro">Still inside the anchor, so it does not fight the <code>end</code> slot for the sibling position.</li>
+          <li class="con">Sits next to whatever the <code>end</code> slot holds, so a selected row with a count or a delete button ends in two glyphs and reads cluttered.</li>
+          <li class="con">Diverges from Combobox for no reason a reader could infer, leaving the system with a leading tick in one place and a trailing one in another.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="swap-start" data-label="Swaps the start slot">
+        <div class="option-head">
+          <h3>Swaps the <code>start</code> slot</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; row 2 is current</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <ul class="items">
+              <li class="row"><a href="#d3" class="rowlink"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl">Getting started</span></a></li>
+              <li class="row is-sel"><a href="#d3" class="rowlink" aria-current="page"><span class="slot"><svg class="gl"><use href="#i-check"/></svg></span><span class="lbl">Components</span></a></li>
+              <li class="row"><a href="#d3" class="rowlink"><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl">Tokens</span></a></li>
+            </ul>
+          </div>
+          <p class="caption">no gutter at all &mdash; the start icon becomes the selected icon</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Costs no width whatsoever, and the rows line up for free because nothing was added.</li>
+          <li class="pro">The swap is the strongest possible signal in the smallest space &mdash; the row visibly changes rather than gaining a mark.</li>
+          <li class="con">Contradicts the note, which asked for the space to be preserved. Listed because &ldquo;preserve the space&rdquo; and &ldquo;no extra width&rdquo; are the same wish in a narrow sidebar, and this is the other way to grant it.</li>
+          <li class="con">Loses the row's own icon exactly when the row matters most, so the selected item is the one you can no longer identify by its glyph.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-04</span>
+      <b>Leading gutter, in front of the <code>start</code> slot.</b> The whole of the
+      selected state, assembled from this round's note and this option:
+      <ul>
+        <li>
+          Fill is <code>color.button.ghost.activeBg</code>, one step past the hover fill so
+          selected and hovered stay distinguishable. The label keeps
+          <code>color.text.primary</code> &mdash; no accent colour.
+        </li>
+        <li>
+          <code>selectedIcon?: IconName | false</code>, defaulting to <code>false</code>.
+          When set, a fixed-width box sits at the leading edge of every row in the list and
+          the glyph inside it is revealed only on the selected one.
+        </li>
+        <li>
+          Reserved with <code>visibility: hidden</code>, never <code>display: none</code>
+          &mdash; the box has to keep its space or the labels shift by a tick's width as the
+          selection moves. Combobox's <code>indicator</code> already does exactly this, and
+          <code>collapsible</code>-style drift is avoided by copying its mechanism rather
+          than inventing a second one.
+        </li>
+        <li><code>aria-current="page"</code> carries the state; the fill and the tick are decoration.</li>
+      </ul>
+      <p>
+        Two costs go in with it. The gutter plus the <code>start</code> slot puts roughly
+        2.5em in front of the label, which is a real bite out of a narrow sidebar. And the
+        gutter is reserved per item, so a list where only some rows set
+        <code>selectedIcon</code> will not line up &mdash; the stories and prop docs say to
+        set it consistently across a list, because nothing in the type can enforce it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="section-disclosure" data-title="What a collapsing section header is">
+    <p class="decision-id">D4 &middot; section-disclosure</p>
+    <h2>What a collapsing section header is</h2>
+    <p>
+      <code>SideNavSection</code> takes an optional label and can collapse. Jig shipped a
+      Collapsible yesterday, so the reuse question is immediate &mdash; and so is the
+      friction, because 0013 D3 chose <b>plus/minus</b> as the disclosure glyph over a
+      rotating caret. In a sidebar section header a caret is the convention and a plus
+      reads as &ldquo;add an item&rdquo;.
+    </p>
+    <p>
+      Collapsible's trigger is also heavier than a section label wants: full width,
+      <code>body01</code> by default, <code>spacing.400</code> of vertical padding, glyph
+      at the trailing edge. The specimens put the two side by side at real values.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="reuse-collapsible" data-label="Reuse Collapsible as-is">
+        <div class="option-head">
+          <h3>Reuse Collapsible as-is</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <details open>
+              <summary class="collapsible-trigger">Components<svg class="gl"><use href="#i-minus"/></svg></summary>
+              <ul class="items">
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d4">Button</a></span></li>
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d4">Combobox</a></span></li>
+              </ul>
+            </details>
+          </div>
+          <p class="caption">Collapsible's real geometry &middot; <code>with="body01"</code>, plus/minus at the trailing edge</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One disclosure implementation in the system. The measured-height animation, the reduced-motion guard, <code>hiddenUntilFound</code> and the controlled/uncontrolled pair all come free.</li>
+          <li class="pro"><code>with</code> already lets the section label be <code>caption01</code>, so the type is not the problem &mdash; only the glyph is.</li>
+          <li class="pro">Keeps 0013's decisions intact rather than reopening a document that is a day old.</li>
+          <li class="con">The plus/minus glyph is wrong for this context and cannot be changed &mdash; <code>indicator</code> is a boolean, so the only escape is turning it off entirely.</li>
+          <li class="con">Collapsible's trigger has no horizontal padding by design (0013 D1), which is right for prose and leaves a section header misaligned with the padded rows below it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="reopen-0013" data-label="Reuse it, and reopen 0013 D3">
+        <div class="option-head">
+          <h3>Reuse it, and reopen 0013 D3</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <details open>
+              <summary class="collapsible-trigger">Components<svg class="gl rot"><use href="#i-caret-down"/></svg></summary>
+              <ul class="items">
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d4">Button</a></span></li>
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d4">Combobox</a></span></li>
+              </ul>
+            </details>
+          </div>
+          <p class="caption">same component, <code>indicator="caret"</code> &mdash; the glyph 0013 D3 declined</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Gives the sidebar the conventional glyph without a second disclosure implementation.</li>
+          <li class="pro">Turns <code>indicator</code> from a boolean into a small union, which is a strictly additive change &mdash; nothing already written breaks.</li>
+          <li class="pro">0013 D3's outcome recorded the plus/minus cost openly (&ldquo;no motion&rdquo;, and <code>plus</code> now carrying two meanings); a caret variant answers both for the case where they bite.</li>
+          <li class="con"><b>Contradicts a Decided document.</b> 0013 D3 chose plus/minus deliberately and against this document's own recommendation, one day ago. Reversing that here needs to be a decision, not a side effect.</li>
+          <li class="con">Two glyph conventions in one system unless a rule says which goes where, and this document would have to write that rule.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="own-disclosure" data-label="Its own lighter header">
+        <div class="option-head">
+          <h3>Its own lighter header</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="sidebar">
+            <details open>
+              <summary class="sec-trigger"><svg class="gl sm rot"><use href="#i-caret-right"/></svg>COMPONENTS</summary>
+              <ul class="items">
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d4">Button</a></span></li>
+                <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d4">Combobox</a></span></li>
+              </ul>
+            </details>
+          </div>
+          <p class="caption"><code>caption01</code>, muted, leading caret, padding matching the rows</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Looks right for a sidebar: quiet, small, aligned with the rows, and the caret leads rather than trails.</li>
+          <li class="pro">Leaves 0013 completely alone.</li>
+          <li class="con">A second disclosure implementation &mdash; the exact drift 0013 exists to prevent. Two <code>aria-expanded</code> pairs, two height animations, two reduced-motion guards.</li>
+          <li class="con">Everything Collapsible learned (the measured height, <code>hiddenUntilFound</code>, the <code>aria-disabled</code> trap in its As built) would have to be learned again here.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-04</span>
+      <b>Reuse Collapsible as-is.</b> <code>SideNavSection</code> renders a Collapsible when
+      it collapses, inheriting the measured-height animation, the reduced-motion guard,
+      <code>hiddenUntilFound</code> and the controlled pair. 0013 stays untouched, and with
+      it the plus/minus glyph &mdash; taken knowingly, with the caret option on the table and
+      declined. The section label rides Collapsible's <code>with</code> prop, so
+      <code>caption01</code> is one word away.
+      <p>
+        The cost this accepts, from the option's own tradeoffs: Collapsible's trigger has no
+        horizontal padding by design (0013 D1), so a section header will not align with the
+        padded rows beneath it without the section supplying that padding itself. That is a
+        layout detail for the build, not a reopening.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D5 ============================= -->
+  <section class="decision" data-decision="item-density" data-title="Whether ListItem takes a size ramp">
+    <p class="decision-id">D5 &middot; item-density</p>
+    <h2>Whether ListItem takes a size ramp</h2>
+    <p>
+      The checklist asks it directly: does this share a control height with other
+      interactive controls? A sidebar row does not sit inline with a Button, so it may opt
+      out &mdash; but <code>ListItem</code> is meant to be generic, and a settings row
+      beside an <code>Input</code> is a real future case.
+    </p>
+    <p>
+      The constraint that decides it: a row's height has to be able to grow with its
+      content. An avatar or an image in the <code>start</code> slot is taller than a line
+      of text, and a fixed height either clips it or has to be retuned per slot.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="padding-ramp" data-label="sm/md/lg on padding">
+        <div class="option-head">
+          <h3><code>sm | md | lg</code> on padding</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the ramp, with an avatar in the last row</p>
+        <div class="specimen block jig">
+          <div class="sidebar wide">
+            <ul class="items">
+              <li class="row stretch sz-sm"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d5">sm &mdash; spacing.300/400</a></span></li>
+              <li class="row stretch sz-md"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d5">md &mdash; spacing.400/500</a></span></li>
+              <li class="row stretch sz-lg"><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl"><a href="#d5">lg &mdash; scale.400</a></span></li>
+              <li class="row stretch sz-md"><span class="avatar">NB</span><span class="lbl"><a href="#d5">md, with an avatar</a></span></li>
+            </ul>
+          </div>
+          <p class="caption">height falls out of the content, exactly as Button's does</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Button's own approach &mdash; it &ldquo;derives its size from padding alone&rdquo; (0002 D1's note), so a row and a button at the same size stay in step without a shared height token.</li>
+          <li class="pro">The last row shows why it matters: an avatar simply makes the row taller instead of overflowing.</li>
+          <li class="pro">Uses the <code>sm | md | lg</code> names the checklist requires of any size prop.</li>
+          <li class="con">Three paddings to maintain, and md and lg share a vertical step &mdash; the same irregularity Button's ramp already carries, inherited rather than fixed.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="one-density" data-label="One density, no size prop">
+        <div class="option-head">
+          <h3>One density, no <code>size</code> prop</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; one row height, whatever is in it</p>
+        <div class="specimen block jig">
+          <div class="sidebar wide">
+            <ul class="items">
+              <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d5">Getting started</a></span></li>
+              <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d5">Components</a></span><span class="count">12</span></li>
+              <li class="row stretch"><span class="avatar">NB</span><span class="lbl"><a href="#d5">With an avatar</a></span></li>
+            </ul>
+          </div>
+          <p class="caption">one padding pair &middot; <code>spacing.300 spacing.400</code></p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Ships the smallest thing that answers the brief, which asked to keep it simple.</li>
+          <li class="pro">No prop to get wrong, and a sidebar genuinely does want one row height throughout.</li>
+          <li class="pro">Adding the ramp later is additive &mdash; a defaulted prop breaks nothing.</li>
+          <li class="con">The first non-nav consumer will want a denser or looser row and will reach for <code>className</code>, which is how a component starts being overridden instead of configured.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="control-heights" data-label="Fixed size.control heights">
+        <div class="option-head">
+          <h3>Fixed <code>size.control</code> heights</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; note the last row</p>
+        <div class="specimen block jig">
+          <div class="sidebar wide">
+            <ul class="items">
+              <li class="row stretch fx-sm"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#d5">sm &mdash; 1.69rem</a></span></li>
+              <li class="row stretch fx-md"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#d5">md &mdash; 2.41rem</a></span></li>
+              <li class="row stretch fx-lg"><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl"><a href="#d5">lg &mdash; 2.65rem</a></span></li>
+              <li class="row stretch fx-md"><span class="avatar">NB</span><span class="lbl"><a href="#d5">md, with an avatar</a></span></li>
+            </ul>
+          </div>
+          <p class="caption">rows line up with Input and Token &mdash; until the content is taller</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A row lines up pixel-for-pixel with an <code>Input</code>, a <code>Token</code> or a <code>Button</code> beside it, which is exactly what <code>size.control</code> was tokenised for in 0002 D1.</li>
+          <li class="pro">Uniform rows down a long list, with no dependence on what each one contains.</li>
+          <li class="con">The avatar row is the argument against it: fixed height means taller content is cramped or clipped, and a list item's whole job is holding content of varying height.</li>
+          <li class="con">Couples the row to a ramp whose note says it moves only when Button's padding ramp moves &mdash; retuning one would now drag the nav with it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-04</span>
+      <b><code>sm | md | lg</code> on padding.</b> Row height falls out of the content the
+      way Button's does, so an avatar or an image in the <code>start</code> slot makes the
+      row taller instead of overflowing a fixed box. The names are the ones the checklist
+      requires of any size prop, and md and lg share a vertical step &mdash; Button's
+      existing irregularity, inherited deliberately rather than quietly corrected here.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>What it looks like assembled</h2>
+    <p>
+      The three components at the recommended options, so the decisions above can be read
+      against the thing they add up to. Header, a scrolling middle, and a footer; one
+      section collapsed, one open; one row current.
+    </p>
+
+    <figure>
+      <div class="scroller jig">
+        <div class="sidebar onbody" style="max-width: 17rem;">
+          <div class="row" style="padding-inline: var(--j-sp-400);">
+            <span class="slot"><svg class="gl"><use href="#i-search"/></svg></span>
+            <span class="lbl" style="color: var(--j-muted); font-size: var(--j-ts-200);">Search the docs</span>
+          </div>
+          <hr class="divider">
+          <details open>
+            <summary class="collapsible-trigger" style="font-size: var(--j-ts-100); color: var(--j-muted); padding-block: var(--j-sp-300);">Getting started<svg class="gl sm"><use href="#i-minus"/></svg></summary>
+            <ul class="items">
+              <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-star"/></svg></span><span class="lbl"><a href="#assembled">Installation</a></span></li>
+              <li class="row stretch sel-reuse"><span class="slot"><svg class="gl"><use href="#i-gear"/></svg></span><span class="lbl"><a href="#assembled" aria-current="page">Theming</a></span></li>
+            </ul>
+          </details>
+          <details>
+            <summary class="collapsible-trigger" style="font-size: var(--j-ts-100); color: var(--j-muted); padding-block: var(--j-sp-300);">Components<svg class="gl sm"><use href="#i-plus"/></svg></summary>
+            <ul class="items">
+              <li class="row stretch"><span class="slot"><svg class="gl"><use href="#i-bell"/></svg></span><span class="lbl"><a href="#assembled">Button</a></span></li>
+            </ul>
+          </details>
+          <hr class="divider">
+          <ul class="items">
+            <li class="row stretch">
+              <span class="avatar">NB</span>
+              <span class="lbl"><a href="#assembled">Nate Bridi</a></span>
+              <button type="button" class="iconbtn above" aria-label="Account settings"><svg class="gl sm"><use href="#i-gear"/></svg></button>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <figcaption>
+        Live &mdash; open the sections and hover the rows. <b>Drawn in the first round</b>,
+        before D1 and D3 came back, so the rows here still use the stretched-link shape D1
+        declined and the accent-coloured selected row D3 rejected. Left as drawn rather
+        than redrawn, because the first thing the build produces is the real thing &mdash;
+        see D1's and D3's outcomes above for the shapes that were actually chosen. The plus
+        and minus on the section headers are D4 as decided.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>As built</h2>
+    <p>
+      Built 2026-09-04 to the five accepted options. <code>pnpm turbo typecheck test</code>
+      passes: 12 tasks, 199 tests, 27 of them new.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/components/src/listitem/</code> &mdash; new; <code>.tsx</code>, <code>.css.ts</code>, 11 stories, 12 tests, <code>index.ts</code></li>
+      <li><code>packages/components/src/sidenavsection/</code> &mdash; new; 4 stories, 7 tests</li>
+      <li><code>packages/components/src/sidenav/</code> &mdash; new; 3 stories, 5 tests</li>
+      <li><code>packages/components/src/index.ts</code> &mdash; exports all three plus their prop types</li>
+      <li><code>packages/components/src/refs.test.tsx</code> &mdash; four cases, including the ref following <code>as</code></li>
+      <li><code>packages/components/src/api.types.test.tsx</code> &mdash; three blocks pinning the <code>as</code> union, the slots and the size ramp</li>
+      <li><code>.claude/skills/propose/checklist.md</code> &mdash; the <code>as</code> rule rewritten, as D2's outcome required</li>
+    </ul>
+
+    <h3>Two collisions with components Jig already had</h3>
+    <p>
+      Both were invisible to the tests and only appeared with the nav on a real page, at a
+      real width.
+    </p>
+    <ul class="notes">
+      <li>
+        <b>ScrollArea's wrapper fights a truncating label.</b> Base UI's ScrollArea puts a
+        <code>min-width: fit-content</code> wrapper inside the viewport &mdash; which is
+        exactly what makes horizontal scrolling work when content really is wider. A nav
+        row wants the opposite: its label is <code>white-space: nowrap</code> so that it
+        can ellipsise, and against a fit-content ancestor the nowrap wins. The list grew
+        to its longest label, so nothing truncated, the trailing <code>end</code> slot was
+        pushed out of sight, and the section disclosure indicators went with it &mdash;
+        three symptoms, one cause. Worse, that <code>min-width</code> is an <em>inline</em>
+        style, so no class selector can outrank it; the fix needs
+        <code>!important</code>, scoped to SideNav. Confirmed by reading the rendered
+        attribute rather than inferred.
+      </li>
+      <li>
+        <b>Jig refs are not spreadable between Jig components.</b> Every component declares
+        <code>ref?: Ref&lt;X&gt;</code>, not <code>ref?: Ref&lt;X&gt; | undefined</code>.
+        That is fine while the target is an intrinsic element, and
+        <code>SideNavSection</code> is the first component in the system to wrap
+        <em>another Jig component</em> &mdash; at which point
+        <code>exactOptionalPropertyTypes</code> refuses the pass-through:
+        <code>Type 'Ref&lt;HTMLDivElement&gt; | undefined' is not assignable to type
+        'Ref&lt;HTMLDivElement&gt;'</code>. Worked around with a conditional spread rather
+        than changing the repo-wide convention for one caller.
+      </li>
+    </ul>
+
+    <h3>What the proposal got wrong</h3>
+    <p>
+      Nothing structural &mdash; but the same gap 0013 had, and in a way that is worth
+      recording because it points the opposite direction. <b>No decision said what a
+      disabled row looks like</b>, and the first build shipped one that rendered at full
+      contrast with a pointer cursor. The trap is the mirror image of Collapsible's:
+      there, Base UI keeps the trigger focusable and marks it <code>aria-disabled</code>,
+      so <code>:disabled</code> matched nothing; here the row's control is a plain
+      <code>&lt;button disabled&gt;</code>, so the native pseudo-class is right and the
+      <em>attribute</em> selector would have been wrong. Two components, two opposite
+      hooks, and no way to tell which without looking.
+    </p>
+
+    <h3>What it got right</h3>
+    <ul class="notes">
+      <li>
+        <b>D1 verified by tab order.</b> Walking the rendered nav gives
+        <code>link:Combobox</code> then <code>btn:Remove Combobox</code> &mdash; the link
+        and its sibling action, both reachable, in that order. That is the whole decision,
+        and it holds.
+      </li>
+      <li>
+        <b>D3's mechanism transplanted cleanly.</b> Copying Combobox's tick gutter rather
+        than inventing a second one meant the reserving behaviour worked first time:
+        every row holds the gutter, <code>visibility</code> hides the glyph, labels keep
+        one column.
+      </li>
+      <li>
+        <b>D2 cost nothing.</b> The two-member <code>as</code> union went through
+        <code>PolymorphicProps</code> with no friction, and the ref correlates to the
+        element without a cast at the call site.
+      </li>
+      <li>
+        <b>D4's predicted cost was the real one.</b> Its outcome warned that Collapsible's
+        trigger has no horizontal padding and would leave a section header misaligned with
+        its rows. It did. Collapsible exposes no hook for its trigger, so
+        <code>SideNavSection</code> reaches in with a descendant rule on the trigger
+        recipe's base class &mdash; the route <code>button.css.ts</code> already takes to
+        position an Icon inside a Button.
+      </li>
+    </ul>
+
+    <h3>Questions for a future proposal</h3>
+    <ul class="notes">
+      <li>
+        <b>A one-axis ScrollArea.</b> The <code>!important</code> above is a scoped patch
+        on another component's internals, which is not where it belongs. A
+        <code>ScrollArea</code> that can be told it only scrolls vertically would fix it
+        properly &mdash; and every future consumer that truncates text will want the same.
+      </li>
+      <li>
+        <b><code>ref?: Ref&lt;X&gt; | undefined</code> repo-wide.</b> One component wrapping
+        another will keep happening now that the system is large enough for it. The
+        conditional-spread workaround is fine once and noise by the fourth time.
+      </li>
+      <li>
+        <b>Avatar.</b> Named in the brief, drawn with a stand-in in every specimen and
+        story here. Base UI ships <code>Root / Image / Fallback</code>, and the
+        <code>start</code> slot is now a real consumer waiting for it.
+      </li>
+      <li>
+        <b>A disabled-state convention.</b> Two components now express disabled two
+        different ways for good reasons on both sides. A line in the checklist saying how
+        to tell which applies would have saved the bug in this build and the one in 0013.
+      </li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0014
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0014-sidebar-navigation",
+  "status": "built",
+  "decided": "2026-09-04",
+  "built": "2026-09-04",
+  "decisions": [
+    {
+      "id": "row-interactivity",
+      "options": ["stretched-link", "row-is-link", "siblings"],
+      "outcome": "siblings",
+      "note": "If the item is a link and has an action, I think it is safe to have the two elements as siblings, but with the anchor encompassing everything that isn't the button. Let's get rid of the checkbox as a \"start\" element to make that easier. That way nothing interactive can be in the \"start\", and it can be included with the <a> tag."
+    },
+    {
+      "id": "list-semantics",
+      "revised": "2026-09-04",
+      "options": ["as-li-div", "as-pair", "context-element"],
+      "outcome": "as-li-div",
+      "note": "REJECTED round 1. I don't want to get into full polymorphism, but could we allow \"as\" with a tightly scoped list of possible elements? Thinking <li> by default, with <div> as an option. I imagine there will be other aria attributes to consider when building a navigation list."
+    },
+    {
+      "id": "selected-state",
+      "revised": "2026-09-04",
+      "options": ["leading-gutter", "trailing-gutter", "swap-start"],
+      "outcome": "leading-gutter",
+      "note": "REJECTED round 1. Use the ghost button background, but do not use the accent color. Instead, I'd like an additional \"selectedIcon\" prop (def=false), so I can set an icon that only appears when a item is selected. When selectedIcon is true the space should be preserved so list items line up."
+    },
+    {
+      "id": "section-disclosure",
+      "options": ["reuse-collapsible", "reopen-0013", "own-disclosure"],
+      "outcome": "reuse-collapsible",
+      "note": null
+    },
+    {
+      "id": "item-density",
+      "options": ["padding-ramp", "one-density", "control-heights"],
+      "outcome": "padding-ramp",
+      "note": null
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

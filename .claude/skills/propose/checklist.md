@@ -46,8 +46,12 @@ Only the lines with a genuine fork become decisions.
 
 ## API surface
 
-- Polymorphic `as`: layout and typography components only, via the shared
-  `PolymorphicProps` utility in `polymorphic.ts`. Everything else takes a fixed element.
+- Polymorphic `as`: layout and typography components, **plus `ListItem`** (whose union
+  is exactly `'li' | 'div'`), via the shared `PolymorphicProps` utility in
+  `polymorphic.ts`. Everything else takes a fixed element. Widened from
+  "layout and typography only" by `0014-sidebar-navigation.html` (D2), which asked for a
+  tightly scoped union rather than open polymorphism; that framing is the bar a further
+  widening has to clear.
 - Spacing props: `Stack`, `Grid` and `Typography` only, via the margin/padding Sprinkles
   with hand-declared prop types. Other components get spacing from their parent, and box
   dimensions go through `style`, not props.

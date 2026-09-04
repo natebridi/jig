@@ -1,0 +1,1600 @@
+<title>0015 &middot; Smoke as glass</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Every specimen below is a real
+     button over a real patterned backdrop, wearing the real smoke fills, with
+     the real filter applied &mdash; so what is rendered is what would ship.
+     These only show the effect in a Chromium browser; see D2. */
+
+  .jig {
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-ts-300: 0.97rem;
+    --j-rad: 4.3px;
+
+    /* color.button.smoke.*, light theme */
+    --j-smoke-base:   oklch(12% 0 0 / 0.1);
+    --j-smoke-hover:  oklch(12% 0 0 / 0.16);
+    --j-smoke-text:   oklch(31.3% 0.012 83);   /* warm.600 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-smoke-base:  oklch(100% 0 0 / 0.14);
+      --j-smoke-hover: oklch(100% 0 0 / 0.2);
+      --j-smoke-text:  oklch(92.3% 0 0);       /* gray.100 */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-smoke-base:  oklch(100% 0 0 / 0.14);
+    --j-smoke-hover: oklch(100% 0 0 / 0.2);
+    --j-smoke-text:  oklch(92.3% 0 0);
+  }
+
+  /* The thing a smoke button is for: imagery it has to stay legible over. */
+  .jig .plate {
+    position: relative;
+    width: 100%;
+    min-height: 120px;
+    flex-wrap: wrap;
+    border-radius: var(--j-rad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--j-sp-400);
+    padding: var(--j-sp-500);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 22% 30%, #f2b705 0 12%, transparent 40%),
+      radial-gradient(circle at 74% 66%, #d81e5b 0 14%, transparent 44%),
+      radial-gradient(circle at 52% 18%, #0b6e7a 0 10%, transparent 38%),
+      repeating-linear-gradient(48deg, #16324f 0 14px, #1f4b6e 14px 28px);
+  }
+
+  .jig .plate.fine {
+    background:
+      repeating-linear-gradient(90deg, #fff 0 3px, #16324f 3px 6px),
+      #16324f;
+  }
+
+  /* The button, at Button's real md geometry. */
+  .jig .smoke {
+    position: relative;
+    isolation: isolate;
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    /* The template styles every bare `button` for its own accept/reject
+       controls -- mono, uppercase, letter-spaced. A specimen has to opt out of
+       all of it or it stops being a specimen of Jig's button. */
+    font-family: var(--sans);
+    font-size: var(--j-ts-300);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    line-height: 1;
+    padding: var(--j-sp-400) var(--j-sp-500);
+    border-radius: var(--j-rad);
+    background: var(--j-smoke-base);
+    color: #fff;
+  }
+  .jig .smoke:hover { background: var(--j-smoke-hover); }
+
+  /* today */
+  .jig .now { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+
+  /* the single-declaration form &mdash; the glass replaces the blur outright */
+  .jig .single { backdrop-filter: url(#lg-supplied); }
+
+  /* the layered form: blur on the element, glass on a pseudo-element, so an
+     unsupported or unresolvable url() can only lose the pseudo's effect */
+  .jig .layered { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .jig .layered::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .jig .layered.supplied::before { backdrop-filter: url(#lg-supplied); }
+  .jig .layered.soft::before     { backdrop-filter: url(#lg-soft); }
+  .jig .layered.subtle::before   { backdrop-filter: url(#lg-subtle); }
+  /* deliberately unresolvable, to show what a 404 or an unsupporting engine does */
+  .jig .layered.dangling::before { backdrop-filter: url(#lg-nope); }
+  .jig .single.dangling          { backdrop-filter: url(#lg-nope); }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+  .jig .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .jig .stack { display: flex; flex-direction: column; gap: var(--j-sp-500); width: 100%; }
+
+  figure + h3 { margin-top: 2.25rem; }
+
+  /* A note callout for the one thing this document could not measure. */
+  .unmeasured {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--gate-wash);
+    border: 1px solid var(--gate);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .unmeasured .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gate);
+    margin-bottom: 0.3rem;
+  }
+  .unmeasured b { color: var(--ink); font-weight: 620; }
+  .unmeasured p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+</style>
+
+<div class="wrap">
+
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <filter id="lg-supplied">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="softNoise" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blurred" />
+      <feDisplacementMap in="blurred" in2="softNoise" scale="20" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+      <feSpecularLighting in="softNoise" surfaceScale="5" specularConstant="0.25" specularExponent="60" lighting-color="#ffffff" result="light">
+        <fePointLight x="-5000" y="-10000" z="20000" />
+      </feSpecularLighting>
+      <feComposite in="light" in2="refracted" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+    </filter>
+    <filter id="lg-soft">
+      <feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="2" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="softNoise" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blurred" />
+      <feDisplacementMap in="blurred" in2="softNoise" scale="8" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+      <feSpecularLighting in="softNoise" surfaceScale="3" specularConstant="0.25" specularExponent="60" lighting-color="#ffffff" result="light">
+        <fePointLight x="-5000" y="-10000" z="20000" />
+      </feSpecularLighting>
+      <feComposite in="light" in2="refracted" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+    </filter>
+    <filter id="lg-subtle">
+      <feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="1" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.5 0" in="noise" result="softNoise" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blurred" />
+      <feDisplacementMap in="blurred" in2="softNoise" scale="4" xChannelSelector="R" yChannelSelector="G" result="refracted" />
+      <feSpecularLighting in="softNoise" surfaceScale="2" specularConstant="0.2" specularExponent="60" lighting-color="#ffffff" result="light">
+        <fePointLight x="-5000" y="-10000" z="20000" />
+      </feSpecularLighting>
+      <feComposite in="light" in2="refracted" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" />
+    </filter>
+  </svg>
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0015</p>
+    <h1>Smoke as glass</h1>
+    <p class="standfirst">
+      Swapping the smoke button's <code>blur(4px)</code> for a refracting SVG filter. The
+      brief asked how to get that filter onto the page once, and only when it is needed.
+      Measurement turned up a better answer than any of the ways of doing it in
+      JavaScript &mdash; and a nastier problem than the one that was asked about.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-proposed" id="doc-status">Proposed</span></li>
+      <li>2026-09-04</li>
+      <li>4 decisions</li>
+    </ul>
+
+    <div class="unmeasured" style="margin-top:1.75rem">
+      <span class="tag">Parked &middot; 2026-09-04</span>
+      <b>Not being worked on. Left open rather than decided.</b>
+      <p>
+        Parked the day it was written, on the grounds recorded in the Context section:
+        the effect is Chromium-only, cannot be feature-detected, and an unresolvable
+        reference silently removes the blur rather than falling back. The measurements
+        here stay valid and the decisions stay open &mdash; if this is picked up again,
+        start with the performance harness, which is the one thing this document could
+        not answer.
+      </p>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      <code>smoke</code> is Button's variant for controls over imagery or video. Today it
+      is a translucent veil plus <code>backdrop-filter: blur(4px)</code>, in
+      <code>button.css.ts</code>. Its fills are the one colour set in Jig built from
+      literal <code>oklch</code> with an alpha channel rather than palette aliases &mdash;
+      <code>smokeButtonSet</code> in <code>packages/tokens/src/utils.ts</code> &mdash;
+      because an alias cannot carry alpha. None of that changes here; this is about the
+      filter alone.
+    </p>
+    <p>
+      Everything below was measured in Chrome against the supplied filter rather than
+      recalled. Where something could not be measured, it says so.
+    </p>
+
+    <h3>The filter works &mdash; and only in Chromium</h3>
+    <p>
+      <code>backdrop-filter: url(#lg)</code> renders the supplied filter correctly in
+      Chrome. It is <b>not</b> supported in Firefox or Safari: both implement
+      <code>backdrop-filter</code> but ignore SVG filter references. That is not folklore
+      &mdash; it is an open entry against MDN's own compatibility data
+      (<code>mdn/browser-compat-data</code> issue 24110, &ldquo;SVG filters not supported
+      in Firefox or Safari&rdquo;) and a standing request on Mozilla Connect. MDN's
+      compat table for <code>backdrop-filter</code> has no sub-feature for
+      <code>url()</code>, so the property reads as broadly supported while this particular
+      value is not.
+    </p>
+    <p>
+      <b>And it cannot be feature-detected.</b>
+      <code>CSS.supports('backdrop-filter','url(#lg)')</code> returns <code>true</code> in
+      Chrome because the value <em>parses</em>; a browser that parses it and renders
+      nothing answers the same way. So <code>@supports</code> is not a route to a
+      fallback. D2 is what to do about that.
+    </p>
+
+    <h3>The measurement that decides D1</h3>
+    <p>
+      The brief's question &mdash; embed the SVG once, and not at all when no smoke button
+      is on the page &mdash; assumes the filter has to be an element in the document. It
+      does not. A filter can be referenced from a stylesheet by URL, and the browser
+      handles both halves of the requirement on its own. Three reference forms, tested:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>backdrop-filter: url(#lg)</i>                     inline &lt;svg&gt; in the document   <span class="in">renders</span>
+<i>backdrop-filter: url(lg.svg#lg)</i>               external file                   <span class="in">renders</span>
+<i>backdrop-filter: url("data:image/svg+xml,&hellip;#lg")</i>  data URI                       <span class="no">parses, renders nothing</span></pre>
+      </div>
+      <figcaption>
+        The data URI is out, which rules out inlining the filter into the stylesheet as a
+        string. The external file is the interesting one.
+      </figcaption>
+    </figure>
+
+    <p>
+      With the rule <code>.smoke { backdrop-filter: url(lg.svg#lg) }</code> present in the
+      stylesheet from first paint, counted at the server rather than in the page &mdash;
+      the Resource Timing API does not report SVG filter fetches at all, which is why the
+      first attempt at this measurement read zero in both cases and was thrown away:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>rule in the stylesheet, no .smoke element rendered</i>
+  GET /lazy.html          <b>1</b>
+  GET /lg.svg             <b class="no">0</b>   <i>&larr; never requested</i>
+
+<i>one .smoke element added to the page</i>
+  GET /lazy.html          <b>1</b>
+  GET /lg.svg             <b class="in">1</b>   <i>&larr; fetched once, then cached</i></pre>
+      </div>
+      <figcaption>
+        Both halves of the brief, for free and with no JavaScript: nothing is fetched when
+        no smoke button exists, and one fetch serves every smoke button on the page
+        thereafter. A singleton, a ref count and a mount effect all become unnecessary.
+      </figcaption>
+    </figure>
+
+    <h3>The problem nobody asked about</h3>
+    <p>
+      A <code>backdrop-filter</code> whose <code>url()</code> cannot be resolved does not
+      fall back &mdash; it wins the cascade and renders <em>nothing</em>. Measured with a
+      missing id and with a missing file, both after a perfectly good
+      <code>blur(6px)</code> on the line above:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree">.a { backdrop-filter: blur(6px) }                              <span class="in">blurred</span>
+.b { backdrop-filter: blur(6px); backdrop-filter: url(#gone) }  <span class="no">not blurred at all</span>
+.c { backdrop-filter: blur(6px); backdrop-filter: url(no.svg#lg) } <span class="no">not blurred at all</span></pre>
+      </div>
+      <figcaption>
+        So the obvious cascade fallback does not work, and this is bigger than the Safari
+        question: if the external SVG ever 404s, is blocked cross-origin, or the user is
+        offline before it is cached, <em>every smoke button on the page silently loses its
+        blur</em> and becomes a flat translucent panel over a photograph. D2 exists to
+        make that impossible.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li>
+        The fills do not change. <code>color.button.smoke.*</code> stays as it is,
+        literal <code>oklch</code> with alpha, for the reason recorded in
+        <code>utils.ts</code>: an alias cannot carry an alpha channel.
+      </li>
+      <li>
+        The filter is the component's, not the caller's. No prop exposes it, tunes it, or
+        turns it off &mdash; the same rule that keeps icon sizing inside Button.
+      </li>
+      <li>
+        Whatever ships is guarded by <code>prefers-reduced-motion</code>? <b>No</b> &mdash;
+        and deliberately. The filter does not animate; it is a static distortion. The
+        guard belongs on transitions, and there is none here.
+      </li>
+      <li>
+        No new dependency. This is CSS and an SVG asset; nothing is installed, and
+        <code>@base-ui/react</code> is untouched.
+      </li>
+      <li>
+        No new tokens. A filter is not a colour, a space or a type step, and Jig has no
+        category for it &mdash; it lives in <code>button.css.ts</code> beside the variant
+        it belongs to.
+      </li>
+      <li>
+        Theming stays <code>:root</code>-scoped, and the light and dark smoke fills
+        already differ; the filter itself is achromatic and needs no theme variant.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Every specimen below is a real button over a real backdrop with the real filter
+      applied &mdash; so <b>this page only demonstrates the effect in a Chromium
+      browser</b>. In Firefox or Safari the glass specimens will show a plain veil, which
+      is itself the thing D2 is about.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="filter-delivery" data-title="How the filter reaches the page">
+    <p class="decision-id">D1 &middot; filter-delivery</p>
+    <h2>How the filter reaches the page</h2>
+    <p>
+      The brief's actual question. The measurement above changes what the options are:
+      the browser will already embed it once and only on demand, if the filter is a file
+      rather than an element.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="external-asset" data-label="An SVG asset the CSS points at">
+        <div class="option-head">
+          <h3>An SVG asset the CSS points at</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; what ships, and what the consumer does</p>
+        <div class="specimen block">
+<pre class="tree"><i>packages/components/dist/</i>
+  styles.css
+  <b>smoke-filter.svg</b>
+
+<i>button.css.ts</i>
+  backdropFilter:
+    <b>'url(./smoke-filter.svg#lg)'</b>
+
+<i>the consumer</i>
+  import '@jig-ui/react/styles.css'
+  <i>// nothing else: no provider,
+  // no element, no mount effect</i>
+
+<i>measured</i>
+  no smoke button
+    &rarr; <b class="no">0</b> requests
+  one, or many
+    &rarr; <b class="in">1</b> request, cached</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Answers both halves of the brief without a line of JavaScript, and without Jig growing its first singleton, ref count or DOM injection.</li>
+          <li class="pro">SSR-safe by construction: there is nothing to render, so nothing to get wrong on the server or hydrate on the client.</li>
+          <li class="pro">Nothing for a consumer to forget. The failure mode of the other two options is a smoke button that silently has no effect.</li>
+          <li class="con">A second file has to ship and resolve. <code>files</code> in <code>package.json</code> already covers <code>dist</code>, but the relative URL resolves against the stylesheet, so a consumer who inlines or relocates the CSS without the asset breaks it.</li>
+          <li class="con">Cross-origin rules apply. A stylesheet on a CDN referencing the SVG beside it is fine; a stylesheet copied to another origin without the asset is not &mdash; and that failure is silent, which is exactly what D2 has to cover.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="filter-component" data-label="A component the app renders once">
+        <div class="option-head">
+          <h3>A component the app renders once</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; what the consumer writes</p>
+        <div class="specimen block">
+<pre class="tree"><i>app root, once</i>
+  &lt;<b>SmokeFilter</b> /&gt;
+  &lt;App /&gt;
+
+<i>renders</i>
+  &lt;svg width="0" height="0"&gt;
+    &lt;filter id="jig-smoke"&gt;&hellip;&lt;/filter&gt;
+  &lt;/svg&gt;
+
+<span class="no">forget it, and every smoke button
+loses its effect with no error</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No asset resolution, no relative URLs, no cross-origin question. The filter is in the document by construction.</li>
+          <li class="pro">Explicit &mdash; a reader of the app root can see that the design system needs this.</li>
+          <li class="con">A new kind of contract for Jig. Nothing in the library today asks the consumer to render anything, and the checklist has no category for &ldquo;you must mount this once&rdquo;.</li>
+          <li class="con">Forgetting it fails silently and only on the pages with a smoke button. That is a bad failure to debug and impossible to type-check.</li>
+          <li class="con">Still pays for itself on pages with no smoke button, unless the consumer conditionally renders it &mdash; which is the very bookkeeping the brief wanted to avoid.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="auto-inject" data-label="Button injects it, ref-counted">
+        <div class="option-head">
+          <h3>Button injects it, ref-counted</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; what Button would have to do</p>
+        <div class="specimen block">
+<pre class="tree">let count = 0, node = null
+
+useEffect(() =&gt; {
+  if (count++ === 0) {
+    node = makeFilterSvg()
+    document.body.append(node)
+  }
+  return () =&gt; {
+    if (--count === 0) node.remove()
+  }
+}, [])
+
+<span class="no">first DOM injection in Jig
+first module-level state
+no "use client" anywhere</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Zero consumer action and exactly the requested semantics: present when a smoke button is, absent when none is.</li>
+          <li class="pro">No asset, no URL resolution.</li>
+          <li class="con">Everything about it is a first for Jig: DOM injection, module-level mutable state, and an effect whose job is a side effect on <code>document</code>.</li>
+          <li class="con">Hostile to server rendering, and Jig ships no <code>"use client"</code> directives &mdash; so this would push a client-only requirement into a package that has never had one.</li>
+          <li class="con">A ref count under React 19's strict-mode double-invocation and concurrent unmounts is a genuine source of bugs, in exchange for what the browser already does for free.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="degradation" data-title="What happens where the filter does not work">
+    <p class="decision-id">D2 &middot; degradation</p>
+    <h2>What happens where the filter does not work</h2>
+    <p>
+      Three ways this ends up unsupported or unresolvable: Safari, Firefox, and a
+      stylesheet that loaded without its SVG. All three produce the same thing, and the
+      measurement above showed it is not &ldquo;falls back to blur&rdquo; &mdash; it is
+      <em>no backdrop effect at all</em>. A smoke button over a photograph with no blur is
+      the exact failure the variant exists to prevent.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="layered" data-label="Blur on the element, glass on a pseudo">
+        <div class="option-head">
+          <h3>Blur on the element, glass on a pseudo</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; third button's filter is deliberately unresolvable</p>
+        <div class="specimen block jig">
+          <div class="plate">
+            <button class="smoke now">blur</button>
+            <button class="smoke layered supplied">glass</button>
+            <button class="smoke layered dangling">broken</button>
+          </div>
+          <p class="caption">the broken one is still blurred &mdash; the blur is on the element, not the pseudo</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Measured: an unresolvable reference on the pseudo-element cannot touch the element's own blur. Safari and Firefox get exactly today's smoke button, so nothing regresses.</li>
+          <li class="pro">Needs no detection at all, which matters because the feature is not detectable.</li>
+          <li class="pro">Covers the 404, the cross-origin block and the offline first paint as the same case, rather than three separate ones.</li>
+          <li class="con">A pseudo-element and an <code>isolation: isolate</code> on every smoke button, for an effect most of its users will never see.</li>
+          <li class="con">Two stacked backdrop filters in Chromium rather than one, which is more work per frame, not less &mdash; and D3 has no measurement to say how much.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="single-declaration" data-label="One declaration, accept the loss">
+        <div class="option-head">
+          <h3>One declaration, accept the loss</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; second button's filter is deliberately unresolvable</p>
+        <div class="specimen block jig">
+          <div class="plate">
+            <button class="smoke single">glass</button>
+            <button class="smoke single dangling">broken</button>
+          </div>
+          <p class="caption">the broken one has no blur at all &mdash; this is what Safari gets</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The simplest possible change: one property in <code>button.css.ts</code>, no pseudo-element, no stacking context.</li>
+          <li class="pro">One backdrop filter per button rather than two.</li>
+          <li class="con">Regresses Safari and Firefox from a working blur to nothing &mdash; visible in the second specimen, and the majority of non-Chromium traffic.</li>
+          <li class="con">Makes a missing asset a visual failure on every smoke button rather than a lost enhancement.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="js-probe" data-label="Detect once in JavaScript">
+        <div class="option-head">
+          <h3>Detect once in JavaScript</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; what detection would have to be</p>
+        <div class="specimen block">
+<pre class="tree"><span class="no">CSS.supports(
+  'backdrop-filter','url(#x)')
+  &rarr; true in Chrome, and almost
+    certainly true anywhere
+    it merely parses</span>
+
+<i>a real probe has to render
+and read pixels back:</i>
+  draw a known backdrop
+  apply the filter
+  <b>read the result</b>
+  set a root class
+
+<span class="no">not before first paint</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The only option that could branch on the real answer rather than assuming it.</li>
+          <li class="pro">Would let the two treatments be genuinely exclusive instead of stacked.</li>
+          <li class="con">There is no cheap probe. Parsing-level detection returns the wrong answer, so a real one has to paint and read back &mdash; after first paint, causing a visible flip.</li>
+          <li class="con">Puts JavaScript, and a client-only one, in the path of a purely visual property. The layered option gets the same guarantee from the cascade for nothing.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="scope" data-title="Whether smoke changes, or a variant joins it">
+    <p class="decision-id">D3 &middot; scope</p>
+    <h2>Whether <code>smoke</code> changes, or a variant joins it</h2>
+
+    <div class="unmeasured">
+      <span class="tag">Not measured</span>
+      <b>The frame cost of this filter is unknown, and this document could not measure it.</b>
+      <p>
+        Frame timing needs <code>requestAnimationFrame</code> to run, and the automated
+        browser available here never brings a tab to
+        <code>visibilityState: "visible"</code>, so rAF is starved and every harness reads
+        zero. A harness is written and ready &mdash; open it and call <code>run()</code>
+        to get median, p95 and worst frame times for 1, 6 and 24 buttons, blur versus
+        glass, over a moving backdrop.
+      </p>
+      <p>
+        What can be said without measuring: <code>feTurbulence</code> with
+        <code>numOctaves="3"</code> is the expensive primitive here, a
+        <code>backdrop-filter</code> re-runs whenever the backdrop moves, and each button
+        filters its own backdrop region &mdash; so cost scales with the number of smoke
+        buttons on screen, not with the page. Worth knowing too: the first two primitives
+        depend only on each other and never on <code>SourceGraphic</code>, so the noise is
+        a static texture that could be baked to an image and fed in with
+        <code>feImage</code>. That is the obvious optimisation if the numbers come back
+        bad, and it is not proposed here because there is nothing yet to justify it.
+      </p>
+    </div>
+
+    <p>
+      Which makes this the hedge: if the cost turns out to matter, does it fall on
+      everyone already using <code>smoke</code>, or only on callers who opt in?
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="replace-smoke" data-label="Change smoke in place">
+        <div class="option-head">
+          <h3>Change <code>smoke</code> in place</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the variant list stays as it is</p>
+        <div class="specimen block jig">
+          <div class="plate">
+            <button class="smoke layered supplied">Save</button>
+            <button class="smoke layered supplied">Share</button>
+          </div>
+          <p class="caption"><code>variant="smoke"</code> &mdash; same name, better effect</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No new name to learn, no second variant that does almost the same thing, and every existing smoke button improves at once.</li>
+          <li class="pro">Keeps <code>ButtonVariant</code> at five, which the api types test already pins.</li>
+          <li class="pro">With D2's layering the change is purely additive &mdash; nothing that works today stops working.</li>
+          <li class="con">If the filter turns out to be expensive, the cost lands on every existing caller with no way to decline short of a revert.</li>
+          <li class="con">A caller who wanted the plain blur has no route back.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="new-variant" data-label="A sixth variant beside it">
+        <div class="option-head">
+          <h3>A sixth variant beside it</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the two side by side</p>
+        <div class="specimen block jig">
+          <div class="plate">
+            <button class="smoke now">smoke</button>
+            <button class="smoke layered supplied">glass</button>
+          </div>
+          <p class="caption">two variants, and a caller has to know which to reach for</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Opt-in, so an expensive effect can never be a surprise regression for an existing caller.</li>
+          <li class="pro">Both treatments stay available, which is useful if the glass reads badly over some imagery.</li>
+          <li class="con">Two variants whose difference is invisible in Safari and Firefox, where they would render identically. A name that means nothing in half of browsers is hard to document honestly.</li>
+          <li class="con">Grows the variant vocabulary for an effect, where the existing five name loudness. <code>glass</code> would be the first variant named after a texture.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="tuning" data-title="How strong the distortion is at button size">
+    <p class="decision-id">D4 &middot; tuning</p>
+    <h2>How strong the distortion is at button size</h2>
+    <p>
+      The supplied filter was presumably tuned on something larger than a 38px-tall
+      button. At this size <code>baseFrequency="0.8"</code> with
+      <code>scale="20"</code> displaces by roughly half the control's height, which reads
+      as static rather than as glass &mdash; and the label sits on top of it. The three
+      settings below are the same filter chain with the turbulence and displacement
+      turned down; everything else is identical.
+    </p>
+    <p>
+      The second plate in each specimen is a one-pixel stripe pattern, which is the
+      honest test: fine detail is where refraction either looks like glass or looks like
+      noise.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="as-supplied" data-label="As supplied">
+        <div class="option-head">
+          <h3>As supplied</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; 0.8 / 3 octaves / scale 20</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="plate"><button class="smoke layered supplied">Save changes</button></div>
+            <div class="plate fine"><button class="smoke layered supplied">Save changes</button></div>
+          </div>
+          <p class="caption">exactly the filter in the brief</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The most obviously glassy of the three, and unmistakably an effect rather than a blur.</li>
+          <li class="pro">No retuning &mdash; ships what was asked for.</li>
+          <li class="con">At button size the displacement is a large fraction of the control, so the backdrop is scrambled rather than refracted, and over fine detail it reads as television static.</li>
+          <li class="con">Three octaves of turbulence is the most expensive of the three, on an effect whose cost is not yet measured.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="softened" data-label="Softened">
+        <div class="option-head">
+          <h3>Softened</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; 0.4 / 2 octaves / scale 8</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="plate"><button class="smoke layered soft">Save changes</button></div>
+            <div class="plate fine"><button class="smoke layered soft">Save changes</button></div>
+          </div>
+          <p class="caption">same chain, larger noise cells, a third of the displacement</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Reads as a warped pane rather than as noise, which is what the brief asked for in words.</li>
+          <li class="pro">One fewer octave and a smaller displacement radius, so it is the cheaper of the two visible effects.</li>
+          <li class="pro">The label stays comfortably legible over the fine-stripe plate, which is the case that matters for a control.</li>
+          <li class="con">Less dramatic; on a plain backdrop it is close enough to the existing blur that some viewers will not notice a change at all.</li>
+          <li class="con">Retuned by eye here rather than derived from anything, so the numbers are a starting point, not a system.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="subtle" data-label="Barely there">
+        <div class="option-head">
+          <h3>Barely there</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; 0.18 / 1 octave / scale 4</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="plate"><button class="smoke layered subtle">Save changes</button></div>
+            <div class="plate fine"><button class="smoke layered subtle">Save changes</button></div>
+          </div>
+          <p class="caption">one octave, minimal displacement &mdash; a slight lensing at the edges</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Cheapest by a distance: one octave of turbulence and a small displacement.</li>
+          <li class="pro">Never competes with the label, at any backdrop.</li>
+          <li class="con">Hard to justify the whole apparatus &mdash; an external asset, a pseudo-element and a Chromium-only feature &mdash; for something this close to the blur it replaces.</li>
+          <li class="con">Most viewers would not be able to tell it from today's smoke button in a side-by-side.</li>
+        </ul>
+
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0015
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0015-smoke-as-glass",
+  "status": "proposed",
+  "decided": null,
+  "built": null,
+  "decisions": [
+    { "id": "filter-delivery", "options": ["external-asset", "filter-component", "auto-inject"] },
+    { "id": "degradation",     "options": ["layered", "single-declaration", "js-probe"] },
+    { "id": "scope",           "options": ["replace-smoke", "new-variant"] },
+    { "id": "tuning",          "options": ["as-supplied", "softened", "subtle"] }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

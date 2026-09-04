@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, Separator, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -112,6 +112,52 @@ describe('public API types', () => {
       <Collapsible label="Shipping" mb="400">Body</Collapsible>
       {/* @ts-expect-error polymorphism stays on layout and type components */}
       <Collapsible label="Shipping" as="section">Body</Collapsible>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("scopes ListItem's polymorphism to exactly two elements", () => {
+    <>
+      <ListItem>Tokens</ListItem>
+      <ListItem as="div">Tokens</ListItem>
+      {/* @ts-expect-error 0014 D2 widened `as` to ListItem, not to any element */}
+      <ListItem as="span">Tokens</ListItem>
+      {/* @ts-expect-error nor to a section, however list-like the content */}
+      <ListItem as="section">Tokens</ListItem>
+      {/* The ref follows `as`, which is the point of PolymorphicProps. */}
+      <ListItem ref={createRef<HTMLLIElement>()}>Tokens</ListItem>
+      <ListItem as="div" ref={createRef<HTMLDivElement>()}>Tokens</ListItem>
+      {/* @ts-expect-error an li ref cannot be handed a div */}
+      <ListItem as="div" ref={createRef<HTMLLIElement>()}>Tokens</ListItem>
+      {/* The element's own attributes come with it. */}
+      <ListItem as="div" title="Tokens">Tokens</ListItem>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps ListItem to the sizes and slots 0014 settled', () => {
+    <>
+      <ListItem size="sm" selected selectedIcon="check">Tokens</ListItem>
+      <ListItem selectedIcon={false}>Tokens</ListItem>
+      {/* @ts-expect-error the ramp is sm | md | lg, matching ButtonSize */}
+      <ListItem size="xl">Tokens</ListItem>
+      {/* @ts-expect-error the indicator is a curated icon, not arbitrary markup */}
+      <ListItem selectedIcon={<span />}>Tokens</ListItem>
+      {/* @ts-expect-error nor an icon outside the set */}
+      <ListItem selectedIcon="not-an-icon">Tokens</ListItem>
+      {/* @ts-expect-error spacing comes from the parent */}
+      <ListItem mb="400">Tokens</ListItem>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps SideNav to a fixed element', () => {
+    <>
+      <SideNav aria-label="Docs">rows</SideNav>
+      {/* @ts-expect-error the landmark is the component's; polymorphism stays off it */}
+      <SideNav as="aside" aria-label="Docs">rows</SideNav>
+      {/* @ts-expect-error spacing comes from the parent */}
+      <SideNav aria-label="Docs" mb="400">rows</SideNav>
     </>;
     expect(true).toBe(true);
   });

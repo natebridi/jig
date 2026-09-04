@@ -1,3 +1,11 @@
+/*
+ * The debug chrome has to agree with Jig, which means following `data-theme`
+ * when one is set and only falling back to the OS preference when none is.
+ * Reading `prefers-color-scheme` alone made this badge report the OS while the
+ * page was forced the other way — the one readout you actually rely on while
+ * testing forced themes.
+ */
+
 .style-debug {
     position: absolute;
     inset: 5px 5px auto auto;
@@ -6,13 +14,14 @@
     gap: 0.5rem;
     z-index: 99;
 
-    @media (prefers-color-scheme: light) {
-        color: oklch(0 0 0);
-    }
-
-    @media (prefers-color-scheme: dark) {
-        color: oklch(1 0 0);
-    }
+    /*
+     * No media query and no `data-theme` selector needed: Jig sets
+     * `color-scheme` on every theme entry point — `light dark` on :root, `dark`
+     * inside the OS media query, and the matching one on each
+     * `:root[data-theme]` — and `color-scheme` inherits. So `light-dark()`
+     * resolves against whichever theme is actually in effect, forced or not.
+     */
+    color: light-dark(oklch(0 0 0), oklch(1 0 0));
 
     > div {
         background: oklch(0 0 0 / 0.35);
@@ -22,19 +31,22 @@
     }
 }
 
-#debug-mode {
-    &::before {
-        text-align: center;
-
-        @media (prefers-color-scheme: light) {
-            content: 'Light mode';
-        }
-
-        @media (prefers-color-scheme: dark) {
-            content: 'Dark mode';
-        }
-    }
+/*
+ * `content` cannot use `light-dark()`, so the label needs real selectors. Same
+ * three-state shape the token layer uses: the OS preference applies only while
+ * nothing is forced, and the explicit themes come last so they win.
+ */
+#debug-mode::before {
+    text-align: center;
+    content: 'Light mode';
 }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) #debug-mode::before { content: 'Dark mode'; }
+}
+
+:root[data-theme='light'] #debug-mode::before { content: 'Light mode'; }
+:root[data-theme='dark'] #debug-mode::before { content: 'Dark mode'; }
 
 #debug-size {
     &::before {

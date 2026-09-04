@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ScrollArea, Separator, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ListItem, ScrollArea, Separator, SideNav, SideNavSection, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -37,6 +37,13 @@ describe('refs', () => {
       ['Separator', createRef<HTMLDivElement>(), (r: never) => <Separator ref={r} />, 'DIV'],
       // The root, not the trigger — the root is the element a caller sizes.
       ['Collapsible', createRef<HTMLDivElement>(), (r: never) => <Collapsible ref={r} label="l">x</Collapsible>, 'DIV'],
+      // ListItem's ref follows `as`, which is the second place polymorphism
+      // shows up in a ref type after Token's degrading element (0014 D2).
+      ['ListItem', createRef<HTMLLIElement>(), (r: never) => <ListItem ref={r}>x</ListItem>, 'LI'],
+      ['ListItem as div', createRef<HTMLDivElement>(), (r: never) => <ListItem as="div" ref={r}>x</ListItem>, 'DIV'],
+      ['SideNavSection', createRef<HTMLDivElement>(), (r: never) => <SideNavSection ref={r}>x</SideNavSection>, 'DIV'],
+      // The nav itself, which is the landmark and the element a caller sizes.
+      ['SideNav', createRef<HTMLElement>(), (r: never) => <SideNav ref={r} aria-label="l">x</SideNav>, 'NAV'],
       // The root, not the viewport — the root is the element a caller sizes.
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
       // The panel — the visible frame — not Base UI's positioning popup.
