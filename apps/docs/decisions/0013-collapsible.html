@@ -1,0 +1,2185 @@
+<title>0013 &middot; Collapsible</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  /* A figure sits flush against the next heading otherwise; the template
+     gives figures no bottom margin because nothing had followed one before. */
+  figure + h3 { margin-top: 2.25rem; }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack.
+
+     The specimens are real <details>/<summary> elements, so they genuinely
+     open and close and their hover and focus states are live. What they
+     cannot show is the measured-height transition &mdash; that is the part Base UI
+     supplies, and it needs JavaScript to measure. Where the browser supports
+     `::details-content` and `interpolate-size`, the rules below animate it
+     anyway; where it does not, the panel snaps. Either way the geometry,
+     colours and type are the proposed ones. */
+
+  .jig {
+    --j-sp-100: 0.17rem;
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-sp-600: 1.89rem;
+
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+
+    --j-rad: 4.3px;                        /* radius.400 */
+
+    --j-body:   oklch(94.3% 0.005 83);     /* surfaces.body        warm.25  */
+    --j-card:   oklch(100% 0 0);           /* surfaces.card        white    */
+    --j-text:   oklch(31.3% 0.012 83);     /* text.primary         warm.600 */
+    --j-muted:  oklch(61.1% 0 0);          /* text.muted           gray.400 */
+    --j-line:   oklch(85.9% 0.007 83);     /* color.line           warm.200 */
+    --j-ghost-hover:  oklch(92.3% 0.006 83);  /* button.ghost.hoverBg   warm.100 */
+    --j-ghost-active: oklch(89.1% 0.007 83);  /* button.ghost.activeBg  warm.150 */
+    --j-ghost-text:   oklch(31.3% 0.012 83);  /* button.ghost.text      warm.600 */
+    --j-focus:  oklch(0% 0 0);             /* color.focus          black   */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:   oklch(17.8% 0.013 83);   /* warm.750 */
+      --j-card:   oklch(26.1% 0.012 83);   /* warm.650 */
+      --j-text:   oklch(92.3% 0 0);        /* gray.100 */
+      --j-muted:  oklch(75.3% 0 0);        /* gray.300 */
+      --j-line:   oklch(31.3% 0.012 83);   /* warm.600 */
+      --j-ghost-hover:  oklch(31.3% 0.012 83);  /* warm.600 */
+      --j-ghost-active: oklch(38.3% 0.011 83);  /* warm.550 */
+      --j-ghost-text:   oklch(92.3% 0.006 83);  /* warm.100 */
+      --j-focus:  oklch(100% 0 0);         /* white */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:   oklch(17.8% 0.013 83);
+    --j-card:   oklch(26.1% 0.012 83);
+    --j-text:   oklch(92.3% 0 0);
+    --j-muted:  oklch(75.3% 0 0);
+    --j-line:   oklch(31.3% 0.012 83);
+    --j-ghost-hover:  oklch(31.3% 0.012 83);
+    --j-ghost-active: oklch(38.3% 0.011 83);
+    --j-ghost-text:   oklch(92.3% 0.006 83);
+    --j-focus:  oklch(100% 0 0);
+  }
+
+  /* The page the component sits on. */
+  .jig .stage {
+    width: 100%;
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-500);
+    font-family: var(--sans);
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+    line-height: 1.4;
+    interpolate-size: allow-keywords;
+  }
+
+  .jig .stage.body { background: var(--j-body); }
+
+  /* ---- the component ---- */
+
+  .jig details { width: 100%; }
+
+  .jig summary {
+    display: flex;
+    align-items: center;
+    gap: var(--j-sp-400);
+    cursor: pointer;
+    list-style: none;
+    border-radius: var(--j-rad);
+    color: var(--j-text);
+    /* the trigger declares its own type; each option overrides below */
+    font-family: var(--sans);
+    font-size: var(--j-ts-300);
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .jig summary::-webkit-details-marker { display: none; }
+  .jig summary::marker { content: ""; }
+
+  .jig summary:focus-visible {
+    outline: 2px solid var(--j-focus);
+    outline-offset: 2px;
+  }
+
+  .jig .glyph {
+    width: 1.15em;
+    height: 1.15em;
+    flex: none;
+    fill: currentColor;
+    transition: transform 160ms ease-out;
+  }
+
+  .jig .glyph.at-end { margin-left: auto; }
+
+  .jig .panel {
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+    line-height: 1.4;
+  }
+
+  .jig .panel p { margin: 0; color: inherit; max-width: none; }
+  .jig .panel p + p { margin-top: var(--j-sp-400); }
+
+  /* Progressive: animates where `::details-content` and `interpolate-size`
+     are implemented, snaps where they are not. */
+  .jig details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size 180ms ease-out, content-visibility 180ms allow-discrete;
+  }
+  .jig details[open]::details-content { block-size: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .jig .glyph { transition: none; }
+    .jig details::details-content { transition: none; }
+  }
+
+  /* ---- D1: the three chromes ---- */
+
+  /* (a) plain row: no fill at rest, no horizontal padding, so the label sits
+     on the same optical line as the panel copy below it. */
+  .jig .chrome-plain summary {
+    padding: var(--j-sp-400) 0;
+    background: transparent;
+  }
+  .jig .chrome-plain summary:hover { color: var(--j-muted); }
+  .jig .chrome-plain .panel { padding-bottom: var(--j-sp-400); }
+
+  /* (b) ghost Button recipe: md padding, radius and hover fill from
+     button.css.ts &mdash; spacing.400 spacing.500, radius.400, warm.100. */
+  .jig .chrome-ghost summary {
+    padding: var(--j-sp-400) var(--j-sp-500);
+    background: transparent;
+    color: var(--j-ghost-text);
+    font-weight: 500;
+    line-height: 1;
+  }
+  .jig .chrome-ghost summary:hover  { background: var(--j-ghost-hover); }
+  .jig .chrome-ghost summary:active { background: var(--j-ghost-active); }
+  .jig .chrome-ghost .panel { padding: var(--j-sp-400) var(--j-sp-500); }
+
+  /* (c) bordered section row */
+  .jig .chrome-rule summary {
+    padding: var(--j-sp-400) 0;
+    border-bottom: 1px solid var(--j-line);
+    border-radius: 0;
+  }
+  .jig .chrome-rule summary:hover { color: var(--j-muted); }
+  .jig .chrome-rule .panel {
+    padding: var(--j-sp-400) 0;
+    border-bottom: 1px solid var(--j-line);
+  }
+
+  /* ---- D2: type presets, straight off packages/tokens ---- */
+
+  .jig .t-body01   { font-family: var(--sans); font-weight: 400; font-size: var(--j-ts-300); line-height: 1.4; }
+  .jig .t-body02   { font-family: var(--sans); font-weight: 400; font-size: var(--j-ts-400); line-height: 1.4; }
+  .jig .t-heading05{ font-family: var(--sans); font-weight: 600; font-size: var(--j-ts-400); line-height: 1; }
+  .jig .t-caption01{ font-family: var(--sans); font-weight: 400; font-size: var(--j-ts-100); line-height: 1; }
+  .jig .t-inherit  { font: inherit; }
+  /* A host page that declares its own body type. `font: inherit` takes
+     whatever it finds, and what it finds is not necessarily Jig's. */
+  .jig .host-page  { font: 400 15px Georgia, "Times New Roman", serif; }
+
+  /* Button's size ramp, from button.css.ts */
+  .jig .sz-sm summary { padding: var(--j-sp-300) var(--j-sp-400); font-size: var(--j-ts-200); font-weight: 500; gap: var(--j-sp-200); line-height: 1; }
+  .jig .sz-md summary { padding: var(--j-sp-400) var(--j-sp-500); font-size: var(--j-ts-300); font-weight: 500; gap: var(--j-sp-300); line-height: 1; }
+  .jig .sz-lg summary { padding: var(--j-sp-400) var(--j-sp-500); font-size: var(--j-ts-400); gap: var(--j-sp-300); line-height: 1; }
+
+  /* ---- rotation behaviours ---- */
+
+  .jig details[open] .rot-180 { transform: rotate(180deg); }
+  .jig details[open] .rot-90  { transform: rotate(90deg); }
+  .jig details[open] .swap-plus  { display: none; }
+  .jig details        .swap-minus { display: none; }
+  .jig details[open] .swap-minus { display: block; }
+
+  /* ---- small helpers ---- */
+
+  .jig .stack { display: flex; flex-direction: column; gap: var(--j-sp-500); width: 100%; }
+  .jig .divider { height: 1px; background: var(--j-line); border: 0; margin: 0; }
+  .jig .tag {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+  .jig .prose { color: var(--j-muted); font-size: var(--j-ts-200); margin: 0 0 var(--j-sp-400); max-width: none; }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0013</p>
+    <h1>Collapsible</h1>
+    <p class="standfirst">
+      A button that shows and hides a panel below it. Base UI does the measuring and the
+      ARIA, and the brief keeps its prop names &mdash; so what is actually open is what
+      the trigger is made of, how its type gets set, which glyph marks it, and whether a
+      closed panel is still there to be found.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-03</li>
+      <li>5 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Nothing in Jig shows and hides <em>in place</em> today. <code>Dialog</code> (0008)
+      opens over the page, <code>Tooltip</code> and <code>Combobox</code> portal a popup
+      out of flow. All three take content off the document and put it back unchanged. A
+      collapsible leaves it in flow and changes the height of everything below it, which
+      is a different problem: the panel has to be measured before anything can animate to
+      its height, and the closed state has to decide whether the content exists at all.
+    </p>
+
+    <h3>Base UI, checked against 0001 D2</h3>
+    <p>
+      0001 D2's rule is the test: &ldquo;a new component is built on Base UI when it needs
+      managed focus, portalling, or an ARIA relationship beyond a label.&rdquo; A
+      collapsible needs the third. The trigger carries <code>aria-expanded</code>, and
+      when open it points at the panel it controls &mdash; an id Jig would otherwise have
+      to mint and thread itself. Verified in the installed source rather than from the
+      docs, <code>@base-ui/react/collapsible/trigger/CollapsibleTrigger.js</code>:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree">// CollapsibleTrigger.js:54
+<b>'aria-controls': open ? panelId : undefined,</b>
+<b>'aria-expanded': open,</b>
+
+// CollapsiblePanel.js:98 &mdash; written as an inline style on the panel
+<b>['--collapsible-panel-height']</b>: height === undefined ? 'auto' : `${height}px`,
+<b>['--collapsible-panel-width']</b>:  width  === undefined ? 'auto' : `${width}px`,
+
+// useCollapsiblePanel.js:279 &mdash; React only accepts a boolean for `hidden`,
+// so the string value is set imperatively
+panel.setAttribute('hidden', 'until-found');</pre>
+      </div>
+      <figcaption>
+        Three lines that are worth not writing twice: the ARIA relationship, the measured
+        height published as a custom property so CSS can transition to a real number
+        instead of <code>auto</code>, and the <code>hidden="until-found"</code> escape
+        hatch around React's boolean-only <code>hidden</code> prop. Note that Base UI
+        drops <code>aria-controls</code> while the panel is closed and sets it only when
+        open &mdash; that is their opinion, not something this document changes;
+        <code>aria-expanded</code> carries the state either way.
+      </figcaption>
+    </figure>
+
+    <p>
+      Registry check rather than memory: <code>npm view @base-ui/react</code> reports
+      <code>1.7.0</code> as both the latest version and the only dist-tag, with no
+      <code>deprecated</code> field. <code>packages/components/package.json</code> already
+      pins <code>~1.7.0</code> as a dependency, so this component installs nothing.
+    </p>
+
+    <h3>Accordion is not in this document</h3>
+    <p>
+      Base UI also ships an <code>Accordion</code> &mdash; it is right there in
+      <code>node_modules/@base-ui/react/accordion</code> &mdash; which is a set of
+      collapsibles with roving focus and an optional one-open-at-a-time rule. That is a
+      separate component with its own decisions (roving <code>tabindex</code>, heading
+      levels around each trigger, whether opening one closes the rest), and it is
+      deliberately not smuggled in here as a <code>group</code> prop. This document
+      proposes the single disclosure.
+    </p>
+
+    <h3>One checkable fact that D2 turns on</h3>
+    <p>
+      <code>packages/styles/src/reset.css.ts</code> styles exactly three selectors:
+      <code>:root</code>, <code>html, body</code>, and <code>h1..h6, p</code>. It does
+      not touch <code>button</code>. So a <code>&lt;button&gt;</code> inside a Jig app
+      still arrives wearing the user agent's font &mdash; roughly 13.3px of system UI
+      &mdash; unless a rule says otherwise. <code>Button</code>'s recipe says otherwise
+      by setting family, size and weight; <code>Link</code>'s text variant says otherwise
+      by declaring <code>font: inherit</code> so it can take the type around it. The
+      trigger has to pick one of those two postures explicitly. There is no third,
+      do-nothing option.
+    </p>
+
+    <figure>
+      <div class="scroller jig">
+        <div class="stage">
+          <details class="chrome-plain" open>
+            <summary class="t-body01">
+              Shipping and returns
+              <svg class="glyph at-end swap-plus" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
+              <svg class="glyph at-end swap-minus" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"/></svg>
+            </summary>
+            <div class="panel">
+              <p>Orders ship within two business days. Returns are free within thirty days of delivery, in the original packaging.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+      <figcaption>
+        The shape that was decided, wearing the accepted options, and live &mdash; click it.
+        In JSX: <code>&lt;Collapsible label="Shipping and returns" defaultOpen&gt;&hellip;&lt;/Collapsible&gt;</code>.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule and is <em>not</em> up for debate in this
+      document. Listing it is what keeps the decision count honest.
+    </p>
+    <ul class="notes">
+      <li>
+        Built on Base UI. The trigger&rarr;panel <code>aria-expanded</code> /
+        <code>aria-controls</code> pair is exactly 0001 D2's &ldquo;ARIA relationship
+        beyond a label&rdquo;, and the height measurement is not something to reimplement.
+      </li>
+      <li>
+        <b>Base UI's prop names are kept as-is</b>, per the brief: <code>open</code>,
+        <code>defaultOpen</code>, <code>onOpenChange</code> and <code>disabled</code> on
+        the root, <code>hiddenUntilFound</code> and <code>keepMounted</code> on the panel.
+        No renaming is on offer anywhere below.
+      </li>
+      <li>
+        One flat component, not compound parts. <code>Dialog</code> (0008) folds Base UI's
+        Root / Portal / Popup / Title / Close behind a single component with slot props,
+        and <code>Combobox</code> and <code>Slider</code> do the same. So
+        <code>&lt;Collapsible&gt;</code>, not <code>&lt;Collapsible.Trigger&gt;</code>.
+      </li>
+      <li>
+        The trigger's visible content is <code>label</code>, not <code>trigger</code>.
+        Dialog's <code>trigger</code> already means &ldquo;an element that opens this&rdquo;,
+        and Collapsible owns its button rather than accepting one &mdash; reusing the name
+        for a different idea is how a system stops being learnable. <code>label</code>
+        matches <code>Combobox</code> and <code>IconButton</code>.
+      </li>
+      <li>
+        Controlled and uncontrolled both, via <code>open</code> and
+        <code>defaultOpen</code>, exactly as Dialog does it.
+      </li>
+      <li>
+        No <code>as</code> prop &mdash; polymorphism stays on layout and typography
+        components, via <code>polymorphic.ts</code>.
+      </li>
+      <li>
+        No spacing props. Spacing comes from the parent; a caller who wants air around it
+        reaches for <code>Stack</code>. Box dimensions go through <code>style</code>.
+      </li>
+      <li>
+        The ref types to the rendered element and is asserted in
+        <code>refs.test.tsx</code>. It lands on the root <code>&lt;div&gt;</code> &mdash;
+        the element a caller would size &mdash; matching ScrollArea's note there.
+      </li>
+      <li>
+        Focus is the ring from <code>focus-ring.ts</code>, not a border highlight. The
+        trigger is a button, not a field, and the checklist's rule (0002 D4) is that only
+        components drawing their own outline highlight it instead.
+      </li>
+      <li>
+        The indicator glyph is sized and placed by the component, never by the caller
+        &mdash; the same rule <code>buttonIconSize</code> establishes for Button.
+      </li>
+      <li>
+        Motion is hand-declared in <code>collapsible.css.ts</code> with a
+        <code>prefers-reduced-motion: reduce</code> guard, because Jig has no motion
+        tokens: <code>tooltip.css.ts</code> uses 120ms, <code>slider.css.ts</code> 120ms,
+        <code>scrollarea.css.ts</code> 160ms, each guarded in place. A duration ramp is
+        its own proposal, not a rider on this one.
+      </li>
+      <li>
+        Theming stays <code>:root</code>-scoped.
+      </li>
+      <li>
+        Ships <code>collapsible.tsx</code>, <code>collapsible.css.ts</code>,
+        <code>collapsible.stories.tsx</code>, <code>collapsible.test.tsx</code>,
+        <code>index.ts</code>, and the export from <code>src/index.ts</code>.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English. Every
+      specimen below is a real <code>&lt;details&gt;</code> element wearing the proposed
+      token values, so hover, focus and open/close are live. What they cannot show is the
+      measured-height transition, which needs the JavaScript Base UI supplies.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="trigger-chrome" data-title="What the trigger is made of">
+    <p class="decision-id">D1 &middot; trigger-chrome</p>
+    <h2>What the trigger is made of</h2>
+    <p>
+      The trigger is a full-width <code>&lt;button&gt;</code>. The question is whether it
+      borrows Button's recipe, draws its own quieter row, or takes a rule that makes it
+      read as a section. This is first because it constrains D2: Button's recipe sets a
+      font family, size and weight, which is precisely what a type prop would then have to
+      fight &mdash; the collision 0009 D3 hit when <code>Link</code> tried to wear a
+      Typography preset inside the Button recipe.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="plain-row" data-label="Plain row">
+        <div class="option-head">
+          <h3>Plain row</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-plain">
+              <summary class="t-body01">
+                Shipping and returns
+                <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </summary>
+              <div class="panel">
+                <p>Orders ship within two business days.</p>
+              </div>
+            </details>
+            <hr class="divider">
+            <p class="prose" style="margin-top: 0.72rem;">Body copy below, for the alignment.</p>
+          </div>
+          <p class="caption">no fill at rest &middot; padding <code>spacing.400</code> vertical, none horizontal</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The label sits on the same left edge as the panel copy and the prose around it, because there is no horizontal padding to indent it.</li>
+          <li class="pro">Declares nothing about type, so D2 has a clean surface to set it on.</li>
+          <li class="pro">Works on any surface &mdash; card, body, inside a Dialog &mdash; without a fill to clash.</li>
+          <li class="con">The hover affordance is a colour shift to <code>text.muted</code> rather than a fill, which is quieter than anything else clickable in Jig.</li>
+          <li class="con">The hit area is the row, but nothing draws its edges, so it is less obviously pressable than a button.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="ghost-button" data-label="Ghost Button recipe">
+        <div class="option-head">
+          <h3>Ghost Button recipe</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-ghost">
+              <summary>
+                Shipping and returns
+                <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </summary>
+              <div class="panel">
+                <p>Orders ship within two business days.</p>
+              </div>
+            </details>
+            <hr class="divider">
+            <p class="prose" style="margin-top: 0.72rem;">Body copy below, for the alignment.</p>
+          </div>
+          <p class="caption">reuses <code>button({ color: 'ghost' })</code> &middot; hover fill <code>warm.100</code></p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Hover, active and disabled fills come free and are guaranteed to match every other ghost control.</li>
+          <li class="pro">Reads unmistakably as a button, with a fill on hover like the rest of the system.</li>
+          <li class="con">The recipe sets <code>font-size</code>, <code>font-family</code>, <code>font-weight</code> and <code>line-height: 1em</code> in its base and size variants &mdash; every one of which a type prop then has to beat. This is 0009 D3's problem, imported.</li>
+          <li class="con">The <code>spacing.500</code> horizontal padding indents the label from the panel content below it, which is visible in the specimen.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="section-rule" data-label="Bordered section row">
+        <div class="option-head">
+          <h3>Bordered section row</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-rule">
+              <summary class="t-body01">
+                Shipping and returns
+                <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </summary>
+              <div class="panel">
+                <p>Orders ship within two business days.</p>
+              </div>
+            </details>
+            <details class="chrome-rule">
+              <summary class="t-body01">
+                Sizing
+                <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </summary>
+              <div class="panel">
+                <p>Runs true to size.</p>
+              </div>
+            </details>
+          </div>
+          <p class="caption">1px <code>color.line</code> under trigger and panel</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Stacks into a convincing FAQ list with nothing composed by the caller.</li>
+          <li class="pro">Gives <code>color.line</code> a second consumer, which 0012 wanted.</li>
+          <li class="con">Hard-codes a composition decision. A single collapsible in a form or a sidebar gets a rule it never asked for, and there is no way to compose <em>out</em> of a border.</li>
+          <li class="con">Jig already has <code>Separator</code> for exactly this. Drawing lines from inside another component is the duplication 0012 was written to avoid.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-03</span>
+      <b>Plain row.</b> The trigger draws no fill at rest and takes no horizontal
+      padding, so its label sits on the same left edge as the panel copy and the prose
+      around it. Hover is a colour shift to <code>color.text.muted</code> rather than a
+      fill &mdash; knowingly quieter than every other pressable thing in Jig. The Button
+      recipe is not reused, which is what leaves D2 a clean surface to set type on.
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="trigger-type" data-title="How the trigger's type is set">
+    <p class="decision-id">D2 &middot; trigger-type</p>
+    <h2>How the trigger's type is set</h2>
+    <p>
+      The brief asks for this one directly: the type style of the trigger should be
+      changeable. What is open is the mechanism, and with it the default. Recall from the
+      context section that a <code>&lt;button&gt;</code> gets nothing from the reset, so
+      whatever is chosen has to be declared &mdash; including &ldquo;inherit&rdquo;.
+    </p>
+    <p>
+      There is a live precedent for two of the three. 0009 D3 gave <code>Link</code> a
+      <code>with</code> prop naming a Typography preset, built from the <em>same</em>
+      <code>typeStyles</code> map <code>Typography</code>'s own variant is built from and
+      imported rather than restated &mdash; see the comment at the top of
+      <code>typography.css.ts</code>, which says two hand-maintained copies of sixteen
+      presets is precisely the drift a design system exists to prevent. Whatever is chosen
+      here, it imports that map.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="preset-default" data-label="`with` preset, body01 default">
+        <div class="option-head">
+          <h3><code>with</code> preset, <code>body01</code> default</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the same trigger, three presets</p>
+        <div class="specimen block jig">
+          <div class="stage stack">
+            <div>
+              <span class="tag">default &mdash; with=&quot;body01&quot;</span>
+              <details class="chrome-plain">
+                <summary class="t-body01">Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+            <div>
+              <span class="tag">with=&quot;heading05&quot;</span>
+              <details class="chrome-plain">
+                <summary class="t-heading05">Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+            <div>
+              <span class="tag">with=&quot;caption01&quot;</span>
+              <details class="chrome-plain">
+                <summary class="t-caption01">Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+          </div>
+          <p class="caption">glyph sized in <code>em</code>, so it tracks the preset</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Exactly Link's <code>with</code>, same union (<code>TypeStyles</code>), same imported map. Nothing new to learn or maintain.</li>
+          <li class="pro">A collapsible dropped anywhere renders in Jig's type, with no dependency on what encloses it.</li>
+          <li class="pro">The FAQ-heading case is one word: <code>with="heading05"</code>.</li>
+          <li class="con">Picks a default that some callers will always override. <code>body01</code> is the least surprising choice &mdash; it is Typography's own default &mdash; but a section disclosure arguably wants <code>heading05</code>.</li>
+          <li class="con">The trigger will not follow a <code>Typography</code> parent's type the way a text <code>Link</code> does.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="inherit-then-with" data-label="Inherit, `with` overrides">
+        <div class="option-head">
+          <h3>Inherit, <code>with</code> overrides</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the same trigger, three contexts</p>
+        <div class="specimen block jig">
+          <div class="stage stack">
+            <div>
+              <span class="tag">inside &lt;Typography with=&quot;body02&quot;&gt;</span>
+              <div class="t-body02">
+                <details class="chrome-plain">
+                  <summary class="t-inherit">Shipping and returns
+                    <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                  </summary>
+                  <div class="panel"><p>Orders ship within two business days.</p></div>
+                </details>
+              </div>
+            </div>
+            <div>
+              <span class="tag">same markup, with=&quot;heading05&quot; &mdash; the prop wins</span>
+              <div class="t-body02">
+                <details class="chrome-plain">
+                  <summary class="t-heading05">Shipping and returns
+                    <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                  </summary>
+                  <div class="panel"><p>Orders ship within two business days.</p></div>
+                </details>
+              </div>
+            </div>
+            <div class="host-page">
+              <span class="tag">host page sets body { font: 15px Georgia }</span>
+              <details class="chrome-plain">
+                <summary class="t-inherit">Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+          </div>
+          <p class="caption">third row is the failure mode &mdash; the trigger takes the host's type, not Jig's</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Follows 0009 D3's outcome exactly: an explicit prop at the call site outranks an ambient value the caller did not set.</li>
+          <li class="pro">A collapsible inside a block of prose picks up that prose's type with nothing passed.</li>
+          <li class="con">The third row is the cost, and it is real: with no Jig typography above it the trigger takes whatever the host app's <code>body</code> declares, which may be nothing like Jig.</li>
+          <li class="con">Link is inline text inside a sentence, which is why inheriting is right for it. A collapsible is a block-level control, and every other block-level control in Jig sets its own type.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="size-ramp" data-label="Button's size ramp">
+        <div class="option-head">
+          <h3>Button's <code>size</code> ramp</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; sm / md / lg, values from button.css.ts</p>
+        <div class="specimen block jig">
+          <div class="stage stack">
+            <div class="sz-sm">
+              <span class="tag">size=&quot;sm&quot;</span>
+              <details class="chrome-ghost">
+                <summary>Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+            <div class="sz-md">
+              <span class="tag">size=&quot;md&quot;</span>
+              <details class="chrome-ghost">
+                <summary>Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+            <div class="sz-lg">
+              <span class="tag">size=&quot;lg&quot;</span>
+              <details class="chrome-ghost">
+                <summary>Shipping and returns
+                  <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                </summary>
+                <div class="panel"><p>Orders ship within two business days.</p></div>
+              </details>
+            </div>
+          </div>
+          <p class="caption">md and lg share a padding step &mdash; the ramp's known irregularity</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Matches <code>ButtonSize</code>, which the checklist names as the sizing vocabulary, and lines a trigger up with a Button beside it.</li>
+          <li class="pro">Padding and type move together, so a large trigger is actually larger, not just louder.</li>
+          <li class="con">Three steps is not &ldquo;customise the type style&rdquo;. It cannot make a trigger a display face, a caption, or anything else the brief was asking for.</li>
+          <li class="con">Only coherent alongside D1's ghost-recipe option, since the ramp is Button's padding as much as its type.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-03</span>
+      <b><code>with</code>, defaulting to <code>body01</code>.</b> The prop names a
+      <code>TypeStyles</code> preset and is built from the <code>typeStyles</code> map
+      imported from <code>typography.css.ts</code> &mdash; the same one Link's
+      <code>with</code> uses (0009 D3), never a second copy. The trigger always declares
+      its own type, so a Collapsible dropped on any host page renders in Jig's rather
+      than the host's. The section-heading case is <code>with="heading05"</code>.
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="indicator" data-title="The disclosure glyph">
+    <p class="decision-id">D3 &middot; indicator</p>
+    <h2>The disclosure glyph</h2>
+    <p>
+      Which glyph marks the trigger, which end it sits on, and how it moves. In all three
+      options it comes from the curated set, is sized in <code>em</code> so it tracks
+      whatever D2 sets, and can be turned off with <code>indicator={false}</code> for a
+      trigger that is already obviously one. What is being chosen is the default.
+    </p>
+    <p>
+      Jig has one existing precedent for a caret: <code>Combobox</code> puts a static
+      <code>caret-down</code> at the trailing edge (<code>combobox.tsx:300</code>). It
+      does not rotate, because a combobox's popup is not in flow below it.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="caret-rotate" data-label="Trailing caret, half turn">
+        <div class="option-head">
+          <h3>Trailing caret, half turn</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-plain">
+              <summary class="t-body01">Shipping and returns
+                <svg class="glyph at-end rot-180" viewBox="0 0 256 256" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+              </summary>
+              <div class="panel"><p>Orders ship within two business days. Returns are free within thirty days.</p></div>
+            </details>
+          </div>
+          <p class="caption"><code>caret-down</code> &middot; rotate(180deg) &middot; 160ms ease-out</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Points at the thing it reveals, both before and after: down at the closed panel, up at the trigger it will collapse back into.</li>
+          <li class="pro">Same glyph and same edge as Combobox, so the caret keeps meaning one thing across the system.</li>
+          <li class="pro">The trailing edge leaves the label's left edge free to align with the panel copy.</li>
+          <li class="con">A half turn is symmetric artwork rotating into itself &mdash; the motion is legible, but a still screenshot of open vs closed differs only in which way the chevron points.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="caret-quarter" data-label="Leading caret, quarter turn">
+        <div class="option-head">
+          <h3>Leading caret, quarter turn</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-plain">
+              <summary class="t-body01">
+                <svg class="glyph rot-90" viewBox="0 0 256 256" aria-hidden="true"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></svg>
+                Shipping and returns
+              </summary>
+              <div class="panel"><p>Orders ship within two business days. Returns are free within thirty days.</p></div>
+            </details>
+          </div>
+          <p class="caption"><code>caret-right</code> &middot; rotate(90deg) &middot; the disclosure-triangle idiom</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The oldest disclosure idiom there is &mdash; file trees, outliners, the native <code>&lt;summary&gt;</code> marker. Instantly readable.</li>
+          <li class="pro">A quarter turn is asymmetric, so open and closed are distinguishable in a still frame.</li>
+          <li class="con">Indents the label by the glyph plus a gap, so it no longer aligns with the panel copy underneath &mdash; the same complaint D1 makes about the ghost recipe's padding.</li>
+          <li class="con">Puts a caret on the leading edge where Combobox puts one on the trailing edge, so the system now has two caret conventions.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="plus-minus" data-label="Plus / minus swap">
+        <div class="option-head">
+          <h3>Plus / minus swap</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; live, open it</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <details class="chrome-plain">
+              <summary class="t-body01">Shipping and returns
+                <svg class="glyph at-end swap-plus" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"/></svg>
+                <svg class="glyph at-end swap-minus" viewBox="0 0 256 256" aria-hidden="true"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128Z"/></svg>
+              </summary>
+              <div class="panel"><p>Orders ship within two business days. Returns are free within thirty days.</p></div>
+            </details>
+          </div>
+          <p class="caption"><code>plus</code> &rarr; <code>minus</code> &middot; both already in the set</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The two states are unmistakably different shapes, at a glance, in a screenshot, at any size.</li>
+          <li class="pro">Reads as &ldquo;add / remove content&rdquo;, which is what a disclosure does to the page height.</li>
+          <li class="con">Two glyphs swapping cannot be tweened, so this option has no motion at all &mdash; it cuts.</li>
+          <li class="con"><code>plus</code> means &ldquo;create a new thing&rdquo; everywhere else it appears in an interface. Overloading it here costs more than the legibility it buys.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-03</span>
+      <b>Plus, swapping to minus.</b> <code>plus</code> while closed,
+      <code>minus</code> while open, at the trailing edge, sized in <code>em</code> so it
+      tracks whatever <code>with</code> sets. Taken over the rotating caret this document
+      recommended, which settles two things that were open:
+      <ul>
+        <li>
+          The indicator has <b>no motion</b>. Two glyphs cannot be tweened, so
+          <code>collapsible.css.ts</code> declares no transition on it and there is
+          nothing for the <code>prefers-reduced-motion</code> guard to cover here &mdash;
+          that guard is left for the panel height alone.
+        </li>
+        <li>
+          <code>plus</code> now carries two meanings in the system: &ldquo;create a new
+          thing&rdquo; wherever else it appears, and &ldquo;reveal this panel&rdquo; here.
+          Worth knowing before the next component reaches for it.
+        </li>
+      </ul>
+      <p><code>indicator={false}</code> remains the escape hatch for a trigger that needs no glyph.</p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="panel-mounting" data-title="What a closed panel leaves behind">
+    <p class="decision-id">D4 &middot; panel-mounting</p>
+    <h2>What a closed panel leaves behind</h2>
+    <p>
+      Base UI exposes two panel props, and the brief keeps both names:
+      <code>keepMounted</code> holds the content in the DOM behind a plain
+      <code>hidden</code>, and <code>hiddenUntilFound</code> holds it behind
+      <code>hidden="until-found"</code>, which browsers open when the user's find-in-page
+      matches text inside it. Both default to <code>false</code> upstream, so a closed
+      panel is not in the document at all. What is open is whether Jig ships those
+      defaults or overrides one.
+    </p>
+    <p>
+      The stakes are ordinary and familiar: a support page built from collapsibles where
+      Ctrl-F finds nothing. Support for the attribute is no longer the obstacle it was
+      &mdash; the figures below are from MDN's <code>browser-compat-data</code>, fetched
+      today rather than recalled.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr><th>Engine</th><th>hidden=&quot;until-found&quot;</th><th>Caveat</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Chrome / Edge</td><td>102</td><td>&mdash;</td></tr>
+            <tr><td>Firefox</td><td>139 partial, 148 full</td><td>139&ndash;147 reveal the panel but do not scroll to the match (bugzil.la/2006040)</td></tr>
+            <tr><td>Safari</td><td>26.2 partial</td><td>reveals but does not scroll to the match (webkit.org/b/304174)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        All three engines ship it; two still land you on the right panel without scrolling
+        to the right word. And the degradation is safe in every direction &mdash; an
+        unknown <code>hidden</code> value puts the element in the plain hidden state, so
+        an unsupporting browser gets <code>keepMounted</code>'s behaviour, never a broken
+        one.
+      </figcaption>
+    </figure>
+
+    <div class="options">
+
+      <article class="option" data-option="base-ui-defaults" data-label="Base UI's defaults, both false">
+        <div class="option-head">
+          <h3>Base UI's defaults, both <code>false</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the DOM while closed</p>
+        <div class="specimen block">
+<pre class="tree">&lt;div <i>data-collapsible-root</i>&gt;
+  &lt;button
+    <b>aria-expanded="false"</b>
+  &gt;Shipping&lt;/button&gt;
+
+  <span class="no">(no panel rendered)</span>
+&lt;/div&gt;
+
+<i>Ctrl-F finds it</i> .. <span class="no">no</span>
+<i>children mounted</i> . <span class="no">no</span>
+<i>effects have run</i> . <span class="no">no</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Matches the brief: keeping Base UI's props and quietly flipping their defaults is a bigger deviation than renaming them, and a much harder one to notice.</li>
+          <li class="pro">A collapsible costs nothing while closed. A panel holding a chart, a form or a data fetch does not mount, and does not run its effects, until it is opened.</li>
+          <li class="pro">Both behaviours stay one prop away, and the Storybook story for FAQ content passes <code>hiddenUntilFound</code>.</li>
+          <li class="con">The default is the one that loses find-in-page, and defaults are what most callers ship.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="findable-default" data-label="hiddenUntilFound on by default">
+        <div class="option-head">
+          <h3><code>hiddenUntilFound</code> on by default</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the DOM while closed</p>
+        <div class="specimen block">
+<pre class="tree">&lt;div <i>data-collapsible-root</i>&gt;
+  &lt;button
+    <b>aria-expanded="false"</b>
+  &gt;Shipping&lt;/button&gt;
+
+  &lt;div <b>hidden="until-found"</b>&gt;
+    Orders ship in 2 days.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+<i>Ctrl-F finds it</i> .. <span class="in">yes</span>
+<i>children mounted</i> . <span class="in">yes</span>
+<i>effects have run</i> . <span class="in">yes</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The behaviour a reader expects. Text on the page is text they can search for.</li>
+          <li class="pro"><code>content-visibility: hidden</code> keeps the content out of the accessibility tree and out of layout, so it is cheap to <em>render</em> even though it is present.</li>
+          <li class="con">Cheap to render is not cheap to mount. Every panel's subtree is constructed and every effect inside runs on first paint, whether or not it is ever opened &mdash; a real cost the caller cannot see from the call site.</li>
+          <li class="con">Silently departs from a Base UI default while keeping its name, which is the deviation hardest to discover.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="keep-mounted-default" data-label="keepMounted on by default">
+        <div class="option-head">
+          <h3><code>keepMounted</code> on by default</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the DOM while closed</p>
+        <div class="specimen block">
+<pre class="tree">&lt;div <i>data-collapsible-root</i>&gt;
+  &lt;button
+    <b>aria-expanded="false"</b>
+  &gt;Shipping&lt;/button&gt;
+
+  &lt;div <b>hidden</b>&gt;
+    Orders ship in 2 days.
+  &lt;/div&gt;
+&lt;/div&gt;
+
+<i>Ctrl-F finds it</i> .. <span class="no">no</span>
+<i>children mounted</i> . <span class="in">yes</span>
+<i>effects have run</i> . <span class="in">yes</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Form state inside a panel survives being collapsed, which is the one thing unmounting genuinely breaks.</li>
+          <li class="pro">No dependency on <code>hidden="until-found"</code> support at all.</li>
+          <li class="con">Pays the full mounting cost and gets none of the findability &mdash; strictly the worse half of both other options.</li>
+          <li class="con">Same silent-default-change objection as the option above.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-03</span>
+      <b>Base UI's defaults, unchanged.</b> <code>hiddenUntilFound</code> and
+      <code>keepMounted</code> both default to <code>false</code>, so a closed panel's
+      children are never rendered and cost nothing until it is opened. Both stay one prop
+      away, and the findability case is documented where a caller will meet it: the
+      Storybook story for FAQ-style content passes <code>hiddenUntilFound</code>.
+    </div>
+  </section>
+
+  <!-- ============================= D5 ============================= -->
+  <section class="decision" data-decision="change-callback" data-title="What onOpenChange hands back">
+    <p class="decision-id">D5 &middot; change-callback</p>
+    <h2>What <code>onOpenChange</code> hands back</h2>
+    <p>
+      Base UI's signature is <code>(open, eventDetails)</code>, where the details object
+      carries <code>reason</code>, <code>event</code>, <code>cancel()</code>,
+      <code>allowPropagation()</code>, <code>isCanceled</code>,
+      <code>isPropagationAllowed</code> and <code>trigger</code>. Two shipped Jig
+      components have already answered this question, and they answered it differently
+      &mdash; which is the only reason it is a decision here rather than a line in the
+      settled list.
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>dialog.tsx</i>       onOpenChange?: (open: boolean) =&gt; void
+                   <span class="no">// details dropped entirely</span>
+
+<i>togglebutton.tsx</i> onPressedChange?: (pressed: boolean, details: <b>ToggleChangeDetails</b>) =&gt; void
+                   <span class="in">// Base UI's object, passed straight through,</span>
+                   <span class="in">// typed down to { cancel, event, isCanceled }</span></pre>
+      </div>
+      <figcaption>
+        ToggleButton's comment names the reason for the narrowing: the interface is
+        &ldquo;the subset of its change details that is useful to call&rdquo;. The object
+        is not rebuilt, only re-typed &mdash; so this costs nothing at runtime either way.
+      </figcaption>
+    </figure>
+
+    <div class="options">
+
+      <article class="option" data-option="with-details" data-label="ToggleButton's shape">
+        <div class="option-head">
+          <h3>ToggleButton's shape</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the signature, and what it buys</p>
+        <div class="specimen block">
+<pre class="tree">onOpenChange?: (
+  open: boolean,
+  details: <b>CollapsibleChangeDetails</b>
+) =&gt; void
+
+interface CollapsibleChangeDetails {
+  <i>// veto the change; the panel does not move</i>
+  <b>cancel</b>: () =&gt; void
+  readonly <b>event</b>: Event
+  readonly <b>isCanceled</b>: boolean
+}
+
+<span class="in">&lt;Collapsible
+  label="Delivery address"
+  onOpenChange={(open, details) =&gt; {
+    if (!open &amp;&amp; form.isDirty) details.cancel();
+  }}
+&gt;</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Follows the brief &mdash; Base UI's signature, not a narrowed one.</li>
+          <li class="pro">ToggleButton is the closer precedent: a two-state control where vetoing a change is a thing callers actually want.</li>
+          <li class="pro">Refusing to collapse over unsaved work is a real requirement, and this is the only shape that can express it.</li>
+          <li class="con">A second details interface to maintain, near-identical to <code>ToggleChangeDetails</code>. If a third appears, they should be one shared type &mdash; and that is a refactor this document does not do.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="open-only" data-label="Dialog's shape">
+        <div class="option-head">
+          <h3>Dialog's shape</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the signature, and what it costs</p>
+        <div class="specimen block">
+<pre class="tree">onOpenChange?: (open: boolean) =&gt; void
+
+<span class="in">&lt;Collapsible
+  label="Delivery address"
+  onOpenChange={setOpen}
+&gt;</span>
+
+<span class="no">&lt;Collapsible
+  onOpenChange={(open) =&gt; {
+    if (!open &amp;&amp; form.isDirty) /* nothing to call */
+  }}
+&gt;</span></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The signature almost every caller wants, with nothing extra in the way.</li>
+          <li class="pro">Matches Dialog, the component a Collapsible is most often reached for alongside.</li>
+          <li class="con">Vetoing is unreachable. A caller who needs it has no route except dropping to Base UI directly, which is exactly what the wrapper is meant to prevent.</li>
+          <li class="con">Widening it later is a breaking change for anyone who typed their handler.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-03</span>
+      <b>ToggleButton's shape.</b>
+      <code>onOpenChange?: (open: boolean, details: CollapsibleChangeDetails) =&gt; void</code>.
+      Base UI's details object is passed straight through and re-typed down to
+      <code>{ cancel, event, isCanceled }</code> &mdash; the subset worth calling &mdash;
+      matching <code>ToggleChangeDetails</code> rather than Dialog's narrowed
+      <code>(open) =&gt; void</code>. <code>details.cancel()</code> vetoes the change,
+      which is what makes &ldquo;do not collapse over a dirty form&rdquo; expressible at
+      all. If a third component wants this shape, the interfaces should become one shared
+      type rather than a third near-copy.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>As built</h2>
+    <p>
+      Built 2026-09-04 against the five accepted options. <code>pnpm turbo typecheck
+      test</code> passes: 12 tasks, 172 tests, 17 of them new.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/components/src/collapsible/collapsible.tsx</code> &mdash; new</li>
+      <li><code>packages/components/src/collapsible/collapsible.css.ts</code> &mdash; new</li>
+      <li><code>packages/components/src/collapsible/collapsible.stories.tsx</code> &mdash; new, eight stories</li>
+      <li><code>packages/components/src/collapsible/collapsible.test.tsx</code> &mdash; new, fifteen tests</li>
+      <li><code>packages/components/src/collapsible/index.ts</code> &mdash; new</li>
+      <li><code>packages/components/src/index.ts</code> &mdash; exports <code>Collapsible</code>, <code>CollapsibleProps</code>, <code>CollapsibleChangeDetails</code></li>
+      <li><code>packages/components/src/refs.test.tsx</code> &mdash; ref lands on the root <code>&lt;div&gt;</code></li>
+      <li><code>packages/components/src/api.types.test.tsx</code> &mdash; ten compile-time assertions on the surface</li>
+      <li><code>apps/playground/src/App.tsx</code> &mdash; a Collapsible section: the alignment check, the FAQ arrangement, the type presets, and the indicator and disabled states</li>
+    </ul>
+
+    <h3>What the proposal got wrong</h3>
+    <p>
+      <b>The document assumed a Base UI part that does not exist.</b> D3's specimens and
+      the surrounding prose were written as though an <code>Indicator</code> part were
+      available to hang the glyph on. <code>@base-ui/react/collapsible</code> exports
+      exactly three parts &mdash; <code>Root</code>, <code>Trigger</code>,
+      <code>Panel</code> (<code>collapsible/index.parts.d.ts</code>) &mdash; and no
+      indicator among them. The swap needs the open state, and with
+      <code>defaultOpen</code> that state belongs to Base UI, so the trigger is rendered
+      through its <code>render</code> callback and the glyph is chosen from
+      <code>state.open</code>. That is ToggleButton's existing pattern, so the fix cost
+      nothing; the lesson is that this document verified the package's
+      <em>version</em> against the registry but never its <em>parts</em> against the
+      source, while quoting three other files line by line.
+    </p>
+
+    <h3>What it under-specified</h3>
+    <ul class="notes">
+      <li>
+        <b>Where the panel's padding goes.</b> The height transition runs on the panel
+        element, so padding declared there is animated with it and leaves the panel a few
+        pixels tall when closed. Content spacing had to move to an inner box
+        (<code>content</code> in the stylesheet), which is a structural detail no option
+        mentioned.
+      </li>
+      <li>
+        <b>The trigger's text alignment.</b> A full-width <code>&lt;button&gt;</code>
+        centres its text by default, which would have floated the label away from the
+        panel copy and quietly undone the alignment D1 was chosen for.
+        <code>text-align: left</code> is load-bearing, not cosmetic.
+      </li>
+      <li>
+        <b>The disabled state.</b> Five decisions and the settled list between them never
+        said what a disabled trigger looks like, even though <code>disabled</code> was
+        listed as a kept Base UI prop. It takes <code>color.text.muted</code> and drops
+        the pointer cursor, chosen by eye rather than by decision.
+      </li>
+      <li>
+        <b>Whether anything else reaches the root.</b> Nothing said, and the first draft
+        forwarded nothing &mdash; so <code>id</code>, <code>data-*</code> and
+        <code>aria-*</code> were silently dropped. <code>ScrollArea</code> is the
+        precedent that settles it: the other wrapper whose root is a plain
+        <code>div</code> extends <code>HTMLAttributes&lt;HTMLDivElement&gt;</code> and
+        spreads. Collapsible now does the same.
+      </li>
+    </ul>
+
+    <h3>Two bugs only the playground caught</h3>
+    <p>
+      Both were invisible to the unit tests and to Storybook, and both surfaced within
+      minutes of putting the component on a real page next to everything else.
+    </p>
+    <ul class="notes">
+      <li>
+        <b><code>:disabled</code> matches nothing on this trigger.</b> Base UI builds it
+        with <code>focusableWhenDisabled: true</code>, so a disabled trigger never
+        receives the native <code>disabled</code> attribute &mdash; it stays in the tab
+        order carrying <code>aria-disabled="true"</code>, which is what lets a screen
+        reader reach it and announce that it is unavailable. The stylesheet had hooked
+        <code>:disabled</code>, so a disabled trigger rendered at full contrast with a
+        pointer cursor and looked entirely live. Now hooked on the attribute, with a test
+        asserting the shape the CSS depends on.
+      </li>
+      <li>
+        <b>Consumer props were dropped.</b> Writing
+        <code>data-testid</code> on a Collapsible in the playground &mdash; as the
+        ScrollArea and Dialog examples on the same page already do &mdash; compiled
+        cleanly and then did nothing, because TypeScript exempts hyphenated JSX
+        attributes from excess property checks and the component spread nothing onto its
+        root. See the forwarding note above.
+      </li>
+    </ul>
+
+    <h3>What it got right</h3>
+    <p>
+      D1's central claim was checked in a browser and holds: with no horizontal padding
+      on the trigger, the label's left edge, the panel copy and the prose below all land
+      on the same pixel. D2's <code>typeStyles</code> import worked exactly as 0009 D3's
+      did for Link &mdash; one map, no second copy. D4's reading of the Base UI defaults
+      was accurate, and both mounting modes behave as the specimens drew them.
+    </p>
+
+    <h3>Not verified</h3>
+    <p>
+      The height transition could not be watched running. Base UI clears
+      <code>data-starting-style</code> inside <code>AnimationFrame.request</code>, and
+      the automated browser here never brings a tab to
+      <code>visibilityState: "visible"</code>, so <code>requestAnimationFrame</code> is
+      starved and both the attribute and the animation clock freeze. What
+      <em>was</em> confirmed in the live DOM: Base UI publishes a real measured
+      <code>--collapsible-panel-height</code> (31px and 64px in two cases), the panel
+      resolves to exactly that height once the transition is taken out of the way, and
+      the emitted stylesheet carries all three rules &mdash;
+      <code>height:var(--collapsible-panel-height);transition:height .16s ease-out</code>,
+      the <code>[data-starting-style]</code> / <code>[data-ending-style]</code> pin to
+      zero, and the <code>prefers-reduced-motion</code> guard. The interpolation itself
+      is the one thing taken on trust.
+    </p>
+
+    <h3>Questions for a future proposal</h3>
+    <ul class="notes">
+      <li>
+        <b>A shared change-details type.</b> <code>CollapsibleChangeDetails</code> is the
+        second hand-written copy of <code>{ cancel, event, isCanceled }</code>, after
+        <code>ToggleChangeDetails</code>. D5's outcome predicted this; the third one
+        should not be written, it should be a shared type.
+      </li>
+      <li>
+        <b>Motion tokens.</b> Three components now hand-declare a duration (120ms, 160ms,
+        and this one at 160ms) and each repeats its own reduced-motion guard. The
+        settled list deferred a duration ramp; it is now the most-repeated literal in the
+        component layer.
+      </li>
+      <li>
+        <b>Accordion.</b> Deliberately excluded from this document. Nothing built here
+        blocks it &mdash; but the trigger's <code>render</code> path and the panel's
+        inner content box are the two pieces it would have to share rather than restate.
+      </li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0013
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0013-collapsible",
+  "status": "built",
+  "decided": "2026-09-03",
+  "built": "2026-09-04",
+  "decisions": [
+    {
+      "id": "trigger-chrome",
+      "options": ["plain-row", "ghost-button", "section-rule"],
+      "outcome": "plain-row",
+      "note": null
+    },
+    {
+      "id": "trigger-type",
+      "options": ["preset-default", "inherit-then-with", "size-ramp"],
+      "outcome": "preset-default",
+      "note": null
+    },
+    {
+      "id": "indicator",
+      "options": ["caret-rotate", "caret-quarter", "plus-minus"],
+      "outcome": "plus-minus",
+      "note": null
+    },
+    {
+      "id": "panel-mounting",
+      "options": ["base-ui-defaults", "findable-default", "keep-mounted-default"],
+      "outcome": "base-ui-defaults",
+      "note": null
+    },
+    {
+      "id": "change-callback",
+      "options": ["with-details", "open-only"],
+      "outcome": "with-details",
+      "note": null
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link, Combobox, Separator } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, Link, Combobox, Separator } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -457,6 +457,71 @@ export function App() {
           >
             42rem, capped to the viewport less its margin.
           </Dialog>
+        </Stack>
+      </Stack>
+
+      <Stack spacing="400">
+        <Typography as="h2" with="heading03">Collapsible</Typography>
+
+        <Grid spacing="500" style={{ maxWidth: '34rem' }} alignSelf='stretch'>
+          <Collapsible label="Shipping and returns" data-testid="col-default">
+            <Typography as="p" with="body01">
+              Orders ship within two business days. Returns are free within thirty days of
+              delivery, in the original packaging.
+            </Typography>
+          </Collapsible>
+
+          {/* The trailing text is the alignment check: with no horizontal padding on
+              the trigger, its label, the panel copy and this paragraph all share an
+              edge. 0013 D1. */}
+          <Typography as="p" with="caption01">Prose after it, on the same left edge.</Typography>
+        </Grid>
+
+        {/* The FAQ arrangement. The rules are Separator's, not the Collapsible's —
+            0013 D1 kept dividers out of the component. `hiddenUntilFound` is what
+            lets find-in-page reach a closed answer. */}
+        <Stack spacing="400" style={{ maxWidth: '34rem' }}>
+          <Separator />
+          <Collapsible label="How long does delivery take?" with="heading05" hiddenUntilFound>
+            <Typography as="p" with="body01" tone="muted">
+              Two business days to mainland addresses, three to the islands.
+            </Typography>
+          </Collapsible>
+          <Separator />
+          <Collapsible label="Can I return an opened item?" with="heading05" hiddenUntilFound defaultOpen>
+            <Typography as="p" with="body01" tone="muted">
+              Yes, within thirty days, as long as the original packaging comes back with it.
+            </Typography>
+          </Collapsible>
+          <Separator />
+          <Collapsible label="Do you ship internationally?" with="heading05" hiddenUntilFound>
+            <Typography as="p" with="body01" tone="muted">
+              To fourteen countries. Duties are calculated at checkout.
+            </Typography>
+          </Collapsible>
+          <Separator />
+        </Stack>
+
+        {/* `with` names a Typography preset rather than a size ramp — 0013 D2. */}
+        <Stack spacing="500" style={{ maxWidth: '34rem' }}>
+          <Collapsible label="caption01 — an aside" with="caption01">
+            <Typography as="p" with="caption01" tone="muted">The trigger sets its own type; the panel keeps its own.</Typography>
+          </Collapsible>
+          <Collapsible label="body01 — the default" data-testid="col-body01">
+            <Typography as="p" with="body01" tone="muted">Nothing passed, so it matches the body copy around it.</Typography>
+          </Collapsible>
+          <Collapsible label="heading03 — a loud one" with="heading03">
+            <Typography as="p" with="body01" tone="muted">The glyph is sized in em, so it grows with the label.</Typography>
+          </Collapsible>
+        </Stack>
+
+        <Stack spacing="500" style={{ maxWidth: '34rem' }}>
+          <Collapsible label="No indicator at all" indicator={false} data-testid="col-bare">
+            <Typography as="p" with="body01" tone="muted">For a trigger that already reads as one.</Typography>
+          </Collapsible>
+          <Collapsible label="Disabled" disabled>
+            <Typography as="p" with="body01" tone="muted">Never reachable.</Typography>
+          </Collapsible>
         </Stack>
       </Stack>
 

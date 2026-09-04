@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Combobox, Grid, IconButton, Link, Separator, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, Separator, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -89,6 +89,29 @@ describe('public API types', () => {
       <Separator mb="400" />
       {/* @ts-expect-error polymorphism stays on layout and type components */}
       <Separator as="hr" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("keeps the Collapsible trigger's type a preset, not a size", () => {
+    <>
+      <Collapsible label="Shipping">Body</Collapsible>
+      <Collapsible label="Shipping" with="heading05">Body</Collapsible>
+      {/* @ts-expect-error `with` names a preset, not a size ramp — 0013 D2 */}
+      <Collapsible label="Shipping" size="lg">Body</Collapsible>
+      {/* @ts-expect-error nor an arbitrary preset name */}
+      <Collapsible label="Shipping" with="huge">Body</Collapsible>
+      {/* @ts-expect-error the indicator is the component's; `false` is the only choice */}
+      <Collapsible label="Shipping" indicator="caret-down">Body</Collapsible>
+      <Collapsible label="Shipping" indicator={false}>Body</Collapsible>
+      {/* @ts-expect-error a collapsible with nothing to name it is not one */}
+      <Collapsible>Body</Collapsible>
+      {/* @ts-expect-error Dialog's `trigger` means an element; this one takes `label` */}
+      <Collapsible trigger="Shipping">Body</Collapsible>
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Collapsible label="Shipping" mb="400">Body</Collapsible>
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Collapsible label="Shipping" as="section">Body</Collapsible>
     </>;
     expect(true).toBe(true);
   });
