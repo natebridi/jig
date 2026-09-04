@@ -3,6 +3,19 @@ import { buttonSet, controlSet, ghostButtonSet, scrollbarSet, sliderSet, smokeBu
 
 export default {
     color: {
+        /**
+         * The colour of a rule that divides.
+         *
+         * A bare token beside `focus` rather than a set, because a divider needs
+         * one colour. Deliberately not `color.control.border`, which is the
+         * surface shared by field-like controls — a rule divides where a border
+         * encloses, and the two should be free to move apart. Decided in
+         * apps/docs/decisions/0012-separator.html (D3).
+         */
+        line: {
+            '$type': 'color',
+            '$value': '{color.warm.200}'
+        },
         focus: {
             '$type': 'color',
             '$value': '{color.black}'

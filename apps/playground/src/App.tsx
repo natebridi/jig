@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link, Combobox } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Link, Combobox, Separator } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -98,15 +98,23 @@ export function App() {
                   <Grid spacing="300">
                     <Box span={{ xs: 24, md: 9 }}><Combobox label="Measure" size="md" popupMinWidth={160} items={
                       [
-                        { value: 'tsp', label: 'tsp' },
-                        { value: 'tbsp', label: 'Tbsp' },
-                        { value: 'clove', label: 'Clove' },
-                        { value: 'sprig', label: 'Sprig' },
-                        { value: 'oz', label: 'Oz' },
-                        { value: 'os', label: 'Oz (Imperial)' },
-                        { value: 'cup', label: 'Cup' },
-                        { value: 'bun', label: 'Bundle' },
-                        { value: 'gal', label: 'Gallon (Standard)' },
+                        {
+                          label: 'Liquid', items: [
+                            { value: 'tsp', label: 'tsp' },
+                            { value: 'tbsp', label: 'Tbsp' },
+                            { value: 'clove', label: 'Clove' },
+                            { value: 'sprig', label: 'Sprig' },
+                            { value: 'oz', label: 'Oz' },
+                          ]
+                        },
+                        {
+                          label: 'Dry', items: [
+                            { value: 'os', label: 'Oz (Imperial)' },
+                            { value: 'cup', label: 'Cup' },
+                            { value: 'bun', label: 'Bundle' },
+                            { value: 'gal', label: 'Gallon (Standard)' },
+                          ]
+                        }
                       ]} />
                     </Box>
                     <Box span={{ xs: 24, md: 3 }}><Input size="md" label="Quantity" /></Box>
@@ -169,9 +177,12 @@ export function App() {
             <Button variant="primary" icon="warning">Primary</Button>
             <Button variant="primary">Primary</Button>
             <IconButton variant="primary" label="Trash" icon="trash" />
+            <Separator orientation="vertical" />
             <IconButton variant="ghost" label="Trash" icon="trash" />
+            <Separator orientation="vertical" />
             <ToggleButton isIconOnly icon="heart" label="Trash" />
             <Button variant="primary" disabled>Disabled</Button>
+            <Separator orientation="vertical" />
             <Button variant="secondary">Secondary</Button>
             <Button variant="danger">Danger</Button>
             <Button variant="ghost" icon="calendar" size="sm">Ghost</Button>
@@ -202,6 +213,8 @@ export function App() {
                 <Button variant="primary">Long content</Button>
               </Tooltip>
 
+              <Separator orientation="vertical" />
+
               <Tooltip content="Any focusable element can be a trigger." placement="bottom">
                 <span tabIndex={0} style={{ textDecoration: 'underline dotted', cursor: 'help' }}>
                   a plain span
@@ -213,8 +226,9 @@ export function App() {
               </Tooltip>
             </Stack>
           </Stack>
-
         </Stack>
+
+        <Separator />
 
         <Stack spacing="400">
           <Typography as="h2" with="heading04">Links</Typography>

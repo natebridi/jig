@@ -35,6 +35,7 @@ import { heart } from './heart';
 import { eye } from './eye';
 import { eyeSlash } from './eye-slash';
 import { bell } from './bell';
+import { githubLogo } from './github-logo';
 
 export const icons = {
   'caret-down': caretDown,
@@ -71,6 +72,7 @@ export const icons = {
   'eye': eye,
   'eye-slash': eyeSlash,
   'bell': bell,
+  'github-logo': githubLogo,
 };
 
 export type IconName = keyof typeof icons;

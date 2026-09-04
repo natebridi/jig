@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Combobox, Dialog, Grid, Icon, IconButton, Link, ScrollArea, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Combobox, Dialog, Grid, Icon, IconButton, Link, ScrollArea, Separator, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -34,6 +34,7 @@ describe('refs', () => {
       ['Link as button', createRef<HTMLAnchorElement>(), (r: never) => <Link ref={r} href="/x" variant="primary">x</Link>, 'A'],
       // The input, not the field wrapper — the element a caller would focus.
       ['Combobox', createRef<HTMLInputElement>(), (r: never) => <Combobox ref={r} label="l" items={[{ value: 'a', label: 'A' }]} />, 'INPUT'],
+      ['Separator', createRef<HTMLDivElement>(), (r: never) => <Separator ref={r} />, 'DIV'],
       // The root, not the viewport — the root is the element a caller sizes.
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
       // The panel — the visible frame — not Base UI's positioning popup.

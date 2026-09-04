@@ -42,6 +42,8 @@ export { Dialog } from './dialog';
 export type { DialogProps, DialogSize, DialogClosePlacement } from './dialog';
 export { ScrollArea } from './scrollarea';
 export type { ScrollAreaProps } from './scrollarea';
+export { Separator } from './separator';
+export type { SeparatorProps, SeparatorOrientation } from './separator';
 export { Slider } from './slider';
 export type { SliderProps, SliderSize } from './slider';
 export { Typography } from './typography';

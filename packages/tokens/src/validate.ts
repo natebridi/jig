@@ -107,6 +107,7 @@ export function validateParity(light: Json, dark: Json): string[] {
  */
 export const REQUIRED_SEMANTICS = [
   'color.focus',
+  'color.line',
   'color.surfaces.body',
   'color.surfaces.card',
   'color.surfaces.popover',

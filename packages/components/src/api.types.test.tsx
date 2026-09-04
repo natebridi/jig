@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Combobox, Grid, IconButton, Link, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Combobox, Grid, IconButton, Link, Separator, Stack, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -73,6 +73,22 @@ describe('public API types', () => {
       <Combobox label="Assignee" items={items} filter={null} />
       {/* @ts-expect-error and there is no route to the query either */}
       <Combobox label="Assignee" items={items} onInputValueChange={() => {}} />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps a Separator to its two props', () => {
+    <>
+      <Separator />
+      <Separator orientation="vertical" decorative />
+      {/* @ts-expect-error not an orientation */}
+      <Separator orientation="diagonal" />
+      {/* @ts-expect-error one pixel; a heavier rule is a surface */}
+      <Separator size="lg" />
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Separator mb="400" />
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Separator as="hr" />
     </>;
     expect(true).toBe(true);
   });

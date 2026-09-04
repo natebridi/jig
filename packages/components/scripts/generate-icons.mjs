@@ -24,6 +24,9 @@ const NAMES = [
   'trash', 'pencil-simple', 'list', 'arrow-square-out', 'sun', 'moon',
   // Toggle affordances, where the fill weight carries the pressed state.
   'star', 'heart', 'eye', 'eye-slash', 'bell',
+  // Brand marks. Phosphor draws these to sit on the same grid as the rest, so
+  // they take the same sizing and `currentColor` as any other icon.
+  'github-logo',
 ];
 
 const here = dirname(fileURLToPath(import.meta.url));

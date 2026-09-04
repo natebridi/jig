@@ -1,0 +1,1707 @@
+<title>0012 &middot; Separator</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes -- real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option -- a
+     measurement table, a diagram -- sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way -- dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose -- localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack. */
+
+  .jig {
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-rad: 4.3px;
+
+    --j-body:  oklch(94.3% 0.005 83);   /* surfaces.body    warm.25  */
+    --j-card:  oklch(100% 0 0);         /* surfaces.card    white    */
+    --j-text:  oklch(31.3% 0.012 83);   /* text.primary     warm.600 */
+    --j-muted: oklch(61.1% 0 0);        /* text.muted       gray.400 */
+
+    /* the three candidate line colours */
+    --j-ctrl-border: oklch(85.9% 0.007 83);  /* control.border  warm.200 */
+    --j-line:        oklch(85.9% 0.007 83);  /* color.line      warm.200 */
+    --j-line-quiet:  oklch(89.1% 0.007 83);  /* warm.150 */
+    --j-line-strong: oklch(75.3% 0.008 83);  /* warm.300 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:  oklch(20.9% 0 0);      /* gray.700 */
+      --j-card:  oklch(26.1% 0 0);      /* gray.650 */
+      --j-text:  oklch(92.3% 0 0);      /* gray.100 */
+      --j-muted: oklch(75.3% 0 0);      /* gray.300 */
+      --j-ctrl-border: oklch(45.4% 0 0);       /* control.border  gray.500 */
+      --j-line:        oklch(45.4% 0.011 83); /* color.line      warm.500 */
+      --j-line-quiet:  oklch(31.3% 0 0);  /* gray.600 */
+      --j-line-strong: oklch(61.1% 0 0);  /* gray.400 */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:  oklch(20.9% 0 0);
+    --j-card:  oklch(26.1% 0 0);
+    --j-text:  oklch(92.3% 0 0);
+    --j-muted: oklch(75.3% 0 0);
+    --j-ctrl-border: oklch(45.4% 0 0);
+    --j-line:        oklch(45.4% 0.011 83);
+    --j-line-quiet:  oklch(31.3% 0 0);
+    --j-line-strong: oklch(61.1% 0 0);
+  }
+
+  .jig .stage {
+    width: 100%;
+    background: var(--j-body);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-500);
+    font-family: var(--sans);
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+  }
+  .jig .stage.card { background: var(--j-card); }
+
+  /* the rule itself, in each candidate colour */
+  .jig .rule { border: 0; height: 1px; width: 100%; margin: var(--j-sp-400) 0; display: block; }
+  .jig .rule-ctrl   { background: var(--j-ctrl-border); }
+  .jig .rule-line   { background: var(--j-line); }
+  .jig .rule-quiet  { background: var(--j-line-quiet); }
+  .jig .rule-strong { background: var(--j-line-strong); }
+
+  /* a vertical rule inside a row */
+  .jig .row { display: flex; align-items: center; gap: var(--j-sp-400); }
+  .jig .vrule { width: 1px; background: var(--j-ctrl-border); align-self: stretch; }
+  .jig .vrule.fixed { height: 1.2em; align-self: center; }
+  .jig .tall { padding: var(--j-sp-300) 0; }
+  .jig .taller { padding: var(--j-sp-500) 0; }
+
+  .jig .label { font-size: var(--j-ts-200); color: var(--j-muted); }
+
+  /* the accessibility tree, as a screen reader would walk it */
+  .jig .at { font-family: var(--mono); font-size: 0.7rem; line-height: 1.8; margin: 0; }
+  .jig .at b { color: var(--j-text); font-weight: 600; }
+  .jig .at i { color: var(--j-muted); font-style: normal; }
+  .jig .at .sep { color: var(--gate); }
+  .jig .at .gone { color: var(--muted); text-decoration: line-through; }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0012</p>
+    <h1>Separator</h1>
+    <p class="standfirst">
+      A one-pixel rule. The interesting part is not drawing it &mdash; it is which
+      element carries it, whether a screen reader should hear about it, and which token
+      colours it, since the system has never drawn a line that was not a field's border.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-08-31</li>
+      <li>4 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Nothing in Jig draws a rule today. The only borders in the system are the ones
+      around field-like controls &mdash; <code>input.css.ts</code> and
+      <code>combobox.css.ts</code>, both using <code>color.control.border</code> &mdash;
+      and there is no semantic for a line that divides rather than encloses.
+    </p>
+
+    <h3>Base UI, since the brief asked</h3>
+    <p>
+      Base UI ships a <code>Separator</code>. Verified against the registry rather than
+      from memory: <code>@base-ui/react</code> is on <code>1.7.0</code>, published
+      2026-08-04, not deprecated, already pinned here as <code>~1.7.0</code>. So using it
+      would add nothing to install.
+    </p>
+    <p>
+      It is also, in full, this &mdash; the whole of
+      <code>node_modules/@base-ui/react/separator/Separator.js</code> once the boilerplate
+      is stripped:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree">const state = { orientation };
+
+useRenderElement('div', componentProps, {
+  state,
+  ref: forwardedRef,
+  props: [{
+    <b>role: 'separator'</b>,
+    <b>'aria-orientation': orientation</b>,
+  }, elementProps],
+});</pre>
+      </div>
+      <figcaption>
+        Two attributes and a <code>data-orientation</code> that falls out of
+        <code>state</code>. There is no focus management, no portal, no measurement, and
+        no ARIA relationship &mdash; nothing that would be hard to get right or expensive
+        to maintain.
+      </figcaption>
+    </figure>
+
+    <p>
+      <b>0001 D2 already settles what to do with that.</b> Its rule: &ldquo;a new
+      component is built on Base UI when it needs managed focus, portalling, or an ARIA
+      relationship beyond a label. Everything else is hand-rolled. This is the rule new
+      proposals are checked against.&rdquo; A separator needs none of the three, and the
+      source above confirms there is nothing to lose by declining. So <em>whether</em> to
+      build on Base UI is not a decision in this document &mdash; it is settled, and the
+      code is the evidence.
+    </p>
+    <p>
+      Two facts checked against the specs rather than asserted, because both bear on the
+      options below. From <a href="https://www.w3.org/TR/html-aria/">ARIA in HTML</a>:
+      <code>&lt;hr&gt;</code> has an implicit <code>role=separator</code>, and the only
+      roles an author may put on it are <code>none</code> and <code>presentation</code>
+      &mdash; so <code>&lt;hr role="presentation"&gt;</code> is the spec-sanctioned way to
+      make a rule decorative, and writing <code>role="separator"</code> on an
+      <code>&lt;hr&gt;</code> is explicitly <em>not</em> recommended, being redundant.
+      From <a href="https://www.w3.org/TR/wai-aria-1.2/#separator">WAI-ARIA 1.2</a>:
+      <code>separator</code> is a <em>structure</em> role when not focusable and a
+      <em>widget</em> role when it is. Everything here is the non-focusable kind; a
+      focusable separator is a splitter, which is a different component.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li><b>Hand-rolled, not Base UI</b> &mdash; 0001 D2's behaviour test, with the source above as evidence that nothing is given up.</li>
+      <li>No spacing props. A separator is spaced by the <code>Stack</code> or <code>Grid</code> it sits in, like every other component.</li>
+      <li>No <code>as</code> prop. Polymorphism stays on layout and typography components.</li>
+      <li><code>orientation</code> is <code>horizontal | vertical</code>, defaulting to <code>horizontal</code>.</li>
+      <li>One pixel, and no <code>size</code> ramp. A rule is a hairline; a thicker divider is a surface, and would want <code>color.surfaces.*</code> and its own proposal.</li>
+      <li>The ref forwards to the rendered element and <code>refs.test.tsx</code> pins it.</li>
+      <li>Ships the five-file set plus an export from <code>packages/components/src/index.ts</code>.</li>
+      <li>Theming stays <code>:root</code>-scoped.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      All four accepted in one round. Three carried notes: one recording why the element
+      choice matters more than the document argued, one asking whether the accessibility
+      default is genuinely best practice &mdash; answered in D2's outcome, where it is
+      split into the half that is and the half that is not &mdash; and one setting the
+      new token's values, which corrects a claim in D3 above.
+    </p>
+  </section>
+
+  <!-- ============================== D1 ============================== -->
+  <section class="decision" data-decision="element" data-title="Which element carries the rule">
+    <p class="decision-id">D1 &middot; element</p>
+    <h2>Which element carries the rule</h2>
+    <p>
+      All three render an identical hairline. What differs is what the element
+      <em>means</em> before any ARIA is added, and how much has to be undone to style it.
+    </p>
+
+    <div class="specimen block jig" style="margin-bottom:1.5rem">
+      <div class="stage">
+        <div>Ingredients</div>
+        <span class="rule rule-ctrl"></span>
+        <div>Method</div>
+      </div>
+      <p class="caption">the shared target &mdash; all three options draw this</p>
+    </div>
+
+    <div class="options">
+
+      <article class="option" data-option="div-role" data-label="div with role=separator">
+        <div class="option-head">
+          <h3><code>&lt;div role="separator"&gt;</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">One element for both orientations, nothing to reset</p>
+        <div class="specimen block">
+<pre class="tree">&lt;div
+  role="separator"
+  aria-orientation="vertical"   <i>when vertical</i>
+/&gt;
+
+<i>a div has no UA styling to undo, and</i>
+<i>no meaning of its own to fight</i>
+
+<i>decorative case (D2):</i>
+&lt;div aria-hidden="true" /&gt;
+  <i>&mdash; drop the role entirely</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Neutral. A <code>div</code> carries no meaning the component has to override, so the role says exactly what is intended and nothing else.</li>
+          <li class="pro">One element for both orientations. An <code>&lt;hr&gt;</code> turned on its side is still a &ldquo;thematic break&rdquo; in the document, which a toolbar divider is not.</li>
+          <li class="pro">Nothing to reset. <code>&lt;hr&gt;</code> arrives with a UA border and block margins that have to be zeroed before the rule can be drawn, and those defaults differ between engines.</li>
+          <li class="con">Two ARIA attributes to get right, where <code>&lt;hr&gt;</code> would need none &mdash; the exact work the platform already did.</li>
+          <li class="con">A <code>div</code> in the markup says less to someone reading the DOM than an <code>&lt;hr&gt;</code> does.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="hr" data-label="hr">
+        <div class="option-head">
+          <h3><code>&lt;hr&gt;</code></h3>
+        </div>
+
+        <p class="specimen-label">The platform's own separator &mdash; zero ARIA</p>
+        <div class="specimen block">
+<pre class="tree">&lt;hr /&gt;
+  <i>implicit role=separator, per ARIA in HTML</i>
+
+&lt;hr aria-orientation="vertical" /&gt;
+
+<i>decorative case (D2) &mdash; spec-sanctioned:</i>
+&lt;hr role="presentation" /&gt;
+
+<i>but first, every time:</i>
+hr { border: 0; margin: 0; height: 1px; }</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The semantics are free and cannot drift &mdash; the implicit role is the platform's, not a string this component has to keep correct.</li>
+          <li class="pro">The decorative case is the one the spec blesses: <code>none</code> and <code>presentation</code> are the only roles an author may put on an <code>&lt;hr&gt;</code>, and they mean exactly &ldquo;this is a picture&rdquo;.</li>
+          <li class="pro">Reads unambiguously in the DOM and in a snapshot test.</li>
+          <li class="con"><code>&lt;hr&gt;</code> means a thematic break between paragraph-level content. Between two toolbar buttons, or as a vertical rule, that is a claim about the document that is not true.</li>
+          <li class="con">Carries UA styling &mdash; a border and vertical margins &mdash; that must be reset before anything is drawn, and the defaults are not identical across engines.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="element-by-orientation" data-label="hr horizontal, div vertical">
+        <div class="option-head">
+          <h3>Element follows orientation</h3>
+        </div>
+
+        <p class="specimen-label"><code>&lt;hr&gt;</code> when horizontal, <code>&lt;div&gt;</code> when vertical</p>
+        <div class="specimen block">
+<pre class="tree">orientation="horizontal"
+  &rarr; &lt;hr /&gt;                <i>free semantics</i>
+
+orientation="vertical"
+  &rarr; &lt;div role="separator"
+       aria-orientation="vertical" /&gt;
+
+<i>because a vertical thematic break is not</i>
+<i>a thing HTML has an element for</i></pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Each orientation gets the element that is actually right for it, rather than one compromise for both.</li>
+          <li class="con">One prop silently changes the tag, so a caller's <code>className</code>, <code>ref</code> and any snapshot all change shape with it. The ref type would have to widen to <code>HTMLElement</code>.</li>
+          <li class="con">Two code paths and two sets of resets to keep visually identical &mdash; for a component whose entire job is one pixel.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-31</span>
+      <b><code>&lt;div role="separator"&gt;</code></b>, with the note recording why:
+      <p>
+        &ldquo;<i>I will likely add additional styling options in the future, so div is
+        safest.</i>&rdquo;
+      </p>
+      <p>
+        That is a better reason than the ones the option was argued on. An
+        <code>&lt;hr&gt;</code>'s UA defaults are a one-time reset, but every future
+        treatment &mdash; a dashed rule, a gradient, an inset &mdash; would be fought
+        against them again in whichever engine disagrees. A <code>div</code> starts from
+        nothing and stays there.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D2 ============================== -->
+  <section class="decision" data-decision="announced" data-title="Whether a separator is announced">
+    <p class="decision-id">D2 &middot; announced</p>
+    <h2>Whether a separator is announced</h2>
+    <p>
+      A rule between two sections may be the only thing marking the boundary, in which
+      case a screen reader should say so. A rule between toolbar buttons that already sit
+      in a labelled group is decoration, and announcing it is noise. The component cannot
+      tell which it is. Each specimen shows what a screen reader walks through.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="decorative-prop" data-label="A decorative prop">
+        <div class="option-head">
+          <h3>A <code>decorative</code> prop</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Announced by default; <code>decorative</code> opts out</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <p class="at" style="margin-bottom:0.9rem">
+              <i>&lt;Separator /&gt;</i><br>
+              <b>&ldquo;Ingredients, heading&rdquo;</b><br>
+              <span class="sep">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Method, heading&rdquo;</b>
+            </p>
+            <p class="at">
+              <i>&lt;Separator decorative /&gt;</i><br>
+              <b>&ldquo;Bold, toggle button&rdquo;</b><br>
+              <span class="gone">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Align left, toggle button&rdquo;</b>
+            </p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The call site is the only place that knows whether the rule carries meaning, and this is the only option that lets it say so.</li>
+          <li class="pro">Defaulting to announced fails safe: a caller who thinks about it can silence it, and one who does not gets the semantics rather than losing them silently.</li>
+          <li class="pro">The prop name matches the widely-used precedent, whose API table lists <code>decorative</code> with no stated default &mdash; omitting it leaves the separator semantic, which is the same behaviour proposed here.</li>
+          <li class="con">A prop on a component that otherwise has one, for a distinction most callers will not think about &mdash; so the default will carry almost all real usage.</li>
+          <li class="con">Gets it wrong by default in toolbars and menus, which are where separators are most common.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="always-announced" data-label="Always announced">
+        <div class="option-head">
+          <h3>Always announced</h3>
+        </div>
+
+        <p class="specimen-label">Every rule is a <code>separator</code> in the tree</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <p class="at">
+              <b>&ldquo;Bold, toggle button&rdquo;</b><br>
+              <span class="sep">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Italic, toggle button&rdquo;</b><br>
+              <span class="sep">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Align left, toggle button&rdquo;</b><br>
+              <span class="sep">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Align centre, toggle button&rdquo;</b>
+            </p>
+          </div>
+          <p class="caption">a toolbar, read out</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Simplest possible surface: one prop, one behaviour, nothing to decide at the call site.</li>
+          <li class="pro">Matches what Base UI's own component does, so anyone moving between the two finds the same thing.</li>
+          <li class="con">The specimen is the argument against it. In the place separators are most used, the announcement is pure noise and there is no way to turn it off.</li>
+          <li class="con">Pushes callers who care towards wrapping the component in an <code>aria-hidden</code> div, which is worse than a prop.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="always-decorative" data-label="Always decorative">
+        <div class="option-head">
+          <h3>Always decorative</h3>
+        </div>
+
+        <p class="specimen-label">The rule is a picture; structure comes from elsewhere</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <p class="at">
+              <b>&ldquo;Ingredients, heading&rdquo;</b><br>
+              <span class="gone">&ldquo;separator&rdquo;</span><br>
+              <b>&ldquo;Method, heading&rdquo;</b><br>
+              <i>&mdash; the headings already mark the boundary</i>
+            </p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Honest about how the rule is nearly always used: as visual punctuation beside structure that already exists in headings, lists and labelled groups.</li>
+          <li class="pro">One behaviour, no prop, and never noisy.</li>
+          <li class="con">Removes the option of a meaningful separator entirely. Where a rule genuinely is the only boundary marker, a caller has no way to say so and has to hand-roll the element.</li>
+          <li class="con">Names the component <code>Separator</code> and then refuses to be one, which is the sort of thing that gets rediscovered as a bug.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-31</span>
+      <b>A <code>decorative</code> prop</b>, announced by default. The note asked for a
+      check rather than agreement:
+      <p>
+        &ldquo;<i>I want to follow a11y best practice here, which seems like it is the
+        recommendation, please flag if not.</i>&rdquo;
+      </p>
+      <p>
+        <b>Half of it is best practice and half of it is a judgement call, so here is the
+        split.</b> Exposing the choice <em>is</em> the practice: only the call site knows
+        whether a rule carries meaning, and both hiding a meaningful separator and
+        announcing a decorative one are real failures. Nothing in the standards decides
+        the <em>default</em>. WCAG does not require a separator to be exposed, ARIA does
+        not require it to be hidden, and MDN's role page confirms only that a
+        non-focusable separator &ldquo;can still be perceivable by a screen reader user
+        when using a reading cursor&rdquo; &mdash; not that it must be.
+      </p>
+      <p>
+        <b>The honest argument against the default chosen here:</b> the places separators
+        are most used &mdash; toolbars, menus, button groups &mdash; already carry their
+        structure in a labelled group or a list, so the rule is decoration and the
+        default will be wrong more often than right. Defaults usually favour the common
+        case, and by that reasoning <code>decorative</code> should have been the default.
+      </p>
+      <p>
+        <b>It stands anyway, on one argument:</b> the two failures are not symmetrical.
+        A caller who passes nothing and gets an announced separator has added noise,
+        which is audible and gets reported. A caller who passes nothing and gets a
+        silent one has lost information, and nobody notices. Flipping it is a
+        one-character change if real use says otherwise.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D3 ============================== -->
+  <section class="decision" data-decision="line-token" data-title="Which token colours the line">
+    <p class="decision-id">D3 &middot; line-token</p>
+    <h2>Which token colours the line</h2>
+    <p>
+      The system has never drawn a line that was not enclosing a field, so
+      <code>color.control.border</code> is the only candidate that exists. Whether that is
+      the right name for a rule is the question. The specimens draw the same divider in
+      each candidate, on the body surface and on a card, in both themes.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="new-line-token" data-label="A new color.line semantic">
+        <div class="option-head">
+          <h3>A new <code>color.line</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Its own name &mdash; <ins><code>warm.200</code> light, <code>warm.500</code> dark</ins></p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div>Ingredients</div>
+            <span class="rule rule-line"></span>
+            <div>Method</div>
+          </div>
+          <div class="stage card" style="margin-top:0.6rem">
+            <div>On a card</div>
+            <span class="rule rule-line"></span>
+            <div>Same rule</div>
+          </div>
+          <p class="caption">a bare token, sibling of <code>color.focus</code> &middot; warm in both themes</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Names the thing honestly. A rule divides; a border encloses. The system already makes this distinction elsewhere &mdash; <code>sliderSet</code>'s own comment refuses to borrow <code>surfaces.inverse</code> on the grounds that &ldquo;a mark is neither a surface nor text&rdquo;.</li>
+          <li class="pro"><ins>Corrected 2026-08-31: this originally read that the token would ship &ldquo;at the same value as <code>color.control.border</code>, so nothing changes visually today&rdquo;. That is now true in light only. The note asked for a warm line in <em>both</em> themes, so dark takes <code>warm.500</code> rather than <code>color.control.border</code>'s <code>gray.500</code> &mdash; the same lightness, 45.4%, with the warm ramp's chroma. A divider in dark is therefore very slightly warmer than the field borders around it, deliberately.</ins> The point of the separate name stands either way: retuning field borders no longer drags every divider in the product with it.</li>
+          <li class="pro">A bare token rather than a group, exactly as <code>color.focus</code> is. No set to fill out for a component that needs one colour.</li>
+          <li class="con">Two tokens with identical values on the day it ships, which reads as duplication until the first time one of them moves.</li>
+          <li class="con">A new semantic to keep in both themes and in the parity check, for one pixel.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="reuse-control-border" data-label="Reuse color.control.border">
+        <div class="option-head">
+          <h3>Reuse <code>color.control.border</code></h3>
+        </div>
+
+        <p class="specimen-label">Identical pixels, no new token</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div>Ingredients</div>
+            <span class="rule rule-ctrl"></span>
+            <div>Method</div>
+          </div>
+          <p class="caption">identical in light; in dark this stays <code>gray.500</code> where <code>color.line</code> goes warm</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Nothing to add, nothing to keep in parity, and a divider is guaranteed to match the fields it sits among.</li>
+          <li class="pro">Honest in one real sense: a hairline on a surface and a hairline around an input are the same visual weight, and keeping them equal is a defensible intent rather than an accident.</li>
+          <li class="con">The token's own comment in <code>utils.ts</code> defines <code>controlSet</code> as the surface shared by input, select, combobox and textarea. A divider is none of those, and reading it there tells you nothing.</li>
+          <li class="con">Couples the two permanently: the day someone wants field borders stronger, every divider in the product moves with them, and the only way back is this decision again.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="line-scale" data-label="A two-step line scale">
+        <div class="option-head">
+          <h3>A two-step <code>color.line.*</code></h3>
+        </div>
+
+        <p class="specimen-label"><code>subtle</code> and <code>strong</code>, chosen per divider</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div>subtle</div>
+            <span class="rule rule-quiet"></span>
+            <div>strong</div>
+            <span class="rule rule-strong"></span>
+            <div>&nbsp;</div>
+          </div>
+          <p class="caption"><code>warm.150</code> and <code>warm.300</code> &middot; <code>gray.600</code> and <code>gray.400</code> in dark</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A divider inside a card and a divider between page sections genuinely want different weights, and this is the only option that can express that.</li>
+          <li class="pro">Additive later is awkward &mdash; going from one token to a scale renames the existing one &mdash; so if a scale is wanted, now is the cheap moment.</li>
+          <li class="con">Two tokens and a prop to choose between them, before a single consumer has asked for the second weight.</li>
+          <li class="con">Invents an emphasis axis for a hairline. The system's other scales came from a demonstrated need; this one would be a guess.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-31</span>
+      <b>A new <code>color.line</code></b>, a bare token beside <code>color.focus</code>,
+      with the note setting its values:
+      <p>&ldquo;<i>Use warm in both light and dark.</i>&rdquo;</p>
+      <p>
+        So <code>{color.warm.200}</code> in light and <code>{color.warm.500}</code> in
+        dark &mdash; the same lightness dark borders already sit at, 45.4%, taken from
+        the warm ramp instead of the neutral one. The document's claim that the token
+        would ship at <code>color.control.border</code>'s value is corrected above: it
+        does in light, and deliberately does not in dark, where field borders stay
+        <code>gray.500</code> and a divider runs very slightly warmer.
+      </p>
+      <p>
+        Worth knowing rather than discovering: this is the first place the two themes
+        stop mirroring each other's hue choice for the same kind of mark. It is a small
+        divergence and an intentional one, but it means &ldquo;dark uses gray where light
+        uses warm&rdquo; is no longer a rule that holds across the system.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <!-- ============================== D4 ============================== -->
+  <section class="decision" data-decision="vertical-length" data-title="How a vertical separator gets its length">
+    <p class="decision-id">D4 &middot; vertical-length</p>
+    <h2>How a vertical separator gets its length</h2>
+    <p>
+      A horizontal rule fills the width it is given. A vertical one is one pixel wide with
+      no intrinsic height, so without something to size it, it renders as nothing at all.
+      Hover nothing here &mdash; the specimens differ in what happens when the row's
+      height changes, which the second stage in each shows.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="stretch" data-label="Stretch to the row">
+        <div class="option-head">
+          <h3>Stretch to the row</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>align-self: stretch</code> &mdash; the flex parent sets the height</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="row tall">
+              <span>Bold</span><span class="vrule"></span><span>Italic</span><span class="vrule"></span><span>Underline</span>
+            </div>
+          </div>
+          <div class="stage" style="margin-top:0.6rem">
+            <div class="row taller">
+              <span>Bold</span><span class="vrule"></span><span>Italic</span><span class="vrule"></span><span>Underline</span>
+            </div>
+          </div>
+          <p class="caption">the rule follows the row, whatever the row is</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Works with no caller input in the case that matters &mdash; a vertical rule almost always sits in a flex row, which is what a <code>Stack</code> is.</li>
+          <li class="pro">Tracks the row automatically. A taller neighbour, a wrapped label or a bigger button size all move the rule with them.</li>
+          <li class="pro">No height prop, so nothing to keep in step with the content beside it.</li>
+          <li class="con">Silently renders nothing outside a flex or grid parent, which is a confusing first encounter and cannot be caught by the type.</li>
+          <li class="con">Stretches to the <em>full</em> row, so a rule that should stop short of the row's padding needs the caller to inset it.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="caller-height" data-label="The caller sets a height">
+        <div class="option-head">
+          <h3>The caller sets a height</h3>
+        </div>
+
+        <p class="specimen-label">Height through <code>style</code>, like every other box dimension</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="row tall">
+              <span>Bold</span><span class="vrule fixed"></span><span>Italic</span><span class="vrule fixed"></span><span>Underline</span>
+            </div>
+          </div>
+          <div class="stage" style="margin-top:0.6rem">
+            <div class="row taller">
+              <span>Bold</span><span class="vrule fixed"></span><span>Italic</span><span class="vrule fixed"></span><span>Underline</span>
+            </div>
+          </div>
+          <p class="caption">the rule stays put as the row grows &mdash; deliberate, or stale</p>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Follows the standing rule that box dimensions go through <code>style</code> rather than becoming props, so it needs no new API at all.</li>
+          <li class="pro">Predictable: the rule is exactly as long as it was told to be, in any parent.</li>
+          <li class="pro">A rule shorter than the row &mdash; inset from the padding &mdash; is the common toolbar treatment, and this is the only option that gives it directly.</li>
+          <li class="con">Every vertical separator becomes a hand-tuned number that goes stale the moment the row's height changes, which is exactly the kind of drift the size ramp exists to prevent.</li>
+          <li class="con">Renders as nothing when the caller forgets, with no clue as to why.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="stretch-with-inset" data-label="Stretch, with an inset prop">
+        <div class="option-head">
+          <h3>Stretch, with an <code>inset</code></h3>
+        </div>
+
+        <p class="specimen-label">Stretches, and can be pulled back from both ends</p>
+        <div class="specimen block">
+<pre class="tree">&lt;Separator orientation="vertical" /&gt;
+  <i>full height of the row</i>
+
+&lt;Separator orientation="vertical"
+  <b>inset</b>="300" /&gt;
+  <i>stretched, less a spacing step at</i>
+  <i>each end &mdash; the toolbar treatment</i>
+
+<i>and horizontally, the same prop insets</i>
+<i>the ends of the rule from the edges</i>
+&lt;Separator <b>inset</b>="400" /&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Covers both the full-bleed and the inset rule with one prop, in both orientations, on the spacing scale rather than in pixels.</li>
+          <li class="pro">Keeps the automatic sizing while answering the case that pure stretching cannot.</li>
+          <li class="con">A second prop before anyone has asked for it, on a component with two. Strictly additive later, which is an argument for waiting.</li>
+          <li class="con">Blurs the line the system draws between a component's own props and spacing, which belongs to the parent.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-08-31</span>
+      <b>Stretch to the row.</b> A vertical separator takes
+      <code>align-self: stretch</code> and its length from the flex or grid parent.
+      <p>
+        The cost the option named is accepted: outside such a parent it renders nothing,
+        silently, and no type can catch that. The story and the prop documentation both
+        have to say it, since that is the only place a caller will find out.
+      </p>
+    </div>
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>The API, as decided</h2>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>between sections &mdash; the rule is the boundary, so it is announced</i>
+&lt;Separator /&gt;
+  &rarr; &lt;div role="separator" /&gt;
+
+<i>in a toolbar &mdash; the group is already labelled, so the rule is decoration</i>
+&lt;Separator <b>decorative</b> /&gt;
+  &rarr; &lt;div /&gt;        <i>no role; an empty div with none contributes nothing</i>
+
+<i>vertical &mdash; takes its length from the row it sits in</i>
+&lt;Stack direction="row" spacing="300"&gt;
+  &lt;ToggleButton &hellip; /&gt;
+  &lt;Separator <b>orientation="vertical"</b> decorative /&gt;
+  &lt;ToggleButton &hellip; /&gt;
+&lt;/Stack&gt;
+  &rarr; &lt;div aria-orientation="vertical" /&gt;   <i>align-self: stretch</i>
+
+<b>Separator</b>  orientation  <i>horizontal | vertical        (default horizontal)</i>
+           decorative   <i>boolean                     (default false)</i>
+           className style ref
+
+<i>not offered</i>
+           <span class="no">as</span>           <i>polymorphism stays on layout and type components</i>
+           <span class="no">size</span> <span class="no">thickness</span>  <i>one pixel; heavier is a surface</i>
+           <span class="no">inset</span>        <i>spacing comes from the parent (D4)</i>
+           <span class="no">margin* padding*</span></pre>
+      </div>
+      <figcaption>
+        <b>A vertical separator renders nothing outside a flex or grid parent.</b> It is
+        one pixel wide with no intrinsic height and takes its length from the row, so
+        this is the one thing a caller has to know &mdash; D4's outcome makes saying so
+        part of the build rather than a nicety.
+        <br><br>
+        <b>Colour is the new <code>color.line</code></b>: <code>warm.200</code> in light,
+        <code>warm.500</code> in dark. Warm in both, per D3's note, which is why the dark
+        value is not <code>color.control.border</code>'s.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Deliberately not proposed</h2>
+    <ul class="notes">
+      <li><strong>A labelled separator</strong> &mdash; a rule with &ldquo;or&rdquo; or a section name set into it. A real pattern, but it is a layout with two rules and a centred label, and it wants its own decisions about the label's type and tone. Additive later.</li>
+      <li><strong>A focusable separator.</strong> WAI-ARIA makes <code>separator</code> a widget role when focusable, with <code>aria-valuenow</code> and a keyboard model &mdash; that is a splitter for resizing panes, and a different component with a different name.</li>
+      <li><strong>A thickness or <code>size</code> ramp.</strong> One pixel. Anything heavier is a surface rather than a rule, and would take <code>color.surfaces.*</code>.</li>
+      <li><strong>Decorative variants</strong> &mdash; dashed, dotted, gradient. No consumer, and each is a new token or a new rule to maintain for an effect that is usually a mistake.</li>
+      <li><strong>Refactoring anything onto it.</strong> Nothing in Jig draws a rule today, so there is no migration &mdash; only new use.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>As built</h2>
+    <p>
+      Built 2026-08-31. All four decisions went in as accepted, and the proposal was
+      accurate &mdash; the only divergence is one attribute the document showed being
+      omitted, explained below.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><b>Added</b> <code>packages/components/src/separator/</code> &mdash; the five-file set.</li>
+      <li><b>Changed</b> <code>packages/tokens/src/semantics/color-light.ts</code> and <code>color-dark.ts</code> &mdash; <code>color.line</code>, a bare token beside <code>color.focus</code>, at <code>warm.200</code> and <code>warm.500</code>.</li>
+      <li><b>Changed</b> <code>packages/tokens/src/validate.ts</code> &mdash; <code>color.line</code> added to <code>REQUIRED_SEMANTICS</code>, so losing it is a build error rather than an unstyled rule.</li>
+      <li><b>Changed</b> <code>src/index.ts</code>, <code>refs.test.tsx</code>, <code>api.types.test.tsx</code>.</li>
+    </ul>
+
+    <h3>The one divergence</h3>
+    <p>
+      D1's specimen showed <code>aria-orientation</code> being set only for the vertical
+      case, on the understanding that <code>horizontal</code> is the role's default and
+      therefore redundant. <b>As built it is set for both.</b>
+    </p>
+    <p>
+      The reason is a failure to verify rather than a change of mind. Two attempts to
+      read the default off the published specs &mdash; the <code>separator</code> role
+      definition and the <code>aria-orientation</code> property definition &mdash; both
+      returned pages truncated before the table that would confirm it. Rather than ship
+      an omission resting on an unverified assumption, the attribute is explicit in both
+      orientations, which is what Base UI's own component does and which cannot be wrong
+      either way. If someone later confirms the default, dropping it for the horizontal
+      case is a one-line change with no behavioural risk.
+    </p>
+
+    <h3>What the proposal got right</h3>
+    <ul class="notes">
+      <li><b><code>decorative</code> needs no <code>aria-hidden</code>.</b> Omitting the role is enough &mdash; an empty <code>div</code> with no role contributes nothing to the accessibility tree. Asserted directly: with <code>decorative</code>, the element has neither a <code>role</code> nor an <code>aria-orientation</code>, and no separator is findable even with hidden elements included.</li>
+      <li><b>Stretch works with nothing passed.</b> In the toolbar story the rule measures 39px against a row of 39px and buttons of 39px &mdash; it tracks the row rather than a number anyone typed.</li>
+      <li><b>The token needed no set.</b> <code>ThemeColors</code> already allows a bare <code>Token</code> at the top level, which is how <code>color.focus</code> is declared, so <code>color.line</code> slotted in beside it without touching the type.</li>
+    </ul>
+
+    <h3>A concern from D3's outcome, now withdrawn</h3>
+    <p>
+      D3's outcome flagged that a warm line in dark would be &ldquo;the first place the
+      two themes stop mirroring each other's hue choice&rdquo;, and that
+      &ldquo;dark uses gray where light uses warm&rdquo; would stop being a rule that
+      holds. <b>That concern does not apply.</b> The dark ramp is being moved to warm
+      generally, so <code>color.line</code> is early rather than exceptional, and it will
+      be consistent with the rest by the time the shift lands. Recorded so the warning is
+      not read later as an outstanding problem.
+    </p>
+
+    <h3>Worth a future proposal</h3>
+    <ul class="notes">
+      <li><b>The vertical failure is still silent.</b> Outside a flex or grid parent a vertical separator renders nothing, and no type can catch it. The prop documentation and a dedicated story say so, which is all that was available &mdash; a dev-only warning when the computed height is zero would be a genuine improvement and is a tooling decision rather than a design one.</li>
+      <li><b>The <code>decorative</code> default may be the wrong way round.</b> D2's outcome sets out the argument in full. Nothing in the build changed it; it is a question for real use.</li>
+      <li><b><code>color.line</code> has one consumer.</b> If a Dialog header rule, a table row divider or a CodeBlock bar wants the same line later, it should read this token rather than reaching for <code>color.control.border</code> again.</li>
+    </ul>
+
+    <h3>Verification</h3>
+    <p>
+      <code>pnpm turbo typecheck test</code>: 12 tasks, 154 tests, all passing. The
+      semantics are covered in <code>separator.test.tsx</code>; the colour, the stretch
+      and both orientations were measured in the browser, in both themes &mdash; the rule
+      resolves to <code>oklch(0.859 0.007 83)</code> in light and
+      <code>oklch(0.454 0.011 83)</code> in dark, which is <code>warm.200</code> and
+      <code>warm.500</code> as decided.
+    </p>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0012
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">4 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0012-separator",
+  "status": "built",
+  "decided": "2026-08-31",
+  "built": "2026-08-31",
+  "decisions": [
+    { "id": "element", "title": "Which element carries the rule",
+      "options": ["div-role", "hr", "element-by-orientation"],
+      "recommended": "div-role", "outcome": "div-role",
+      "note": "I will likely add additional styling options in the future, so div is safest." },
+    { "id": "announced", "title": "Whether a separator is announced",
+      "options": ["decorative-prop", "always-announced", "always-decorative"],
+      "recommended": "decorative-prop", "outcome": "decorative-prop",
+      "note": "I want to follow a11y best practice here, which seems like it is the recommendation, please flag if not. -- Answered in the outcome: the prop is best practice, the default is a judgement call that no standard settles. Kept as announced-by-default because the two failure modes are asymmetric." },
+    { "id": "line-token", "title": "Which token colours the line",
+      "options": ["new-line-token", "reuse-control-border", "line-scale"],
+      "recommended": "new-line-token", "outcome": "new-line-token",
+      "note": "Use warm in both light and dark. -- So warm.200 light and warm.500 dark; the document's claim that the token matches color.control.border is corrected, as it now holds in light only." },
+    { "id": "vertical-length", "title": "How a vertical separator gets its length",
+      "options": ["stretch", "caller-height", "stretch-with-inset"],
+      "recommended": "stretch", "outcome": "stretch", "note": null }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists --
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>
