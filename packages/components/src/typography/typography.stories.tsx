@@ -14,7 +14,7 @@ type Story = StoryObj<typeof meta>;
 
 const displays = ['display01', 'display02', 'display03', 'display04', 'display05', 'display06'] as const;
 const headings = ['heading01', 'heading02', 'heading03', 'heading04', 'heading05', 'heading06'] as const;
-const body = ['body01', 'body02', 'caption01', 'caption02'] as const;
+const body = ['body01', 'body02', 'caption01', 'caption02', 'code01'] as const;
 
 export const Default: Story = {};
 
@@ -34,6 +34,27 @@ export const Headings: Story = {
       {headings.map((style) => (
         <Typography {...args} key={style} with={style} mb="300">{style}</Typography>
       ))}
+    </>
+  ),
+};
+
+/**
+ * `code01` is `body01`'s size and line-height on the mono family, so a
+ * monospaced value sits on the same rhythm as the prose beside it. The two
+ * lines below are the case it exists for.
+ */
+export const CodeBesideBody: Story = {
+  render: (args) => (
+    <>
+      <Typography {...args} with="body01" mb="200">
+        The build target is set in the config file.
+      </Typography>
+      <Typography {...args} with="code01" mb="200">
+        build.target = "es2022"
+      </Typography>
+      <Typography {...args} with="body01">
+        Restart the dev server for it to take effect.
+      </Typography>
     </>
   ),
 };

@@ -1,0 +1,1509 @@
+<title>0018 &middot; Structured List, revised</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Rows below are flex, which is
+     what D2 is about &mdash; so the column widths in these specimens are the real
+     mechanism, not a drawing of one. */
+
+  .jig {
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+    --j-rad: 4.3px;
+
+    --j-card:  #FFFFFF;
+    --j-text:  #34312A;
+    --j-muted: #8B8880;
+    --j-line:  #D3D0CC;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-card: #27241E; --j-text: #E7E5E1; --j-muted: #B8B5AE; --j-line: #46433D;
+    }
+  }
+  :root[data-theme="dark"] .jig {
+    --j-card: #27241E; --j-text: #E7E5E1; --j-muted: #B8B5AE; --j-line: #46433D;
+  }
+
+  .jig .stage {
+    width: 100%;
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-500);
+    font-family: var(--sans);
+    color: var(--j-text);
+    font-size: var(--j-ts-300);
+    line-height: 1.4;
+  }
+
+  /* ---- flex rows: what D2 proposes ---- */
+
+  .jig .sl { display: block; width: 100%; }
+
+  .jig .sl .row {
+    display: flex;
+    column-gap: var(--j-sp-400);
+    border-bottom: 1px solid var(--j-line);
+  }
+
+  /* the default: every cell an equal share */
+  .jig .sl .cell {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: var(--j-sp-400) 0;
+  }
+
+  .jig .sl .hd { font-weight: 600; }
+
+  /* dictated widths, applied by column position */
+  .jig .w-fixed .row > :nth-child(1) { flex: 0 0 4.5rem; }
+  .jig .w-fixed .row > :nth-child(2) { flex: 1 1 0; }
+  .jig .w-fixed .row > :nth-child(3) { flex: 0 0 3rem; }
+
+  .jig .w-ratio .row > :nth-child(1) { flex: 1 1 0; }
+  .jig .w-ratio .row > :nth-child(2) { flex: 3 1 0; }
+  .jig .w-ratio .row > :nth-child(3) { flex: 1 1 0; }
+
+  .jig .w-content .row > :nth-child(1) { flex: 0 0 auto; }
+  .jig .w-content .row > :nth-child(2) { flex: 1 1 0; }
+  .jig .w-content .row > :nth-child(3) { flex: 0 0 auto; }
+
+  /* the grid it replaces, for the before/after */
+  .jig .as-grid .row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* ---- per-cell type: what D1 is about ---- */
+
+  .jig .t-body01   { font-size: var(--j-ts-300); font-weight: 400; }
+  .jig .t-body02   { font-size: var(--j-ts-400); font-weight: 400; }
+  .jig .t-caption01{ font-size: var(--j-ts-100); font-weight: 400; }
+  .jig .t-mono     { font-family: var(--mono); font-size: var(--j-ts-200); }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+  .jig .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .jig .stack { display: flex; flex-direction: column; gap: var(--j-sp-500); width: 100%; }
+
+  figure + h3 { margin-top: 2.25rem; }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0018</p>
+    <h1>Structured List, revised</h1>
+    <p class="standfirst">
+      Three changes to a component built yesterday: the type prop moves to the cell, rows
+      become flex so columns can be given widths, and a cell should be able to take its
+      label from the header above it. The first is small. The other two each need a
+      mechanism Jig does not have yet.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-07</li>
+      <li>3 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      <b>This supersedes parts of
+      <a href="0017-structured-list.html">0017</a>, which is Built.</b> Specifically:
+      D4 put <code>with</code> on the list and this moves it to the cell; the rows were
+      built as grids sharing one template and this makes them flex; and D2's contract
+      &mdash; a <code>label</code> written on every cell &mdash; becomes a fallback rather
+      than the only route. 0017's own decisions stay readable as they were made; nothing
+      in it is edited.
+    </p>
+    <p>
+      Two of the three were already on 0017's list of open questions. Its As built
+      recorded that &ldquo;a context would make the count, the column labels and the
+      cell-position checks exact &mdash; and Jig still has no context anywhere, which is a
+      decision worth making deliberately rather than by accumulation&rdquo;, and that
+      &ldquo;nothing validates cell order&rdquo;. D3 below is that decision arriving.
+    </p>
+
+    <h3>What the codebase has, and has not</h3>
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>grep across packages/components/src</i>
+
+  createContext / useContext   <span class="no">0 occurrences</span>
+  cloneElement                 <span class="in">1 &mdash; tooltip.tsx:184</span></pre>
+      </div>
+      <figcaption>
+        Tooltip clones the child it is given to attach an anchor name, handlers and
+        <code>aria-describedby</code>. So injecting props into someone else's element is
+        precedented in Jig; holding shared state above them is not. D3 is the choice
+        between extending the precedent and starting a new one.
+      </figcaption>
+    </figure>
+
+    <h3>The rule D2 runs into</h3>
+    <p>
+      The checklist is explicit: &ldquo;Other components get spacing from their parent,
+      and <b>box dimensions go through <code>style</code>, not props</b>.&rdquo; A
+      <code>width</code> prop on a cell is exactly what that forbids. One option below
+      amends the rule the way 0014 D2 amended the <code>as</code> rule &mdash; deliberately
+      and in writing &mdash; and the others work within it.
+    </p>
+    <p>
+      Worth being clear about why flex changes anything. Grid rows shared one template, so
+      a column width was declared once and every row obeyed it. Flex rows each lay out
+      independently, so <em>alignment is no longer structural</em>: it holds only while
+      every row's nth cell resolves to the same width. That is the property D2 is really
+      choosing how to preserve.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li>
+        The ARIA roles do not change. <code>role="table"</code>, <code>rowgroup</code>,
+        <code>row</code>, <code>columnheader</code>, <code>cell</code> on plain elements,
+        emitted by the components and never accepted from a caller (0017 D1). Flex does
+        nothing to them &mdash; the roles were chosen precisely so layout could move.
+      </li>
+      <li>
+        The stacked layout still moves the header row off-screen rather than removing it,
+        and the visible per-cell label stays <code>aria-hidden</code> (0017's As built).
+        Whatever D3 chooses, that is about where the label's <em>text</em> comes from, not
+        whether it is announced.
+      </li>
+      <li>
+        <code>layout</code> stays a caller-set <code>Responsive</code> prop with the same
+        default (0017 D3). Both marker branches must keep declaring the same property set
+        &mdash; the bug 0017's As built records.
+      </li>
+      <li>
+        Headings keep taking their preset at weight 600 rather than a quieter one
+        (0017 D4). Only <em>which</em> preset, and where it is set, is open.
+      </li>
+      <li>
+        Three components, one folder, full names on each. No <code>as</code> prop; consumer
+        props reach the root; refs type to the rendered element.
+      </li>
+      <li>
+        No new tokens and no new dependency &mdash; every value here is an existing spacing
+        step or type preset.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Rows in every specimen are flex, which is D2's proposal rather than a drawing of it.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="type-scope" data-title="Where the type prop lives">
+    <p class="decision-id">D1 &middot; type-scope</p>
+    <h2>Where the type prop lives</h2>
+    <p>
+      The brief: &ldquo;the use case is for individual columns/cells, not primarily the
+      whole list&rdquo;. <em>Primarily</em> is the word doing the work &mdash; a cell-level
+      prop is wanted, and whether a list-level default survives beside it is the question.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="cell-only" data-label="On the cell alone">
+        <div class="option-head"><h3>On the cell alone</h3></div>
+        <p class="specimen-label">Specimen &mdash; every cell says its own type</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-fixed">
+              <div class="row"><div class="cell hd">Key</div><div class="cell hd">Value</div><div class="cell hd">Type</div></div>
+              <div class="row"><div class="cell t-mono">build.target</div><div class="cell t-mono">es2022</div><div class="cell t-caption01">string</div></div>
+              <div class="row"><div class="cell t-mono">sourcemap</div><div class="cell t-mono">true</div><div class="cell t-caption01">boolean</div></div>
+            </div>
+          </div>
+          <p class="caption">no list default &mdash; nine cells, nine <code>with</code> props for one uniform list</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Literally the brief, and the smallest possible surface: one prop, on the thing it describes.</li>
+          <li class="pro">No question about precedence, because there is nothing to precede.</li>
+          <li class="con">A list that wants one type throughout &mdash; still the common case &mdash; repeats the prop on every cell, and a missed one is a silent inconsistency.</li>
+          <li class="con">Loses the header's type entirely: headers come from the list's <code>headers</code> array, so with no list-level setting they have nothing to take a preset from.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="cell-overrides-list" data-label="Cell overrides a list default">
+        <div class="option-head">
+          <h3>Cell overrides a list default</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; list at <code>body01</code>, two cells override</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-fixed">
+              <div class="row"><div class="cell hd">Key</div><div class="cell hd">Value</div><div class="cell hd">Type</div></div>
+              <div class="row"><div class="cell t-mono">build.target</div><div class="cell">es2022</div><div class="cell t-caption01">string</div></div>
+              <div class="row"><div class="cell t-mono">sourcemap</div><div class="cell">true</div><div class="cell t-caption01">boolean</div></div>
+            </div>
+          </div>
+          <p class="caption">middle column inherits; the others name their own</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Grants the brief &mdash; <code>with</code> is on the cell and that is where a column's type is set &mdash; without making the uniform case verbose.</li>
+          <li class="pro">Costs nothing to build: the list already sets type on the root and cells already inherit it. A cell-level preset is one more variant, and CSS resolves the precedence.</li>
+          <li class="pro">Exactly 0009 D3's outcome, applied one level down: an explicit prop at the call site outranks an ambient value the caller did not set.</li>
+          <li class="pro">Headers keep a preset to take, which the cell-only option loses.</li>
+          <li class="con">Two places to look when a cell's type surprises you, which is the standing cost of any inherited-plus-override pair.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="column-type" data-label="Type declared per column">
+        <div class="option-head"><h3>Type declared per column</h3></div>
+        <p class="specimen-label">Specimen &mdash; headers carry the type for their column</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-fixed">
+              <div class="row"><div class="cell hd t-mono">Key</div><div class="cell hd">Value</div><div class="cell hd t-caption01">Type</div></div>
+              <div class="row"><div class="cell t-mono">build.target</div><div class="cell">es2022</div><div class="cell t-caption01">string</div></div>
+              <div class="row"><div class="cell t-mono">sourcemap</div><div class="cell">true</div><div class="cell t-caption01">boolean</div></div>
+            </div>
+          </div>
+          <p class="caption">heading and cells match, because both come from the column</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">The only option where a column's heading and its cells share a type without being told twice &mdash; visible above, where the mono column's heading is mono too.</li>
+          <li class="pro">Says it once per column rather than once per cell, which is what &ldquo;individual columns&rdquo; asks for most literally.</li>
+          <li class="con">Turns <code>headers</code> from strings into objects, changing the shape of the prop 0017 shipped a day ago for every existing caller.</li>
+          <li class="con">Only works when a cell knows which column it is in &mdash; so it is not independent of D3, and picking it here constrains that decision.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-07</span>
+      <b>Cell overrides a list default.</b> <code>with</code> is added to
+      <code>StructuredListCell</code> and stays on <code>StructuredList</code>, where it
+      keeps its <code>body01</code> default. The list sets the preset on the root and cells
+      inherit it; a cell's own <code>with</code> is emitted after, so an explicit prop at
+      the call site outranks the ambient one &mdash; 0009 D3's outcome, one level down.
+      <p>
+        Column headings keep taking the <em>list's</em> preset at weight 600. The
+        per-column option was declined, so a column whose cells are set to something else
+        will have a heading that does not match them &mdash; a mono column under a sans
+        heading, say. That is now a known and accepted mismatch rather than an oversight;
+        the caller's route is to set the list's <code>with</code> to whatever the headings
+        should be.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="column-widths" data-title="How a column gets a width">
+    <p class="decision-id">D2 &middot; column-widths</p>
+    <h2>How a column gets a width</h2>
+    <p>
+      Flex rows are the ask. The consequence is that alignment stops being structural:
+      grid rows shared one template, flex rows each resolve independently, and the columns
+      only line up while every row's nth cell comes out the same width. So the real
+      question is where that width is declared, and the checklist rules out the most
+      obvious answer &mdash; box dimensions go through <code>style</code>, not props.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="list-widths" data-label="An array on the list">
+        <div class="option-head">
+          <h3>An array on the list</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; <code>columnWidths={['4.5rem', 'auto', '3rem']}</code></p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-fixed">
+              <div class="row"><div class="cell hd">Plan</div><div class="cell hd">Detail</div><div class="cell hd">Price</div></div>
+              <div class="row"><div class="cell">Starter</div><div class="cell">Try the API in anger</div><div class="cell">Free</div></div>
+              <div class="row"><div class="cell">Team</div><div class="cell">Shared projects and seats</div><div class="cell">$29</div></div>
+            </div>
+          </div>
+          <p class="caption">declared once &middot; applied by column position &middot; rows cannot disagree</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Keeps alignment structural in the only way flex allows: one declaration, applied to every row's nth cell, so rows cannot drift apart.</li>
+          <li class="pro">Stays inside the checklist &mdash; a column width is a property of the list's shape, not a box dimension on a component.</li>
+          <li class="pro">Reads like the thing it replaces. <code>['9rem', 'auto', '6rem']</code> is a track list by another name, so nothing is lost from the grid version.</li>
+          <li class="con">Positional, and 0017 rejected its <code>hybrid</code> option for being positional. The mitigation is that this is one array on the parent rather than a per-row correspondence, so there is one place to get it wrong instead of one per row.</li>
+          <li class="con">A new prop whose values are CSS lengths, which is the thing the checklist is nervous about even if it is not literally a box dimension.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="style-escape" data-label="The style escape hatch">
+        <div class="option-head"><h3>The <code>style</code> escape hatch</h3></div>
+        <p class="specimen-label">Specimen &mdash; ratios set per cell, repeated per row</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-ratio">
+              <div class="row"><div class="cell hd">Plan</div><div class="cell hd">Detail</div><div class="cell hd">Price</div></div>
+              <div class="row"><div class="cell">Starter</div><div class="cell">Try the API in anger</div><div class="cell">Free</div></div>
+              <div class="row"><div class="cell">Team</div><div class="cell">Shared projects and seats</div><div class="cell">$29</div></div>
+            </div>
+          </div>
+          <p class="caption"><code>style={{ flex: '3 1 0' }}</code> on the middle cell of every row</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">No new API at all, and exactly what the checklist already points callers at for dimensions.</li>
+          <li class="pro">Total control &mdash; any flex value, per cell, including deliberately ragged rows if that is wanted.</li>
+          <li class="con">The width is repeated on every row, so a list of twenty rows states each column's width twenty times and one typo misaligns a single row.</li>
+          <li class="con">Alignment becomes a convention the caller maintains rather than a property the component guarantees, which is most of what a structured list is for.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="cell-width-prop" data-label="A width prop on the cell">
+        <div class="option-head"><h3>A <code>width</code> prop on the cell</h3></div>
+        <p class="specimen-label">Specimen &mdash; content-sized outer columns</p>
+        <div class="specimen block jig">
+          <div class="stage">
+            <div class="sl w-content">
+              <div class="row"><div class="cell hd">Plan</div><div class="cell hd">Detail</div><div class="cell hd">Price</div></div>
+              <div class="row"><div class="cell">Starter</div><div class="cell">Try the API in anger</div><div class="cell">Free</div></div>
+              <div class="row"><div class="cell">Team</div><div class="cell">Shared projects and seats</div><div class="cell">$29</div></div>
+            </div>
+          </div>
+          <p class="caption"><code>width="auto"</code> on the outer cells &mdash; note the columns no longer align exactly</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Reads best at the call site: the width sits on the cell it applies to, in the component's own vocabulary rather than raw CSS.</li>
+          <li class="pro">Could take design-system values rather than arbitrary lengths, which the <code>style</code> hatch cannot.</li>
+          <li class="con"><b>Contradicts the checklist</b> &mdash; &ldquo;box dimensions go through <code>style</code>, not props&rdquo;. Taking it means amending that rule in writing, as 0014 D2 did for <code>as</code>, not quietly.</li>
+          <li class="con">Repeated per row like the option above, with the same drift. The specimen shows it: content-sized columns make each row size to <em>its own</em> content, and the three rows stop lining up.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-07</span>
+      <b><code>columnWidths</code>, an array on the list.</b> Rows become
+      <code>display: flex</code> with a <code>column-gap</code>; cells default to
+      <code>flex: 1 1 0</code> with <code>min-width: 0</code>, and
+      <code>columnWidths</code> overrides that per column position. Values are flex
+      shorthands or lengths &mdash; <code>['4.5rem', 'auto', '3rem']</code> reads as the
+      track list it replaces.
+      <p>
+        <b>D3 makes this simpler than the option described.</b> The specimen implied
+        position-based CSS &mdash; <code>nth-child</code> rules generated up to some
+        bounded column count. With context accepted in D3 the cell already knows its own
+        index, so it can read <code>columnWidths[index]</code> and set its own
+        <code>flex</code> directly. No generated rules, no upper bound on columns, and the
+        two decisions compose rather than stacking two mechanisms. Build it that way.
+      </p>
+      <p>
+        The costs recorded stand. Alignment is no longer structural &mdash; it holds
+        because every row's nth cell resolves to the same width, not because they share a
+        template &mdash; and the mapping is positional, which is what 0017 rejected its
+        <code>hybrid</code> option for. The mitigation is that this is one array on the
+        parent rather than a per-row correspondence. <code>columnWidths</code> applies only
+        in the column layout; stacked rows are unaffected.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="label-source" data-title="How a cell learns its label">
+    <p class="decision-id">D3 &middot; label-source</p>
+    <h2>How a cell learns its label</h2>
+    <p>
+      The ask: a cell should take its label from the header above it, with
+      <code>label</code> only as an override. Today it is required on every cell &mdash;
+      the duplication 0017 D2 accepted and its As built flagged twice.
+    </p>
+    <p>
+      For a cell to find its own header it needs two things it does not have: the list's
+      <code>headers</code>, and its own column index. Both live above it. The three ways to
+      get them down differ in what they cost the rest of the system.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="context" data-label="React context">
+        <div class="option-head">
+          <h3>React context</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; the call site, and what carries the label</p>
+        <div class="specimen block">
+<pre class="tree">&lt;StructuredList
+  headers={['Plan','Requests']}
+&gt;
+  &lt;StructuredListRow&gt;
+    &lt;StructuredListCell&gt;
+      Starter
+    &lt;/StructuredListCell&gt;
+    &lt;StructuredListCell&gt;
+      10,000
+    &lt;/StructuredListCell&gt;
+  &lt;/StructuredListRow&gt;
+&lt;/StructuredList&gt;
+
+<i>list provides   headers</i>
+<i>row provides    index per cell</i>
+<i>cell reads      headers[index]</i>
+
+<b>label="..." still wins when given</b></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Exact. The cell's index comes from the row that actually rendered it, so the label cannot drift out of step with the column the way a hand-written one can.</li>
+          <li class="pro">Survives everything cloning does not &mdash; fragments, <code>map</code>, a caller's own wrapper component around a cell.</li>
+          <li class="pro">Makes 0017's open question about cell-order validation answerable: with the index known, a mismatched <code>label</code> override becomes a precise warning.</li>
+          <li class="con"><b>The first context in Jig.</b> Nothing in the library holds state above its children today, and adding one sets the precedent for every component after it.</li>
+          <li class="con">Three components become coupled through an invisible channel &mdash; a cell rendered outside a row silently gets no label rather than failing.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="clone" data-label="Cloning, two levels down">
+        <div class="option-head"><h3>Cloning, two levels down</h3></div>
+        <p class="specimen-label">Specimen &mdash; the same call site, injected instead</p>
+        <div class="specimen block">
+<pre class="tree"><i>list clones each row</i>
+  Children.map(rows, (row) =&gt;
+    cloneElement(row, { headers }))
+
+<i>row clones each cell</i>
+  Children.map(cells, (cell, i) =&gt;
+    cloneElement(cell, {
+      label: cell.props.label
+        ?? headers[i]
+    }))
+
+<span class="no">breaks on a fragment, a mapped
+array one level deeper, or any
+wrapper around a cell</span></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Precedented &mdash; <code>Tooltip</code> already clones the child it is given to attach handlers and an anchor name.</li>
+          <li class="pro">No new state mechanism, and the injection is visible in the component that does it rather than hidden in a provider.</li>
+          <li class="con">Fragile in exactly the ways 0017's As built already recorded for its best-effort child introspection: a fragment or a wrapper defeats it, and it fails silently.</li>
+          <li class="con">Two levels of cloning is more machinery than a context, not less &mdash; and it rewrites the caller's elements rather than reading from above them.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="keep-explicit" data-label="Keep the label required">
+        <div class="option-head"><h3>Keep the label required</h3></div>
+        <p class="specimen-label">Specimen &mdash; what ships today</p>
+        <div class="specimen block">
+<pre class="tree">&lt;StructuredListRow&gt;
+  &lt;StructuredListCell
+    <b>label="Plan"</b>
+  &gt;Starter&lt;/StructuredListCell&gt;
+  &lt;StructuredListCell
+    <b>label="Requests"</b>
+  &gt;10,000&lt;/StructuredListCell&gt;
+&lt;/StructuredListRow&gt;
+
+<i>the column name written once
+per cell, checked by a warning</i></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Nothing new to build, and no new coupling between the three components.</li>
+          <li class="pro">Everything about a cell is visible at the cell &mdash; nothing arrives from a channel the reader cannot see.</li>
+          <li class="con">Declines the request, and leaves the duplication that 0017 accepted with reservations and then flagged twice in its As built.</li>
+          <li class="con">Leaves cell-order validation impossible, since nothing knows which column a cell is in.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-07</span>
+      <b>React context &mdash; the first in Jig.</b> The list provides its
+      <code>headers</code> and <code>columnWidths</code>; the row provides each cell's
+      index; the cell reads <code>headers[index]</code> for its label and
+      <code>columnWidths[index]</code> for its width. An explicit <code>label</code> still
+      wins when given, which is the brief.
+      <p>
+        <b>This sets a precedent, and the precedent is the point of the decision.</b>
+        Nothing in the library has held state above its children until now. The rule this
+        establishes: context is for a component family whose parts are meaningless apart
+        &mdash; list, row, cell &mdash; and never for passing configuration between
+        components a consumer composes freely. A future component wanting one should have
+        to clear that bar.
+      </p>
+      <p>
+        Two things 0017 left open become answerable and should be built now that the index
+        is known: a <code>label</code> override that matches no header is a precise warning
+        rather than a guess, and cell order can finally be validated &mdash; the failure
+        mode 0017's As built recorded as impossible to catch, where a row whose cells are
+        ordered differently from the headers looks correct wide and is mislabelled stacked.
+      </p>
+      <p>
+        The cost accepted with it: a cell rendered outside a row gets no label and no width
+        rather than failing loudly. That should be a development warning too.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>As built</h2>
+    <p>
+      Built 2026-09-07 to the three accepted options. <code>pnpm turbo typecheck test</code>
+      passes: 12 tasks, 242 tests across the three packages.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/components/src/structuredlist/structuredlist.tsx</code> &mdash; two contexts, per-cell <code>with</code>, <code>columnWidths</code>, three new warnings</li>
+      <li><code>packages/components/src/structuredlist/structuredlist.css.ts</code> &mdash; flex rows, cell recipe with a <code>with</code> variant, grid template removed</li>
+      <li><code>.test.tsx</code>, <code>.stories.tsx</code>, <code>api.types.test.tsx</code>, and the playground section</li>
+    </ul>
+
+    <h3>D3 deleted more than it added</h3>
+    <p>
+      The context was accepted to solve one problem &mdash; a cell finding its label. It
+      removed three other things on the way, none of which the decision anticipated:
+    </p>
+    <ul class="notes">
+      <li>
+        <b>The <code>columns</code> prop is gone.</b> It existed only to feed the grid's
+        template a count when <code>headers</code> could not supply one. Flex rows need no
+        count, so it had nothing left to do.
+      </li>
+      <li>
+        <b>So is <code>cellsInFirstRow</code>.</b> 0017's best-effort walk through the
+        list's grandchildren, guessing a column count from the first row, deleted outright.
+      </li>
+      <li>
+        <b>The row-count warning became exact.</b> It used to introspect children from the
+        list; the row now knows its own cell count and reads the expected one from context,
+        so it is a comparison of two numbers rather than a guess that bailed on fragments.
+      </li>
+    </ul>
+    <p>
+      That is the argument for context stated better than the decision stated it: not that
+      it makes the label possible, but that it makes the component stop guessing.
+    </p>
+
+    <h3>What the build corrected</h3>
+    <ul class="notes">
+      <li>
+        <b><code>flex: 1 1 0</code> does not parse everywhere.</b> A unitless zero in the
+        <code>flex</code> shorthand is rejected by some CSS parsers &mdash; jsdom's among
+        them, which is how it surfaced: the value went in and came back as an empty string.
+        <code>toFlex</code> emits <code>1 1 0%</code> instead, which is identical in layout
+        and parses everywhere. Verified in a real browser afterwards, where the computed
+        values are <code>0 0 10rem</code>, <code>1 1 0%</code>, <code>0 0 8rem</code>.
+      </li>
+      <li>
+        <b>The context value needed <code>| undefined</code> written out.</b> Under
+        <code>exactOptionalPropertyTypes</code> an optional property and one explicitly
+        typed <code>| undefined</code> are different things, and the provider always passes
+        both keys. The same variance rule that bit SideNavSection's <code>ref</code> in
+        0014.
+      </li>
+      <li>
+        <b>A bare length had to mean &ldquo;fixed&rdquo;.</b> The outcome said
+        <code>columnWidths</code> accepts &ldquo;flex shorthands or lengths&rdquo; without
+        saying what a length means. Written as a flex value, <code>4.5rem</code> would be
+        <code>1 1 4.5rem</code> &mdash; a column that still grows, which is not what a
+        track list of that shape implies. <code>toFlex</code> maps a bare length to
+        <code>0 0 &lt;length&gt;</code>, <code>'auto'</code> to
+        <code>1 1 0%</code>, and passes anything containing a space through untouched.
+      </li>
+      <li>
+        <b>Only a string heading can become a label.</b> <code>headers</code> takes
+        <code>ReactNode</code>, so a heading built from elements has no text a cell can
+        safely reuse. Those columns fall back to needing an explicit <code>label</code>,
+        which the prop docs now say.
+      </li>
+    </ul>
+
+    <h3>What the decisions got right</h3>
+    <p>
+      D1 cost almost nothing, as predicted: the list already set type on the root and cells
+      already inherited it, so a cell preset is one recipe variant emitted after the list's
+      and CSS resolves the precedence. Verified in a browser &mdash; one row renders at
+      12.64px, 15.52px and 10.56px across three cells. And D2's outcome was right that D3
+      made it simpler: because the cell knows its index, <code>columnWidths</code> is read
+      and applied inline by the cell, with no generated <code>nth-child</code> rules and no
+      upper bound on column count.
+    </p>
+
+    <h3>Questions for a future proposal</h3>
+    <ul class="notes">
+      <li>
+        <b>Headings cannot follow their column's type.</b> D1 declined the per-column
+        option, so a column whose cells are <code>caption02</code> still has a heading at
+        the list's preset. Visible in the playground's config table. Fixing it means
+        <code>headers</code> becoming objects, which is the breaking change D1 rejected
+        &mdash; worth revisiting only if the mismatch proves to matter.
+      </li>
+      <li>
+        <b>The context precedent now needs enforcing.</b> D3's outcome set the bar &mdash;
+        a family whose parts are meaningless apart &mdash; but nothing in the checklist
+        says so. It should, or the second context will be added by analogy rather than by
+        argument.
+      </li>
+      <li>
+        <b>Alignment is now a runtime property, not a structural one.</b> Rows lay out
+        independently; they line up because every nth cell gets the same
+        <code>flex</code>. Nothing catches a row with the wrong number of cells beyond a
+        development warning, and nothing at all catches a caller who wraps a cell in their
+        own component &mdash; the index context would be lost and the cell would take the
+        default share silently.
+      </li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0018
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0018-structured-list-revised",
+  "status": "built",
+  "decided": "2026-09-07",
+  "built": "2026-09-07",
+  "supersedes": ["0017-structured-list"],
+  "decisions": [
+    { "id": "type-scope", "outcome": "cell-overrides-list",    "options": ["cell-only", "cell-overrides-list", "column-type"] },
+    { "id": "column-widths", "outcome": "list-widths", "options": ["list-widths", "style-escape", "cell-width-prop"] },
+    { "id": "label-source", "outcome": "context",  "options": ["context", "clone", "keep-explicit"] }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

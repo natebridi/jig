@@ -80,7 +80,7 @@ export const panel = style({
   maxHeight: "100%",
   minHeight: 0,
   background: color.surfaces.card,
-  borderRadius: radius[400],
+  borderRadius: radius[600],
   // `hi` — the layer that has taken over the screen. The ramp is themed: the
   // same alpha that lifts a card off white is invisible on a dark page, so the
   // dark context carries roughly four times the opacity at the same geometry.

@@ -1,0 +1,1680 @@
+<title>0016 &middot; Warm primary</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Buttons below are Button's real md geometry from button.css.ts &mdash; padding
+     spacing.400/500, radius.400, sans 500 at scale.300, line-height 1em &mdash; so
+     the only thing changing between specimens is the colour mapping.
+     Candidate fills are written as literal hex computed from the warm ramp's
+     oklch, so this page needs no token build to be accurate. */
+
+  .jig {
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-ts-300: 0.97rem;
+    --j-rad: 4.3px;
+
+    /* surfaces, light */
+    --j-body: #EEECE8;          /* warm.25  */
+    --j-card: #FFFFFF;
+    --j-ink:  #34312A;          /* warm.600 */
+
+    /* today's shared mapping: {hue}.450 fill, {hue}.50 text */
+    --now-pri-bg: #4A6FB8; --now-pri-tx: #E8EEF7;   /* blue.450 / blue.50 */
+    --now-sec-bg: #6F6C66; --now-sec-tx: #ECEAE6;   /* warm.450 / warm.50 */
+
+    /* primary candidates */
+    --pa-bg: #46433D; --pa-hv: #34312A; --pa-ac: #27241E; --pa-tx: #ECEAE6;  /* 550 */
+    --pb-bg: #34312A; --pb-hv: #27241E; --pb-ac: #1B1811; --pb-tx: #ECEAE6;  /* 600 */
+    --pc-bg: #27241E; --pc-hv: #1B1811; --pc-ac: #12100B; --pc-tx: #ECEAE6;  /* 650 */
+
+    /* secondary candidates */
+    --sa-bg: #E7E5E1; --sa-hv: #DDDBD6; --sa-ac: #D3D0CC; --sa-tx: #34312A;  /* 100 */
+    --sb-bg: #D3D0CC; --sb-hv: #C4C1BC; --sb-ac: #B1AEA9; --sb-tx: #34312A;  /* 200 */
+    --sc-bd: #B1AEA9; --sc-hv: #E7E5E1; --sc-tx: #34312A;                     /* outline */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig { --j-body: #2A2620; --j-card: #27241E; --j-ink: #E7E5E1;
+      --now-pri-bg: #2E5AA8; --now-pri-tx: #DCE6F4;
+      --now-sec-bg: #595650; --now-sec-tx: #E7E5E1;
+      --pa-bg: #DDDBD6; --pa-hv: #ECEAE6; --pa-ac: #F4F2EF; --pa-tx: #1B1811;
+      --pb-bg: #E7E5E1; --pb-hv: #ECEAE6; --pb-ac: #F4F2EF; --pb-tx: #1B1811;
+      --pc-bg: #ECEAE6; --pc-hv: #F4F2EF; --pc-ac: #FFFFFF; --pc-tx: #1B1811;
+      --sa-bg: #34312A; --sa-hv: #46433D; --sa-ac: #595650; --sa-tx: #E7E5E1;
+      --sb-bg: #46433D; --sb-hv: #595650; --sb-ac: #6F6C66; --sb-tx: #E7E5E1;
+      --sc-bd: #595650; --sc-hv: #34312A; --sc-tx: #E7E5E1; }
+  }
+
+  :root[data-theme="dark"] .jig { --j-body: #2A2620; --j-card: #27241E; --j-ink: #E7E5E1;
+    --now-pri-bg: #2E5AA8; --now-pri-tx: #DCE6F4;
+    --now-sec-bg: #595650; --now-sec-tx: #E7E5E1;
+    --pa-bg: #DDDBD6; --pa-hv: #ECEAE6; --pa-ac: #F4F2EF; --pa-tx: #1B1811;
+    --pb-bg: #E7E5E1; --pb-hv: #ECEAE6; --pb-ac: #F4F2EF; --pb-tx: #1B1811;
+    --pc-bg: #ECEAE6; --pc-hv: #F4F2EF; --pc-ac: #FFFFFF; --pc-tx: #1B1811;
+    --sa-bg: #34312A; --sa-hv: #46433D; --sa-ac: #595650; --sa-tx: #E7E5E1;
+    --sb-bg: #46433D; --sb-hv: #595650; --sb-ac: #6F6C66; --sb-tx: #E7E5E1;
+    --sc-bd: #595650; --sc-hv: #34312A; --sc-tx: #E7E5E1; }
+
+  .jig .surface {
+    width: 100%;
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-500);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--j-sp-400);
+    align-items: center;
+  }
+  .jig .surface.page { background: var(--j-body); }
+
+  /* Button's real md geometry. The template styles bare `button` for its own
+     accept/reject controls, so every one of those is defeated here. */
+  .jig .btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: var(--j-ts-300);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    line-height: 1em;
+    padding: var(--j-sp-400) var(--j-sp-500);
+    border-radius: var(--j-rad);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--j-sp-300);
+    transition: background 100ms ease;
+  }
+
+  .jig .now-pri { background: var(--now-pri-bg); color: var(--now-pri-tx); }
+  .jig .now-sec { background: var(--now-sec-bg); color: var(--now-sec-tx); }
+
+  .jig .p-a { background: var(--pa-bg); color: var(--pa-tx); }
+  .jig .p-a:hover { background: var(--pa-hv); }
+  .jig .p-a:active { background: var(--pa-ac); }
+  .jig .p-b { background: var(--pb-bg); color: var(--pb-tx); }
+  .jig .p-b:hover { background: var(--pb-hv); }
+  .jig .p-b:active { background: var(--pb-ac); }
+  .jig .p-c { background: var(--pc-bg); color: var(--pc-tx); }
+  .jig .p-c:hover { background: var(--pc-hv); }
+  .jig .p-c:active { background: var(--pc-ac); }
+
+  .jig .s-a { background: var(--sa-bg); color: var(--sa-tx); }
+  .jig .s-a:hover { background: var(--sa-hv); }
+  .jig .s-a:active { background: var(--sa-ac); }
+  .jig .s-b { background: var(--sb-bg); color: var(--sb-tx); }
+  .jig .s-b:hover { background: var(--sb-hv); }
+  .jig .s-b:active { background: var(--sb-ac); }
+  .jig .s-c { background: transparent; color: var(--sc-tx); box-shadow: inset 0 0 0 1px var(--sc-bd); }
+  .jig .s-c:hover { background: var(--sc-hv); }
+
+  .jig .ratio {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .jig .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.35rem;
+  }
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0.7rem 0 0;
+  }
+  .jig .stack { display: flex; flex-direction: column; gap: var(--j-sp-500); width: 100%; }
+
+  .fail { color: var(--no); font-weight: 620; }
+  .pass { color: var(--ok); }
+
+  figure + h3 { margin-top: 2.25rem; }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0016</p>
+    <h1>A warm primary, and the end of the colour-set helpers</h1>
+    <p class="standfirst">
+      Primary becomes warm, which puts it on the same hue as secondary and means the two
+      can no longer be told apart by hue alone. That breaks the one thing
+      <code>buttonSet</code> was built to do &mdash; and auditing it turned up a contrast
+      failure the shared ramp has been shipping quietly.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-05</li>
+      <li>4 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Three button variants take their colours from one function.
+      <code>buttonSet(hue, theme)</code> in
+      <code>packages/tokens/src/utils.ts</code> puts every variant at the same positions
+      on its own hue's ramp, and the hue is the only thing that differs:
+    </p>
+
+    <figure>
+      <div class="scroller">
+<pre class="tree"><i>utils.ts &mdash; buttonSet(c, 'light')</i>
+  base-bg   <b>{color.<i>c</i>.450}</b>      primary   c = blue
+  hover-bg  <b>{color.<i>c</i>.500}</b>      secondary c = warm
+  active-bg <b>{color.<i>c</i>.550}</b>      danger    c = red
+  text      <b>{color.<i>c</i>.50}</b></pre>
+      </div>
+      <figcaption>
+        One mapping, three hues. That is the whole abstraction, and it only holds while
+        hue is what separates the variants.
+      </figcaption>
+    </figure>
+
+    <p>
+      A warm primary breaks it directly: primary and secondary would resolve to the same
+      six values. So the mapping has to differ per variant, and once it does,
+      <code>buttonSet</code>'s parameter is no longer carrying the difference &mdash;
+      which is the question this document opens with and D3 answers.
+    </p>
+
+    <h3>What the audit found</h3>
+    <p>
+      Before changing anything, the current mapping was measured. Every fill was converted
+      from its <code>oklch</code> source through sRGB to a WCAG contrast ratio against its
+      own label colour. Button's <code>md</code> label is <code>scale.300</code> &mdash;
+      0.97rem, about 15.5px &mdash; at weight 500, which is <em>not</em> WCAG large text,
+      so the threshold is <b>4.5:1</b>.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr><th>Theme</th><th>Variant</th><th>Fill / label</th><th>Ratio</th><th>AA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>light</td><td>primary</td><td>blue.450 / blue.50</td><td>4.52</td><td class="pass">pass</td></tr>
+            <tr><td>light</td><td>secondary</td><td>warm.450 / warm.50</td><td>4.35</td><td class="fail">FAIL</td></tr>
+            <tr><td>light</td><td>danger</td><td>red.450 / red.50</td><td>4.81</td><td class="pass">pass</td></tr>
+            <tr><td>dark</td><td>primary</td><td>blue.500 / blue.100</td><td>6.11</td><td class="pass">pass</td></tr>
+            <tr><td>dark</td><td>secondary</td><td>warm.500 / warm.100</td><td>5.83</td><td class="pass">pass</td></tr>
+            <tr><td>dark</td><td>danger</td><td>red.500 / red.100</td><td>6.34</td><td class="pass">pass</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        <b>The light secondary button ships below AA today</b>, and primary clears it by
+        0.02. Both facts come from the same cause: identical ramp positions do not produce
+        identical contrast, because the ramps differ in chroma. Warm is the least chromatic
+        hue in the palette, so it lands lowest. <code>buttonSet</code> looks like it
+        guarantees consistency and in fact guarantees only consistent <em>step numbers</em>.
+      </figcaption>
+      <figcaption style="margin-top:1rem">
+        <b>Added after the decision round, and it is worse than the table says.</b> D4's
+        note asked for APCA, which accounts for size and weight rather than ratio alone.
+        Measured against it, <em>all three</em> current variants sit at
+        <b>Lc 67&ndash;68</b> &mdash; short of APCA's Lc 75 body-text minimum, including
+        the two WCAG called a pass. WCAG and APCA disagree about which variants are
+        adequate, and the shared-ramp problem is bigger under the standard the project
+        intends to adopt than under the one measured here. See D4's outcome.
+      </figcaption>
+    </figure>
+
+    <p>
+      Which reframes this document. It is not only &ldquo;make primary warm&rdquo; &mdash;
+      it is the first real test of whether a shared ramp mapping is the right way to hold
+      button colour at all.
+    </p>
+
+    <h3>The other helpers are not the same problem</h3>
+    <p>
+      <code>utils.ts</code> exports seven set builders and only two take a hue.
+      <code>controlSet</code>, <code>ghostButtonSet</code>, <code>smokeButtonSet</code>,
+      <code>scrollbarSet</code> and <code>sliderSet</code> already hard-code their values
+      and take nothing but the theme &mdash; they are colour objects with a function
+      wrapped round them. <code>tokenSet</code> is the one place parameterisation genuinely
+      earns its keep: twelve hues &times; two themes from one definition, and 0006 D2
+      settled that a Token's hues really are the same idea repeated. Any answer to D3 has
+      to leave that alone.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <ul class="notes">
+      <li>
+        Variant names stay <code>primary | secondary | danger | ghost | smoke</code>. This
+        changes what they resolve to, not what they are called, so
+        <code>ButtonVariant</code> and the assertions in <code>api.types.test.tsx</code>
+        are untouched.
+      </li>
+      <li>
+        The set <em>shape</em> stays <code>base-bg / hover-bg / active-bg / disabled-bg /
+        text / disabled-text</code>. The checklist requires new states to extend that
+        shape rather than rename it, and nothing here adds a state.
+      </li>
+      <li>
+        Token IDs stay kebab-case at source; the build camelCases them for
+        <code>.css.ts</code>. No component changes: <code>button.css.ts</code> reads
+        <code>color.button.primary.baseBg</code> either way.
+      </li>
+      <li>
+        Both themes keep full coverage. <code>tokens-css.test.ts</code> asserts that
+        explicit light re-declares everything the dark media query overrides, so any
+        remapping has to land in both or the theme forcing added in the token build breaks.
+      </li>
+      <li>
+        Danger stays red and ghost and smoke stay as they are. Ghost is already warm and
+        already explicit; smoke's translucent veil is literal <code>oklch</code> for the
+        reason recorded in <code>utils.ts</code> &mdash; an alias cannot carry alpha.
+      </li>
+      <li>
+        No new primitives. Every value proposed below is an existing step on the warm ramp.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Every button below is Button's real <code>md</code> geometry with the candidate
+      fills applied, so hover and active are live. Ratios are computed from the ramp's
+      <code>oklch</code> values, not estimated.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="primary-mapping" data-title="How loud a warm primary is">
+    <p class="decision-id">D1 &middot; primary-mapping</p>
+    <h2>How loud a warm primary is</h2>
+    <p>
+      With hue gone as the signal, weight is what makes primary read as the main action.
+      All three candidates are a dark fill with light text in light theme and invert in
+      dark; they differ in how far down the ramp the fill sits. Each is shown beside the
+      recommended secondary from D2, because the pair is what matters, not the button
+      alone.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="warm-550" data-label="warm.550 &mdash; softest">
+        <div class="option-head"><h3><code>warm.550</code> &mdash; softest</h3></div>
+        <p class="specimen-label">Specimen &mdash; live, hover it</p>
+        <div class="specimen block jig">
+          <div class="surface page">
+            <button class="btn p-a">Save changes</button>
+            <button class="btn s-a">Cancel</button>
+          </div>
+          <p class="caption">light 550/50 &middot; dark 150/700 &middot; <span class="ratio">8.22 : 1</span></p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Closest in weight to today's button, so the change reads as a hue swap rather than a redesign.</li>
+          <li class="pro">Comfortably AAA at 8.22:1.</li>
+          <li class="con">Only two ramp steps clear of a heavier secondary, so the pair relies on the secondary staying light.</li>
+          <li class="con">On the warm page surface it reads as dark grey rather than as a deliberate near-black; the warmth is barely perceptible at this lightness.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="warm-600" data-label="warm.600 &mdash; ink">
+        <div class="option-head">
+          <h3><code>warm.600</code> &mdash; ink</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; live, hover it</p>
+        <div class="specimen block jig">
+          <div class="surface page">
+            <button class="btn p-b">Save changes</button>
+            <button class="btn s-a">Cancel</button>
+          </div>
+          <p class="caption">light 600/50 &middot; dark 100/700 &middot; <span class="ratio">10.82 : 1</span></p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Already the system's ink: <code>text.primary</code>, <code>surfaces.inverse</code> and <code>slider.indicator</code> are all <code>warm.600</code> in light. The primary button becomes the same idea filled in rather than a new value.</li>
+          <li class="pro">10.82:1, and it keeps three clear steps between the two variants at every state including hover and active.</li>
+          <li class="pro">Inverts cleanly: <code>warm.100</code> on dark is the same relationship seen from the other side.</li>
+          <li class="con">A near-black primary is a strong statement; on a dense form it can read as heavier than the action deserves.</li>
+          <li class="con">Sits at the same value as body text, so a button and a paragraph share a colour &mdash; deliberate here, but it does flatten the palette.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="warm-650" data-label="warm.650 &mdash; strongest">
+        <div class="option-head"><h3><code>warm.650</code> &mdash; strongest</h3></div>
+        <p class="specimen-label">Specimen &mdash; live, hover it</p>
+        <div class="specimen block jig">
+          <div class="surface page">
+            <button class="btn p-c">Save changes</button>
+            <button class="btn s-a">Cancel</button>
+          </div>
+          <p class="caption">light 650/50 &middot; dark 50/700 &middot; <span class="ratio">12.88 : 1</span></p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">The most emphatic, and the widest separation from any secondary treatment.</li>
+          <li class="pro">Highest contrast of the three at 12.88:1.</li>
+          <li class="con">Runs out of ramp for its own states: hover and active have to go to 700 and beyond, where the warm steps stop being distinguishable from each other.</li>
+          <li class="con">Effectively black. At this point the hue is decorative and the decision to make primary &ldquo;warm&rdquo; stops being visible.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-05</span>
+      <b><code>warm.600</code> &mdash; ink.</b> Primary becomes the system's existing ink,
+      filled in: the same value as <code>text.primary</code>,
+      <code>surfaces.inverse</code> and <code>slider.indicator</code> in light, inverting
+      to a light fill in dark. Starting values for the build, all real ramp steps:
+      <ul>
+        <li>light &mdash; base <code>warm.600</code>, hover <code>warm.650</code>, active <code>warm.700</code>, text <code>warm.50</code></li>
+        <li>dark &mdash; base <code>warm.100</code>, hover <code>warm.50</code>, active <code>warm.25</code>, text <code>warm.700</code></li>
+      </ul>
+      <p>
+        Measured after the fact against APCA as well: <b>Lc 88.8</b> light and
+        <b>Lc 89.4</b> dark, comfortably past the Lc 75 body minimum. The disabled pair is
+        unchanged.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="secondary-mapping" data-title="What secondary becomes">
+    <p class="decision-id">D2 &middot; secondary-mapping</p>
+    <h2>What secondary becomes</h2>
+    <p>
+      Secondary cannot stay where it is. Today it is a mid-tone fill with light text at
+      <code>warm.450/50</code> &mdash; the same weight primary is moving to, and the one
+      combination in the audit that fails AA. It has to step back, and how far is the
+      question. Each specimen pairs it with D1's recommended primary.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="subtle-fill" data-label="Subtle fill, warm.100">
+        <div class="option-head">
+          <h3>Subtle fill, <code>warm.100</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; on the page and on a card</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="surface page">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-a">Cancel</button>
+            </div>
+            <div class="surface">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-a">Cancel</button>
+            </div>
+          </div>
+          <p class="caption">light 100/600 &middot; dark 600/100 &middot; <span class="ratio">10.37 : 1</span></p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">The clearest hierarchy of the three: filled-dark against filled-light is legible at a glance and survives being photographed, printed or seen by someone who cannot separate the hues.</li>
+          <li class="pro">10.37:1, up from today's failing 4.35:1 &mdash; the largest single accessibility gain in this document.</li>
+          <li class="pro">Matches the fills <code>ghost</code> already hovers to, so the two quiet variants share a vocabulary.</li>
+          <li class="con">On the white card surface the light fill is close to the card itself; it reads as a button by its shape more than its colour.</li>
+          <li class="con">A visible change for anyone already using secondary &mdash; it goes from loud to quiet, which is a different design intent, not just a different colour.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="heavier-fill" data-label="Heavier fill, warm.200">
+        <div class="option-head"><h3>Heavier fill, <code>warm.200</code></h3></div>
+        <p class="specimen-label">Specimen &mdash; on the page and on a card</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="surface page">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-b">Cancel</button>
+            </div>
+            <div class="surface">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-b">Cancel</button>
+            </div>
+          </div>
+          <p class="caption">light 200/600 &middot; dark 550/100 &middot; <span class="ratio">8.48 : 1</span></p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Holds its own on a white card, where the lighter fill starts to disappear.</li>
+          <li class="pro">Still comfortably AAA, and still a large gain on today.</li>
+          <li class="con">Closer to <code>color.line</code> and to the disabled fill, so a secondary button and a disabled primary become easier to confuse.</li>
+          <li class="con">Leaves less room below it &mdash; ghost's hover fill sits at <code>warm.100</code>, so a ghost button hovered next to a secondary button reads as almost the same control.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="outlined" data-label="Outlined, no fill">
+        <div class="option-head"><h3>Outlined, no fill</h3></div>
+        <p class="specimen-label">Specimen &mdash; on the page and on a card</p>
+        <div class="specimen block jig">
+          <div class="stack">
+            <div class="surface page">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-c">Cancel</button>
+            </div>
+            <div class="surface">
+              <button class="btn p-b">Save changes</button>
+              <button class="btn s-c">Cancel</button>
+            </div>
+          </div>
+          <p class="caption">1px <code>warm.300</code> inset, text 600 &middot; fills on hover</p>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Reads identically on any surface, because it borrows none of it &mdash; the one option that behaves the same on the page and on a card.</li>
+          <li class="pro">Unmistakably a different kind of control from primary, not merely a lighter one.</li>
+          <li class="con">Introduces a border to the button set, which no variant has today. That is a new property in the shape and a new decision about which token draws it &mdash; <code>color.line</code> divides, <code>control.border</code> encloses fields, and a button is neither.</li>
+          <li class="con">Outlined and ghost then overlap: both are transparent at rest and fill on hover, separated only by a hairline.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-05</span>
+      <b>Subtle fill, <code>warm.100</code>.</b> Secondary steps back from a mid-tone fill
+      with light text to a light fill with ink text, which is what keeps it distinct from
+      primary now that both are warm. Starting values:
+      <ul>
+        <li>light &mdash; base <code>warm.100</code>, hover <code>warm.150</code>, active <code>warm.200</code>, text <code>warm.600</code></li>
+        <li>dark &mdash; base <code>warm.600</code>, hover <code>warm.550</code>, active <code>warm.500</code>, text <code>warm.100</code></li>
+      </ul>
+      <p>
+        This is the accessibility fix the audit forced: <b>4.35:1 &rarr; 10.37:1</b> under
+        WCAG, and <b>Lc 67.7 &rarr; 84.1</b> under APCA. The cost recorded with it stands
+        &mdash; on the white card surface the light fill sits close to the card, so the
+        button reads by its shape as much as its colour.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="set-helpers" data-title="Whether the hue-parameterised helpers survive">
+    <p class="decision-id">D3 &middot; set-helpers</p>
+    <h2>Whether the hue-parameterised helpers survive</h2>
+    <p>
+      The question the brief actually asked. Once each button variant has its own mapping,
+      <code>buttonSet(hue, theme)</code> has one caller left &mdash; danger &mdash; and its
+      parameter distinguishes nothing. The three options below are whole answers: each says
+      what replaces it and where the values live.
+    </p>
+    <p>
+      Whichever is chosen, <code>tokenSet</code> stays parameterised. Twelve hues from one
+      definition is the case where the abstraction is doing real work, and 0006 D2 settled
+      that those hues are the same idea repeated.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="explicit-split" data-label="Explicit objects, per theme file">
+        <div class="option-head">
+          <h3>Explicit objects, per theme file</h3>
+        </div>
+        <p class="specimen-label">Specimen &mdash; where a value would live</p>
+        <div class="specimen block">
+<pre class="tree"><i>color-light.ts</i>
+ button: {
+  primary: <b>toColorTokens</b>({
+   'base-bg':  '{color.warm.600}',
+   'hover-bg': '{color.warm.650}',
+   'text':     '{color.warm.50}',
+   <i>&hellip;</i>
+  }),
+  secondary: toColorTokens({<i>&hellip;</i>}),
+ }
+
+<i>color-dark.ts</i>
+ <i>the same shape, dark values</i></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Every value is visible where the theme is declared. Reading <code>color-light.ts</code> tells you what light is, with nothing to follow into another file.</li>
+          <li class="pro"><code>toColorTokens</code> already exists and already does exactly this; it only needs exporting. No new abstraction is invented.</li>
+          <li class="pro">Divergent mappings stop being a special case &mdash; there is no shared assumption left to break next time.</li>
+          <li class="con"><b>Splits the light/dark pair across two files.</b> Several comments in <code>utils.ts</code> exist precisely to explain the <em>relationship</em> between the themes &mdash; smoke's note that dark runs heavier because a white veil lifts less than a black one darkens. Those have nowhere to live once the halves are apart.</li>
+          <li class="con">Duplicates the key names in both files, so a token added to one theme and forgotten in the other is a silent gap that only <code>tokens-css.test.ts</code> would catch.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="explicit-paired" data-label="Explicit objects, both themes together">
+        <div class="option-head">
+          <h3>Explicit objects, both themes together</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; where a value would live</p>
+        <div class="specimen block">
+<pre class="tree"><i>semantics/buttons.ts</i>
+ export const buttons = {
+  primary: <b>themed</b>({
+   light: {
+    'base-bg': '{color.warm.600}',
+    'text':    '{color.warm.50}', <i>&hellip;</i>
+   },
+   dark: {
+    'base-bg': '{color.warm.100}',
+    'text':    '{color.warm.700}', <i>&hellip;</i>
+   },
+  }),
+  secondary: themed({ <i>&hellip;</i> }),
+ }
+
+<i>color-light.ts</i>
+ button: buttons.light
+<i>color-dark.ts</i>
+ button: buttons.dark</pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Keeps the two themes side by side, which is what makes a mapping reviewable &mdash; the interesting question is almost always &ldquo;what does this become in dark?&rdquo;.</li>
+          <li class="pro">Every variant's mapping is explicit and independent, so the divergence the brief needs costs nothing.</li>
+          <li class="pro">The paired shape makes a missing dark value a type error rather than a silent gap.</li>
+          <li class="pro">Keeps a home for the comments that explain the light/dark relationship, which is where most of the reasoning in <code>utils.ts</code> actually lives.</li>
+          <li class="con">A new module and a new <code>themed</code> helper &mdash; a smaller abstraction than the ones being removed, but still one more thing than option A.</li>
+          <li class="con"><code>color-light.ts</code> stops being the single place light is defined; the button block is now assembled elsewhere.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="keep-parameterised" data-label="Keep buttonSet, add a second shape">
+        <div class="option-head"><h3>Keep <code>buttonSet</code>, add a second shape</h3></div>
+        <p class="specimen-label">Specimen &mdash; where a value would live</p>
+        <div class="specimen block">
+<pre class="tree"><i>utils.ts</i>
+ buttonSet(c, theme) <i>// danger only</i>
+ <b>solidButtonSet(theme)</b> <i>// primary</i>
+ <b>quietButtonSet(theme)</b> <i>// secondary</i>
+ ghostButtonSet(theme)
+ smokeButtonSet(theme)
+
+<span class="no">five builders for five variants,
+four taking only the theme</span></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Smallest diff. Nothing already written moves, and the light/dark pair stays together in each function.</li>
+          <li class="pro">Matches how <code>ghostButtonSet</code> and <code>smokeButtonSet</code> are already written, so the file stays internally consistent.</li>
+          <li class="con">Ends with five builders for five variants, four of which take only a theme &mdash; which is a colour object with extra steps. The function is no longer abstracting anything.</li>
+          <li class="con">Leaves <code>buttonSet(hue, theme)</code> in place with one caller, inviting the next variant to reuse a mapping that was only ever right for red.</li>
+          <li class="con">Does nothing about the reason the audit failure went unnoticed: the values stay one indirection away from where the theme is read.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-05</span>
+      <b>Explicit objects, per theme file &mdash; against this document's recommendation.</b>
+      <code>buttonSet</code> goes; each variant's colours are written out in
+      <code>color-light.ts</code> and <code>color-dark.ts</code> through
+      <code>toColorTokens</code>, which already exists and only needs exporting. No new
+      module and no <code>themed</code> helper.
+      <p>
+        <b>The cost this option was marked down for is now a build task.</b> The two themes
+        no longer sit side by side, so the comments in <code>utils.ts</code> that explain
+        the <em>relationship</em> between them &mdash; smoke's note that dark runs heavier
+        because a white veil lifts a dark backdrop less than a black one darkens a light
+        one &mdash; lose their home. They are not to be dropped: where a value only makes
+        sense relative to its counterpart, the comment moves to the half it explains and
+        <em>names the opposite value explicitly</em>, so the pairing is still readable from
+        one file.
+      </p>
+      <p>
+        <code>tokenSet</code> and <code>tokenSets</code> stay parameterised &mdash; twelve
+        hues from one definition is where the abstraction earns its keep (0006 D2).
+        <code>controlSet</code>, <code>ghostButtonSet</code>, <code>smokeButtonSet</code>,
+        <code>scrollbarSet</code> and <code>sliderSet</code> are out of scope here; they
+        already hard-code their values, and converting them is a separate tidy-up rather
+        than part of this change.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="contrast-floor" data-title="Whether a contrast floor becomes a rule">
+    <p class="decision-id">D4 &middot; contrast-floor</p>
+    <h2>Whether a contrast floor becomes a rule</h2>
+    <p>
+      A variant shipped below AA and nothing caught it, because nothing was checking. Every
+      mapping proposed above clears 8:1, so the immediate problem goes away either way
+      &mdash; this decides whether the <em>next</em> one is checked.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="tested-floor" data-label="A test asserts 4.5:1">
+        <div class="option-head">
+          <h3>A test asserts 4.5:1</h3>
+          <span class="rec">Recommended</span>
+        </div>
+        <p class="specimen-label">Specimen &mdash; what would run in CI</p>
+        <div class="specimen block">
+<pre class="tree"><i>tokens: contrast.test.ts</i>
+
+for each button variant, each theme:
+  resolve base-bg and text to sRGB
+  <b>expect(ratio).toBeGreaterThanOrEqual(4.5)</b>
+
+<i>also the pairs already relied on:</i>
+  control base-bg / text
+  token   base-bg / text
+  surfaces.body / text.primary
+
+<span class="in">catches today's 4.35 before it ships</span></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">The failure this document found was measurable and nobody measured it. A test is the only thing that makes that not recur.</li>
+          <li class="pro">The maths is thirty lines and has no dependency &mdash; it is the same conversion used to produce the audit table above.</li>
+          <li class="pro">Extends naturally to Token's twelve hues, which have never been checked at all.</li>
+          <li class="con">A floor is not a design system. Passing 4.5:1 says nothing about whether two variants are distinguishable from each other, which is the harder property and the one D1 and D2 are actually about.</li>
+          <li class="con">Locks the ramps: retuning a primitive could fail a test in a package that does not obviously own button colour.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+      <article class="option" data-option="fix-only" data-label="Fix it, codify nothing">
+        <div class="option-head"><h3>Fix it, codify nothing</h3></div>
+        <p class="specimen-label">Specimen &mdash; the change, and what remains unguarded</p>
+        <div class="specimen block">
+<pre class="tree"><i>this document fixes</i>
+  light secondary  4.35 &rarr; <b class="in">10.37</b>
+
+<i>still unchecked afterwards</i>
+  <span class="no">token, 12 hues x 2 themes</span>
+  <span class="no">control text on control fill</span>
+  <span class="no">every future variant</span></pre>
+        </div>
+        <ul class="tradeoffs">
+          <li class="pro">Nothing new to maintain, and the mappings here are so far clear of the floor that a test would not fire for a long time.</li>
+          <li class="pro">Keeps contrast a design judgement rather than a number to satisfy &mdash; and a passing ratio can still be a bad pairing.</li>
+          <li class="con">The audit only happened because a variant was being changed. Nothing schedules the next one.</li>
+          <li class="con">Leaves the twelve Token hues unmeasured, where the same shared-ramp reasoning applies and no one has looked.</li>
+        </ul>
+        <div class="opt-actions"><button type="button" class="accept">Accept</button></div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot"><button type="button" class="reject">Reject all &mdash; none of these</button></div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-05</span>
+      <b>Not codified here &mdash; deferred to APCA, elsewhere.</b> The note, verbatim:
+      <p>
+        &ldquo;I would like to codify, but if we can use the improved ACPA contrast
+        algorithm, which is more complex and takes more than color into account (like font
+        weight). I think that belongs elsewhere, since it'll be an integration test rather
+        than a simple color contrast check.&rdquo;
+      </p>
+      <p>
+        So this is not &ldquo;codify nothing&rdquo;. It is: a WCAG ratio check at the token
+        layer is the wrong instrument, because the threshold depends on the size and weight
+        the colour is finally rendered at &mdash; which the token layer cannot see. APCA
+        takes both, so the check belongs where a rendered component can be measured.
+      </p>
+      <p>
+        <b>Measured after the decision, and it leaves something behind.</b> Under APCA the
+        two variants this document changes land at Lc 84&ndash;89. <b>Danger does not: it
+        sits at Lc 67.7 light and Lc 72.7 dark</b>, below the Lc 75 body minimum, and this
+        document does not touch it. WCAG passed danger at 4.81:1, which is exactly the
+        disagreement the note is about. Danger's mapping is a known gap from today, not a
+        regression introduced here &mdash; and the first thing the APCA work should look at.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>As built</h2>
+    <p>
+      Built 2026-09-05 to the four accepted options. <code>pnpm turbo typecheck test</code>
+      passes: 12 tasks, 223 tests across the three packages. No component code changed
+      &mdash; <code>button.css.ts</code> reads <code>color.button.primary.baseBg</code>
+      either way, which is what made this a token-layer change only.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/tokens/src/utils.ts</code> &mdash; <code>buttonSet</code> deleted, <code>toColorTokens</code> exported, and a note left where the builder was explaining why</li>
+      <li><code>packages/tokens/src/semantics/color-light.ts</code> &mdash; primary, secondary and danger written out explicitly</li>
+      <li><code>packages/tokens/src/semantics/color-dark.ts</code> &mdash; the same, dark values</li>
+    </ul>
+
+    <h3>Verified against what shipped</h3>
+    <p>
+      The ratios in this document were computed from the token <em>source</em>. They were
+      recomputed from <code>packages/styles/dist/tokens.css</code> after the build, by
+      resolving each emitted alias back through the primitive ramp, so these are the values
+      a consumer actually gets:
+    </p>
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead><tr><th>Theme</th><th>Variant</th><th>Shipped fill / label</th><th>WCAG</th><th>APCA</th></tr></thead>
+          <tbody>
+            <tr><td>light</td><td>primary</td><td>warm.600 / warm.50</td><td>10.82</td><td>Lc 88.8</td></tr>
+            <tr><td>light</td><td>secondary</td><td>warm.100 / warm.600</td><td>10.37</td><td>Lc 84.1</td></tr>
+            <tr><td>light</td><td>danger</td><td>red.450 / red.50</td><td>4.81</td><td class="fail">Lc 67.7</td></tr>
+            <tr><td>dark</td><td>primary</td><td>warm.100 / warm.700</td><td>14.15</td><td>Lc 89.4</td></tr>
+            <tr><td>dark</td><td>secondary</td><td>warm.600 / warm.100</td><td>10.37</td><td>Lc 85.9</td></tr>
+            <tr><td>dark</td><td>danger</td><td>red.500 / red.100</td><td>6.34</td><td class="fail">Lc 72.7</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        The AA failure is gone. Danger is unchanged and still below the APCA body minimum,
+        exactly as D4's outcome recorded.
+      </figcaption>
+    </figure>
+
+    <h3>What the build found that the decisions did not</h3>
+    <ul class="notes">
+      <li>
+        <b>A disabled secondary looked exactly like a hovered one.</b> The disabled fill
+        was inherited unchanged at <code>warm.150</code> &mdash; which, once secondary
+        moved down to <code>warm.100</code>, <em>is</em> its hover fill. The two states
+        collided completely, and only the label colour told them apart. Fixed by holding
+        the resting fill (<code>warm.100</code>) and letting the muted text carry the
+        state, which is the answer <code>smokeButtonSet</code> already gives for the same
+        reason. Only light secondary was affected; the other five combinations do not
+        collide.
+      </li>
+      <li>
+        <b>The disabled label has always been close to invisible.</b> Measured across all
+        six combinations: <b>1.59:1</b> in light and <b>1.36:1</b> in dark, identical for
+        every variant. That is not something this change introduced &mdash; the same fill
+        and text pair was in <code>buttonSet</code> before it &mdash; and WCAG 1.4.3
+        exempts inactive controls, so it is not a conformance failure. It is recorded
+        because nobody had measured it and it is the sort of thing the APCA work should
+        pick up.
+      </li>
+      <li>
+        <b>The disabled values were never actually decided.</b> D1 and D2's outcomes list
+        them, but they were written into the record by this document rather than chosen
+        from a specimen &mdash; the options only ever showed base, hover and active. The
+        collision above is a direct result: an unexamined value carried through a change
+        that invalidated it.
+      </li>
+    </ul>
+
+    <h3>What the decisions got right</h3>
+    <p>
+      D3 was accurate about the scope of the work: removing <code>buttonSet</code> touched
+      three files and no components, because the token IDs and the set shape were
+      unchanged &mdash; which is what the settled list predicted. The theme-symmetry tests
+      in <code>tokens-css.test.ts</code> passed without modification, confirming that
+      writing the two themes out separately still produces the full override coverage that
+      <code>data-theme</code> forcing depends on. And D3's build task was carried out: the
+      light and dark notes now name each other's values where a mapping only makes sense
+      as a pair &mdash; secondary's recessed fill in light against its raised fill in dark
+      is the case that needed it most.
+    </p>
+
+    <h3>Questions for a future proposal</h3>
+    <ul class="notes">
+      <li>
+        <b>APCA, and danger with it.</b> D4 deferred the check; the figures above say what
+        it will find first. Danger's mapping is the one variant still below Lc 75, and it
+        is untouched by this document.
+      </li>
+      <li>
+        <b>A disabled treatment, decided rather than inherited.</b> Two of the three
+        findings above trace to the same gap: the system has never chosen what disabled
+        looks like, it has only ever copied it. One shared pair applied to a solid primary,
+        a quiet secondary and a red danger cannot be right for all three.
+      </li>
+      <li>
+        <b>The remaining hard-coded builders.</b> <code>controlSet</code>,
+        <code>ghostButtonSet</code>, <code>smokeButtonSet</code>,
+        <code>scrollbarSet</code> and <code>sliderSet</code> are now the only functions in
+        <code>utils.ts</code> that take nothing but a theme. D3 scoped them out
+        deliberately; converting them is a tidy-up that would leave only
+        <code>tokenSet</code> parameterised, which is the one place it belongs.
+      </li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0016
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of N decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0016-warm-primary",
+  "status": "built",
+  "decided": "2026-09-05",
+  "built": "2026-09-05",
+  "decisions": [
+    { "id": "primary-mapping", "outcome": "warm-600",   "options": ["warm-550", "warm-600", "warm-650"] },
+    { "id": "secondary-mapping", "outcome": "subtle-fill", "options": ["subtle-fill", "heavier-fill", "outlined"] },
+    { "id": "set-helpers", "outcome": "explicit-split",       "options": ["explicit-split", "explicit-paired", "keep-parameterised"] },
+    {
+      "id": "contrast-floor",
+      "outcome": "fix-only",
+      "options": ["tested-floor", "fix-only"],
+      "note": "I would like to codify, but if we can use the improved ACPA contrast algorithm, which is more complex and takes more than color into account (like font weight). I think that belongs elsewhere, since it'll be an integration test rather than a simple color contrast check."
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

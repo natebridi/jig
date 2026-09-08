@@ -28,7 +28,8 @@ export type TypographyTone =
 export type TypeStyles =
   | 'display01' | 'display02' | 'display03' | 'display04' | 'display05' | 'display06'
   | 'heading01' | 'heading02' | 'heading03' | 'heading04' | 'heading05' | 'heading06'
-  | 'body01' | 'body02' | 'caption01' | 'caption02';
+  | 'body01' | 'body02' | 'caption01' | 'caption02'
+  | 'code01';
 
 /** Typography's own props. The element's own attributes are added by PolymorphicProps. */
 export interface TypographyOwnProps extends SpacingProps {

@@ -1,5 +1,5 @@
 import { ThemeTokenSet } from '../types'
-import { buttonSet, controlSet, ghostButtonSet, scrollbarSet, sliderSet, smokeButtonSet, tokenSets } from '../utils'
+import { controlSet, ghostButtonSet, scrollbarSet, sliderSet, smokeButtonSet, toColorTokens, tokenSets } from '../utils'
 
 export default {
     color: {
@@ -124,10 +124,61 @@ export default {
                 '$value': '{color.red.200}'
             }
         },
+        /**
+         * The button variants, each writing its own mapping out.
+         *
+         * The light counterparts are in `color-light.ts`; where a value here
+         * only makes sense against its opposite, the note says which. Replaced
+         * the shared `buttonSet(hue, theme)` in 0016 D3.
+         */
         button: {
-            primary: buttonSet('blue', 'dark'),
-            secondary: buttonSet('warm', 'dark'),
-            danger: buttonSet('red', 'dark'),
+            /**
+             * Inverted rather than mirrored. Light fills at `warm.600` and
+             * paints `warm.50` on it; dark cannot go darker than the page, so
+             * it swaps the pair over — a near-white fill carrying dark ink.
+             * The states run *up* the ramp for the same reason light's run
+             * down (0016 D1).
+             */
+            primary: toColorTokens({
+                'base-bg': `{color.warm.50}`,
+                'hover-bg': `{color.warm.150}`,
+                'active-bg': `{color.warm.200}`,
+                'disabled-bg': `{color.gray.600}`,
+                'disabled-text': `{color.gray.700}`,
+                'text': `{color.warm.700}`
+            }),
+            /**
+             * A raised fill, where light uses a recessed one. Light steps
+             * *down* from the page to `warm.100`; there is no lighter step
+             * available over a `warm.750` body, so dark steps up to
+             * `warm.600` instead and reaches the same result — quieter than
+             * primary, still obviously a control (0016 D2).
+             *
+             * As in light, `base-bg` matches `button.ghost.hover-bg` so the two
+             * quiet variants share a fill.
+             */
+            secondary: toColorTokens({
+                'base-bg': `{color.warm.600}`,
+                'hover-bg': `{color.warm.550}`,
+                'active-bg': `{color.warm.500}`,
+                'disabled-bg': `{color.gray.600}`,
+                'disabled-text': `{color.gray.700}`,
+                'text': `{color.warm.100}`
+            }),
+            /**
+             * Unchanged by 0016 — these are the values `buttonSet('red',
+             * 'dark')` produced, written out because the builder is gone.
+             * Sits at APCA Lc 72.7, below the Lc 75 body minimum; see the light
+             * counterpart's note and 0016 D4.
+             */
+            danger: toColorTokens({
+                'base-bg': `{color.red.500}`,
+                'hover-bg': `{color.red.550}`,
+                'active-bg': `{color.red.600}`,
+                'disabled-bg': `{color.gray.600}`,
+                'disabled-text': `{color.gray.700}`,
+                'text': `{color.red.100}`
+            }),
             ghost: ghostButtonSet('dark'),
             // Translucent, and blurred by the recipe. Its backgrounds are
             // literal oklch rather than aliases because an alias cannot add an

@@ -46,6 +46,13 @@ export { SideNav } from './sidenav';
 export type { SideNavProps } from './sidenav';
 export { SideNavSection } from './sidenavsection';
 export type { SideNavSectionProps } from './sidenavsection';
+export { StructuredList, StructuredListRow, StructuredListCell } from './structuredlist';
+export type {
+  StructuredListProps,
+  StructuredListRowProps,
+  StructuredListCellProps,
+  StructuredListLayout,
+} from './structuredlist';
 export { Dialog } from './dialog';
 export type { DialogProps, DialogSize, DialogClosePlacement } from './dialog';
 export { ScrollArea } from './scrollarea';

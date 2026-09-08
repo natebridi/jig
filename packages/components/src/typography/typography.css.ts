@@ -112,6 +112,12 @@ export const typeStyles = {
     fontSize: type.caption02.size,
     lineHeight: type.caption02.lineHeight,
   },
+  code01: {
+    fontFamily: type.code01.family,
+    fontWeight: type.code01.weight,
+    fontSize: type.code01.size,
+    lineHeight: type.code01.lineHeight,
+  },
 } as const;
 
 /**

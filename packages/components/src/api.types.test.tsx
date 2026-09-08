@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -39,6 +39,7 @@ describe('public API types', () => {
       {/* @ts-expect-error not an icon in the curated set */}
       <Button icon="not-an-icon">no</Button>
       <Typography with="heading01" balance />
+      <Typography with="code01" />
       {/* @ts-expect-error balance is a boolean, not a wrap mode */}
       <Typography balance="pretty" />
     </>;
@@ -158,6 +159,41 @@ describe('public API types', () => {
       <SideNav as="aside" aria-label="Docs">rows</SideNav>
       {/* @ts-expect-error spacing comes from the parent */}
       <SideNav aria-label="Docs" mb="400">rows</SideNav>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps StructuredList to its own layout vocabulary', () => {
+    <>
+      <StructuredList headers={['A']} layout="stacked" with="body02">x</StructuredList>
+      <StructuredList layout={{ xs: 'stacked', md: 'columns' }}>x</StructuredList>
+      {/* @ts-expect-error the two layouts are the whole set */}
+      <StructuredList layout="grid">x</StructuredList>
+      {/* @ts-expect-error and the breakpoint form takes the same two */}
+      <StructuredList layout={{ md: 'table' }}>x</StructuredList>
+      {/* @ts-expect-error `with` names a preset, not a size */}
+      <StructuredList with="large">x</StructuredList>
+      {/* @ts-expect-error there is no separate header type prop — 0017 D4 */}
+      <StructuredList headerWith="heading05">x</StructuredList>
+      <StructuredList columnWidths={['4rem', 'auto']}>x</StructuredList>
+      {/* @ts-expect-error widths are CSS strings, not numbers — 0018 D2 */}
+      <StructuredList columnWidths={[4, 8]}>x</StructuredList>
+      {/* @ts-expect-error the count is derived from headers now; 0018 D3 removed this */}
+      <StructuredList columns={3}>x</StructuredList>
+      {/* @ts-expect-error spacing comes from the parent */}
+      <StructuredList mb="400">x</StructuredList>
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <StructuredList as="table">x</StructuredList>
+      <StructuredListCell label="A">1</StructuredListCell>
+      {/* the label is optional now — it comes from the column (0018 D3) */}
+      <StructuredListCell>1</StructuredListCell>
+      {/* @ts-expect-error the label is the heading text, not a node */}
+      <StructuredListCell label={<span />}>1</StructuredListCell>
+      <StructuredListCell with="caption01">1</StructuredListCell>
+      {/* @ts-expect-error a cell names a preset, not a size — 0018 D1 */}
+      <StructuredListCell with="small">1</StructuredListCell>
+      {/* @ts-expect-error widths live on the list, not the cell (0018 D2) */}
+      <StructuredListCell width="4rem">1</StructuredListCell>
     </>;
     expect(true).toBe(true);
   });

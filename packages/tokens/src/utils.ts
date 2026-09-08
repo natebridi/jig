@@ -1,4 +1,12 @@
-const toColorTokens = (colors: Record<string, string>) =>
+/**
+ * A plain object of token references, turned into DTCG colour tokens.
+ *
+ * Exported since 0016 D3: the button variants no longer share a mapping, so
+ * each one writes its own colours out in `color-light.ts` and `color-dark.ts`
+ * and passes them through here. That is all `buttonSet` was ever doing once
+ * the hue stopped being the difference between the variants.
+ */
+export const toColorTokens = (colors: Record<string, string>) =>
   Object.keys(colors).reduce((acc, key) => {
       return Object.assign({}, acc, {
           [key]: {
@@ -8,25 +16,20 @@ const toColorTokens = (colors: Record<string, string>) =>
       });
   }, {});
 
-export const buttonSet = (c: string, lightOrDark: string) => {
-  const colors: Record<string, string> = (lightOrDark == 'light') ? {
-    'base-bg': `{color.${c}.450}`,
-    'hover-bg': `{color.${c}.500}`,
-    'active-bg': `{color.${c}.550}`,
-    'disabled-bg': `{color.warm.150}`,
-    'disabled-text': `{color.warm.300}`,
-    'text': `{color.${c}.50}`
-  } : {
-    'base-bg': `{color.${c}.500}`,
-    'hover-bg': `{color.${c}.550}`,
-    'active-bg': `{color.${c}.600}`,
-    'disabled-bg': `{color.gray.600}`,
-    'disabled-text': `{color.gray.700}`,
-    'text': `{color.${c}.100}`
-  };
-
-  return toColorTokens(colors);
-}
+/*
+ * `buttonSet(hue, theme)` was removed in 0016 D3.
+ *
+ * It put every variant at the same positions on its own hue's ramp — 450/500/550
+ * in light — so the hue was the only difference. A warm primary ended that: it
+ * would have resolved to exactly the same six values as the warm secondary.
+ *
+ * The audit that decision forced also showed the abstraction was never
+ * delivering what it appeared to. Identical ramp positions do not produce
+ * identical contrast, because the ramps differ in chroma — and the light
+ * secondary had been shipping at 4.35:1, below WCAG AA, without anything
+ * noticing. The variants now write their colours out where the theme is
+ * declared. See apps/docs/decisions/0016-warm-primary.html.
+ */
 
 /**
  * The surface shared by every field-like control — input, select, combobox,
@@ -74,8 +77,8 @@ export const controlSet = (lightOrDark: string) => {
  */
 export const ghostButtonSet = (lightOrDark: string) => {
   const colors: Record<string, string> = (lightOrDark == 'light') ? {
-    'hover-bg': `{color.warm.100}`,
-    'active-bg': `{color.warm.150}`,
+    'hover-bg': `{color.warm.150}`,
+    'active-bg': `{color.warm.200}`,
     'disabled-text': `{color.warm.300}`,
     'text': `{color.warm.600}`
   } : {

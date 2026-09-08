@@ -1,5 +1,5 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, ListItem, SideNav, SideNavSection, Link, Combobox, Separator } from '@jig-ui/react'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, ListItem, SideNav, SideNavSection, StructuredList, StructuredListRow, StructuredListCell, Link, Combobox, Separator } from '@jig-ui/react'
 import { color, elevation, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
@@ -632,6 +632,115 @@ export function App() {
               <ListItem href="#bare-c" start={<Icon icon="clock" />}>History</ListItem>
             </SideNavSection>
           </SideNav>
+        </Stack>
+      </Stack>
+
+      <Stack spacing="400" style={{ maxWidth: '50rem' }}>
+        <Typography as="h2" with="heading03">StructuredList</Typography>
+
+        <Stack spacing="300" alignSelf="stretch">
+          <Typography with="caption01" tone="muted">default layout &mdash; resize past md</Typography>
+          <StructuredList data-testid="sl-default" headers={['Attr', 'Requests', 'Price', 'Notes']} columnWidths={['auto', 'auto', 'auto', '50%']}>
+            <StructuredListRow>
+              <StructuredListCell with="code01">starter</StructuredListCell>
+              <StructuredListCell>10,000</StructuredListCell>
+              <StructuredListCell><Token color="green" size="sm">Free</Token></StructuredListCell>
+              <StructuredListCell label="Notes">Here is some content that goes on for a bit and should go onto another line.</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">team</StructuredListCell>
+              <StructuredListCell>1,000,000</StructuredListCell>
+              <StructuredListCell>$29 / month</StructuredListCell>
+              <StructuredListCell label="Notes">Here is some content that goes on for a bit and should go onto another line.</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">enterprise</StructuredListCell>
+              <StructuredListCell>Unmetered</StructuredListCell>
+              <StructuredListCell><Link href="#sl-sales">Talk to us</Link></StructuredListCell>
+              <StructuredListCell>Here is some content that goes on for a bit and should go onto another line.</StructuredListCell>
+            </StructuredListRow>
+          </StructuredList>
+        </Stack>
+
+        {/* A cell holds anything — the reason 0017 D2 took composed children
+            over data. Token, Link and Icon go in without being described. */}
+        <Stack spacing="300" alignSelf="stretch">
+          <Typography with="caption01" tone="muted">rich cells &middot; columnWidths=[10rem, auto, 8rem]</Typography>
+          <StructuredList headers={['Service', 'Status', 'Docs']} layout="columns" columnWidths={['auto', '8rem', '8rem']}>
+            <StructuredListRow>
+              <StructuredListCell>API</StructuredListCell>
+              <StructuredListCell><Token color="green" size="sm">Operational</Token></StructuredListCell>
+              <StructuredListCell><Link href="#sl-api">Reference</Link></StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell>Webhooks</StructuredListCell>
+              <StructuredListCell><Token color="orange" size="sm">Degraded</Token></StructuredListCell>
+              <StructuredListCell><Link href="#sl-hooks" external>Reference</Link></StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell><Icon icon="gear" /> Batch</StructuredListCell>
+              <StructuredListCell><Token color="gray" size="sm">Paused</Token></StructuredListCell>
+              <StructuredListCell><Link href="#sl-batch">Reference</Link></StructuredListCell>
+            </StructuredListRow>
+          </StructuredList>
+        </Stack>
+
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing="600" align="start">
+          {/* No header row: the cells still carry their own labels, which is
+              what the stacked layout shows. */}
+          <Stack spacing="300" align="stretch" style={{ width: '20rem' }}>
+            <Typography with="caption01" tone="muted">no headers, stacked</Typography>
+            <StructuredList layout="stacked" data-testid="sl-bare">
+              <StructuredListRow>
+                <StructuredListCell label="Material">Anodised aluminium</StructuredListCell>
+                <StructuredListCell label="Finish">Matte</StructuredListCell>
+              </StructuredListRow>
+              <StructuredListRow>
+                <StructuredListCell label="Weight">1.2 kg</StructuredListCell>
+                <StructuredListCell label="Depth">18 mm</StructuredListCell>
+              </StructuredListRow>
+            </StructuredList>
+          </Stack>
+
+          {/* The cost 0017 D3 accepted, made visible: `layout` follows the
+              viewport, not the list's own width. Both of these are 20rem wide
+              on a wide screen — only the one told `stacked` reads properly. */}
+          <Stack spacing="300" align="stretch" style={{ width: '20rem' }}>
+            <Typography with="caption01" tone="muted">20rem wide, default layout</Typography>
+            <StructuredList headers={['Plan', 'Requests', 'Price']}>
+              <StructuredListRow>
+                <StructuredListCell>Starter</StructuredListCell>
+                <StructuredListCell>10,000</StructuredListCell>
+                <StructuredListCell>Free</StructuredListCell>
+              </StructuredListRow>
+            </StructuredList>
+            <Typography with="caption01" tone="muted">same width, layout="stacked"</Typography>
+            <StructuredList headers={['Plan', 'Requests', 'Price']} layout="stacked">
+              <StructuredListRow>
+                <StructuredListCell>Starter</StructuredListCell>
+                <StructuredListCell>10,000</StructuredListCell>
+                <StructuredListCell>Free</StructuredListCell>
+              </StructuredListRow>
+            </StructuredList>
+          </Stack>
+        </Stack>
+
+        {/* `with` sets the whole list; headings take it at weight 600, so a
+            quieter list stays internally consistent. */}
+        <Stack spacing="300" align="stretch">
+          <Typography with="caption01" tone="muted">per-cell <code>with</code> &middot; code01 keys beside body01 values</Typography>
+          <StructuredList headers={['Key', 'Value', 'Type']} layout="columns" columnWidths={['14rem', 'auto', '7rem']}>
+            <StructuredListRow>
+              <StructuredListCell with="code01">build.target</StructuredListCell>
+              <StructuredListCell>es2022</StructuredListCell>
+              <StructuredListCell with="caption01">string</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">build.sourcemap</StructuredListCell>
+              <StructuredListCell>true</StructuredListCell>
+              <StructuredListCell with="caption01">boolean</StructuredListCell>
+            </StructuredListRow>
+          </StructuredList>
         </Stack>
       </Stack>
 

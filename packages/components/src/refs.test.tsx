@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ListItem, ScrollArea, Separator, SideNav, SideNavSection, Stack, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ListItem, ScrollArea, Separator, SideNav, SideNavSection, Stack, StructuredList, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -44,6 +44,9 @@ describe('refs', () => {
       ['SideNavSection', createRef<HTMLDivElement>(), (r: never) => <SideNavSection ref={r}>x</SideNavSection>, 'DIV'],
       // The nav itself, which is the landmark and the element a caller sizes.
       ['SideNav', createRef<HTMLElement>(), (r: never) => <SideNav ref={r} aria-label="l">x</SideNav>, 'NAV'],
+      // The root, which carries role="table". The row and cell refs need the
+      // surrounding structure, so they are asserted in structuredlist.test.tsx.
+      ['StructuredList', createRef<HTMLDivElement>(), (r: never) => <StructuredList ref={r} headers={['A']}>x</StructuredList>, 'DIV'],
       // The root, not the viewport — the root is the element a caller sizes.
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
       // The panel — the visible frame — not Base UI's positioning popup.
