@@ -13,6 +13,8 @@ import { x } from './x';
 import { check } from './check';
 import { plus } from './plus';
 import { minus } from './minus';
+import { dotsThree } from './dots-three';
+import { dotsNine } from './dots-nine';
 import { copy } from './copy';
 import { checkCircle } from './check-circle';
 import { warning } from './warning';
@@ -50,6 +52,8 @@ export const icons = {
   'check': check,
   'plus': plus,
   'minus': minus,
+  'dots-three': dotsThree,
+  'dots-nine': dotsNine,
   'copy': copy,
   'check-circle': checkCircle,
   'warning': warning,

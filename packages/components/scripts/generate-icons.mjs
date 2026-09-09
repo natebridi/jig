@@ -19,13 +19,11 @@ const NAMES = [
   'caret-down', 'caret-up', 'caret-left', 'caret-right',
   'arrow-down', 'arrow-up', 'arrow-left', 'arrow-right',
   'x', 'check', 'plus', 'minus',
+  'dots-three', 'dots-nine',
   'copy', 'check-circle', 'warning', 'warning-circle', 'info', 'question',
   'magnifying-glass', 'gear', 'user', 'calendar', 'clock',
   'trash', 'pencil-simple', 'list', 'arrow-square-out', 'sun', 'moon',
-  // Toggle affordances, where the fill weight carries the pressed state.
   'star', 'heart', 'eye', 'eye-slash', 'bell',
-  // Brand marks. Phosphor draws these to sit on the same grid as the rest, so
-  // they take the same sizing and `currentColor` as any other icon.
   'github-logo',
 ];
 
