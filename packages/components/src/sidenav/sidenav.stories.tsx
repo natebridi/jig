@@ -8,7 +8,7 @@ import { Input } from '../input';
 import { Typography } from '../typography';
 
 const meta = {
-  title: 'Components/SideNav',
+  title: 'Components/Navigation/SideNav',
   component: SideNav,
   tags: ['autodocs'],
   parameters: {

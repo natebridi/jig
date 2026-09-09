@@ -43,29 +43,26 @@ export const row = recipe({
      */
     size: {
       sm: {
-        vars: { "--jig-listitem-pad-block": spacing[300], "--jig-listitem-pad-inline": spacing[400] },
-        gap: spacing[200],
+        vars: { "--jig-listitem-pad-block": spacing[300], "--jig-listitem-pad-inline": spacing[300] },
+        gap: spacing[100],
         fontSize: type.scale[200],
       },
       md: {
-        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[500] },
-        gap: spacing[300],
+        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[400] },
+        gap: spacing[200],
         fontSize: type.scale[300],
       },
       lg: {
-        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[500] },
-        gap: spacing[300],
+        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[400] },
+        gap: spacing[200],
         fontSize: type.scale[400],
       },
     },
-    /**
-     * The current row. 0014 D3: the ghost button's *active* fill, one step
-     * past its hover fill so a selected row and a hovered neighbour stay
-     * distinguishable. Deliberately no colour change to the label — the note
-     * on that decision ruled out the accent text the proposal had drawn.
-     */
     selected: {
-      true: { background: color.button.ghost.activeBg },
+      true: {
+        background: color.button.primary.baseBg,
+        color: color.button.primary.text,
+      },
       false: {},
     },
     /** Only a row that navigates or acts should respond to a pointer. */
@@ -98,7 +95,7 @@ export const row = recipe({
       // drop back to the lighter hover fill on hover, which reads as the row
       // becoming *less* selected the moment it is pointed at.
       variants: { interactive: true, selected: true },
-      style: { ":hover": { background: color.button.ghost.activeBg } },
+      style: { ":hover": { background: color.button.primary.hoverBg } },
     },
   ],
   defaultVariants: {

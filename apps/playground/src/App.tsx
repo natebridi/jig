@@ -551,10 +551,21 @@ export function App() {
 
           {/* The gutter is reserved on every row whether or not that row is the
               selected one, so the labels hold one column. 0014 D3. */}
-          <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem' }}>
-            <ListItem href="#li-a" selectedIcon="check" start={<Icon icon="star" />}>Installation</ListItem>
-            <ListItem href="#li-b" selectedIcon="check" start={<Icon icon="moon" />} selected>Theming</ListItem>
-            <ListItem href="#li-c" selectedIcon="check" start={<Icon icon="gear" />}>Tokens</ListItem>
+          <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem', display: 'flex', flexDirection: 'column', gap: 'var(--spacing-100)' }}>
+            <ListItem href="#li-a" selectedIcon="check" size="sm" selected>Menu Item 1 - sm</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="sm">Menu Item 2 - sm</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="sm" start={<Icon icon="info" />}>Menu Item 3 - sm</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="sm" start={<Icon icon="info" />} selected>Menu Item 4 - sm</ListItem>
+            <Separator />
+            <ListItem href="#li-a" selectedIcon="check" size="md" selected>Menu Item 1 - md</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="md">Menu Item 2 - md</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="md" start={<Icon icon="info" />}>Menu Item 3 - md</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="md" start={<Icon icon="info" />} selected>Menu Item 4 - md</ListItem>
+            <Separator />
+            <ListItem href="#li-a" selectedIcon="check" size="lg" selected>Menu Item 1 - lg</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="lg">Menu Item 2 - lg</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="lg" start={<Icon icon="info" />}>Menu Item 3 - lg</ListItem>
+            <ListItem href="#li-a" selectedIcon="check" size="lg" start={<Icon icon="info" />} selected>Menu Item 4 - lg</ListItem>
           </ul>
         </Stack>
 

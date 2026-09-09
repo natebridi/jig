@@ -22,6 +22,7 @@ export const list = style({
   padding: 0,
   display: "flex",
   flexDirection: "column",
+  gap: "var(--spacing-100)"
 });
 
 /**

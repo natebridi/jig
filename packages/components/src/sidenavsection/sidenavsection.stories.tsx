@@ -5,7 +5,7 @@ import { Icon } from '../icon';
 import { Stack } from '../stack';
 
 const meta = {
-  title: 'Components/SideNavSection',
+  title: 'Components/Navigation/SideNavSection',
   component: SideNavSection,
   tags: ['autodocs'],
   parameters: {

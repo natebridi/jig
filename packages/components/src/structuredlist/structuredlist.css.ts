@@ -139,6 +139,7 @@ for (const breakpoint of BREAKPOINTS) {
       globalStyle(`:where(.${marker}) .${row}`, at({
         display: "flex",
         padding: 0,
+        alignItems: 'baseline',
         borderBottom: `1px solid ${color.line}`,
       }));
       globalStyle(
