@@ -130,7 +130,13 @@ export const indicator = style({
  */
 export const panel = style({
   overflow: "hidden",
-  height: "var(--collapsible-panel-height)",
+  // The fallback is what makes this declaration safe on its own. Base UI writes
+  // `--collapsible-panel-height` as an inline style after measuring, but a
+  // `var()` with no fallback makes the *whole* declaration invalid while the
+  // variable is unset — so `height` would silently fall back to `auto` anyway,
+  // just via a thrown-away declaration rather than a stated intent. Saying
+  // `auto` outright also survives Base UI renaming the variable.
+  height: "var(--collapsible-panel-height, auto)",
   transition: "height 160ms ease-out",
   selectors: {
     "&[data-starting-style], &[data-ending-style]": {

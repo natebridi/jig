@@ -193,8 +193,17 @@ export const popup = style({
   boxSizing: "border-box",
   // Matches the field, and never narrower. `minWidth` is set inline from the
   // `popupMinWidth` prop when a caller needs the list wider than the control.
-  width: "max(var(--anchor-width), var(--jig-combobox-min-width, 0px))",
-  maxHeight: "min(20rem, var(--available-height))",
+  // Both fall back, so neither declaration depends on Base UI having measured
+  // yet. Without a fallback an unset variable invalidates the entire
+  // declaration: the width would become `auto` and — worse — the height cap
+  // would become `none`, letting a long list run off the screen instead of
+  // scrolling at 20rem.
+  //
+  // `100%` rather than a length for the anchor width: `max()` rejects `auto`,
+  // and `0px` would collapse the popup, which is worse than the bug being
+  // guarded against.
+  width: "max(var(--anchor-width, 100%), var(--jig-combobox-min-width, 0px))",
+  maxHeight: "min(20rem, var(--available-height, 100vh))",
   background: color.surfaces.popover,
   borderRadius: radius[400],
   boxShadow: elevation.med,
