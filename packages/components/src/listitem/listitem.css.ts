@@ -48,7 +48,7 @@ export const row = recipe({
         fontSize: type.scale[200],
       },
       md: {
-        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[400] },
+        vars: { "--jig-listitem-pad-block": spacing[400], "--jig-listitem-pad-inline": spacing[300] },
         gap: spacing[200],
         fontSize: type.scale[300],
       },

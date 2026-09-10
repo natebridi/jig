@@ -72,7 +72,7 @@ export const track = style({
   width: "100%",
   height: trackSize,
   borderRadius: radius[900],
-  background: `repeating-linear-gradient(90deg, ${color.control.hoverBorder}, ${color.control.hoverBorder} 1px, ${color.surfaces.body} 1px, ${color.surfaces.body} 4px)`,
+  background: `repeating-linear-gradient(90deg, ${color.control.hoverBorder}, ${color.control.hoverBorder} 1px, transparent 1px, transparent 4px)`,
   selectors: {
     [`${root}[data-disabled] &`]: { background: color.slider.disabledTrack },
   },

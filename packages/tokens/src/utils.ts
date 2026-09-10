@@ -48,7 +48,7 @@ export const controlSet = (lightOrDark: string) => {
   const colors: Record<string, string> = (lightOrDark == 'light') ? {
     'base-bg': `{color.white}`,
     'text': `{color.warm.600}`,
-    'placeholder': `{color.gray.400}`,
+    'placeholder': `{color.warm.400}`,
     'border': `{color.warm.100}`,
     'hover-border': `{color.warm.300}`,
     'active-border': `{color.warm.600}`,
@@ -63,8 +63,8 @@ export const controlSet = (lightOrDark: string) => {
     'hover-border': `{color.warm.550}`,
     'active-border': `{color.warm.50}`,
     'invalid-border': `{color.red.500}`,
-    'disabled-bg': `{color.gray.650}`,
-    'disabled-text': `{color.gray.400}`
+    'disabled-bg': `{color.warm.650}`,
+    'disabled-text': `{color.warm.400}`
   };
 
   return toColorTokens(colors);
@@ -209,8 +209,8 @@ export const scrollbarSet = (lightOrDark: string) => {
     'thumb': `{color.warm.300}`,
     'thumb-hover': `{color.warm.400}`
   } : {
-    'thumb': `{color.gray.450}`,
-    'thumb-hover': `{color.gray.400}`
+    'thumb': `{color.warm.450}`,
+    'thumb-hover': `{color.warm.400}`
   };
 
   return toColorTokens(colors);
@@ -235,9 +235,9 @@ export const sliderSet = (lightOrDark: string) => {
     'disabled-track': `{color.warm.150}`,
     'disabled-thumb': `{color.warm.300}`
   } : {
-    'indicator': `{color.gray.100}`,
-    'disabled-track': `{color.gray.650}`,
-    'disabled-thumb': `{color.gray.400}`
+    'indicator': `{color.warm.100}`,
+    'disabled-track': `{color.warm.650}`,
+    'disabled-thumb': `{color.warm.400}`
   };
 
   return toColorTokens(colors);

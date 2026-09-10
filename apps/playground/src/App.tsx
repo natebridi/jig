@@ -569,8 +569,6 @@ export function App() {
           </ul>
         </Stack>
 
-        {/* The ramp is padding, not height — so the avatar row is simply
-            taller rather than clipped. 0014 D5. */}
         <ul role="list" style={{ listStyle: 'none', margin: 0, padding: 0, width: '17rem' }}>
           <ListItem href="#li-sm" size="sm" start={<Icon icon="star" />}>Small</ListItem>
           <ListItem href="#li-md" size="md" start={<Icon icon="star" />}>Medium</ListItem>
