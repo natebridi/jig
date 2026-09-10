@@ -49,3 +49,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Signs each publish with a link back to the commit and workflow
+          # that built it. Needs a public repo, a public package and the
+          # id-token permission above — all three now hold.
+          NPM_CONFIG_PROVENANCE: true
