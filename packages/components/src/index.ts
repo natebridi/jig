@@ -53,6 +53,8 @@ export type {
   StructuredListCellProps,
   StructuredListLayout,
 } from './structuredlist';
+export { Tabs, TabList, Tab, TabPanel } from './tabs';
+export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabsOrientation } from './tabs';
 export { Dialog } from './dialog';
 export type { DialogProps, DialogSize, DialogClosePlacement } from './dialog';
 export { ScrollArea } from './scrollarea';

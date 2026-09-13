@@ -1,0 +1,1921 @@
+<title>0019 &middot; Tabs</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes &mdash; real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option &mdash; a
+     measurement table, a diagram &mdash; sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way &mdash; dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose &mdash; localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- Jig specimens: real token values, theme-swapped ----
+     Copied from packages/styles/dist/tokens.css. Work Sans is not loadable
+     from file://, so specimens fall back to the document's sans stack.
+     The strips below are real radio groups with real labels, so the hover,
+     checked and focus states are the ones being proposed, and the sliding
+     bar is measured from the live geometry the way Base UI's Indicator is. */
+
+  .jig {
+    --j-sp-100: 0.17rem;
+    --j-sp-200: 0.28rem;
+    --j-sp-300: 0.45rem;
+    --j-sp-400: 0.72rem;
+    --j-sp-500: 1.17rem;
+    --j-sp-600: 1.89rem;
+
+    --j-ts-100: 0.66rem;
+    --j-ts-200: 0.79rem;
+    --j-ts-300: 0.97rem;
+    --j-ts-400: 1.21rem;
+
+    --j-rad: 4.3px;
+
+    /* size.control, from packages/tokens/src/semantics/size.ts */
+    --j-ctrl-md: 2.41rem;
+
+    --j-body:   oklch(94.3% 0.005 83);      /* surfaces.body       warm.25  */
+    --j-card:   oklch(100% 0 0);            /* surfaces.card       white    */
+    --j-text:   oklch(31.3% 0.012 83);      /* text.primary        warm.600 */
+    --j-sec:    oklch(45.4% 0 0);           /* text.secondary      gray.500 */
+    --j-muted:  oklch(61.1% 0 0);           /* text.muted          gray.400 */
+    --j-line:   oklch(85.9% 0.007 83);      /* color.line          warm.200 */
+    --j-hover:  oklch(89.1% 0.007 83);      /* button.ghost.hoverBg  warm.150 */
+    --j-active: oklch(85.9% 0.007 83);      /* button.ghost.activeBg warm.200 */
+    --j-focus:  oklch(0% 0 0);              /* color.focus         black    */
+    --j-tok-bg:   oklch(92.3% 0.038 252.2); /* token.blue.baseBg   blue.100 */
+    --j-tok-text: oklch(38.3% 0.179 262.2); /* token.blue.text     blue.550 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --j-body:   oklch(17.8% 0.013 83);    /* warm.750 */
+      --j-card:   oklch(26.1% 0.012 83);    /* warm.650 */
+      --j-text:   oklch(92.3% 0 0);         /* gray.100 */
+      --j-sec:    oklch(75.3% 0 0);         /* gray.300 */
+      --j-muted:  oklch(61.1% 0 0);         /* gray.400 */
+      --j-line:   oklch(31.3% 0.012 83);    /* warm.600 */
+      --j-hover:  oklch(31.3% 0.012 83);    /* warm.600 */
+      --j-active: oklch(38.3% 0.011 83);    /* warm.550 */
+      --j-focus:  oklch(100% 0 0);          /* white */
+      --j-tok-bg:   oklch(26.1% 0.152 264.4); /* blue.650 */
+      --j-tok-text: oklch(85.9% 0.07 254.4);  /* blue.200 */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --j-body:   oklch(17.8% 0.013 83);
+    --j-card:   oklch(26.1% 0.012 83);
+    --j-text:   oklch(92.3% 0 0);
+    --j-sec:    oklch(75.3% 0 0);
+    --j-muted:  oklch(61.1% 0 0);
+    --j-line:   oklch(31.3% 0.012 83);
+    --j-hover:  oklch(31.3% 0.012 83);
+    --j-active: oklch(38.3% 0.011 83);
+    --j-focus:  oklch(100% 0 0);
+    --j-tok-bg:   oklch(26.1% 0.152 264.4);
+    --j-tok-text: oklch(85.9% 0.07 254.4);
+  }
+
+  .specimen.block { padding-left: 1rem; padding-right: 1rem; }
+
+  /* ---- the tab strip ---- */
+
+  .jig { width: 100%; font-family: var(--sans); color: var(--j-text); }
+
+  .jig .surface {
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-500) var(--j-sp-500) var(--j-sp-400);
+  }
+
+  .jig .strip {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--j-line);
+  }
+
+  .jig .tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--j-sp-300);
+    padding: var(--j-sp-400) var(--j-sp-500);
+    font-size: var(--j-ts-300);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--j-sec);
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: var(--j-rad) var(--j-rad) 0 0;
+    user-select: none;
+  }
+
+  /* The real control. Visually hidden rather than display:none so it still
+     takes focus and the focus ring below is the one a keyboard user sees. */
+  .jig .tab input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .jig .tab:hover { background: var(--j-hover); color: var(--j-text); }
+  .jig .tab:active { background: var(--j-active); }
+  .jig .tab:has(input:checked) { color: var(--j-text); }
+  .jig .tab:has(input:focus-visible) {
+    outline: 2px solid var(--j-focus);
+    outline-offset: -2px;
+  }
+
+  .jig .tab .ico { width: 1.4em; height: 1.4em; fill: currentColor; flex: none; }
+
+  .jig .pill {
+    flex: none;
+    background: var(--j-tok-bg);
+    color: var(--j-tok-text);
+    border-radius: 999px;
+    padding: 0.1em 0.5em;
+    font-size: var(--j-ts-100);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  /* A: the sliding bar. Position and width are written by script from the
+     checked tab's live geometry &mdash; the same measurement Base UI's Indicator
+     publishes as CSS variables. */
+  .jig .indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background: var(--j-text);
+    width: var(--w, 0px);
+    transform: translateX(var(--x, 0px));
+  }
+
+  .jig .indicator.ready { transition: transform 180ms ease, width 180ms ease; }
+
+  /* B: the bar belongs to the tab, so it lands instantly and measures nothing. */
+  .jig .strip.static .tab:has(input:checked)::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--j-text);
+  }
+
+  /* C: no rule under the strip at all; the active tab carries a fill. */
+  .jig .strip.segmented {
+    border-bottom: none;
+    gap: var(--j-sp-200);
+    padding: var(--j-sp-200);
+    background: var(--j-body);
+    border-radius: var(--j-rad);
+    display: inline-flex;
+  }
+
+  .jig .strip.segmented .tab {
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-300) var(--j-sp-400);
+  }
+
+  .jig .strip.segmented .tab:has(input:checked) {
+    background: var(--j-card);
+    box-shadow: 0 1px 2px oklch(0% 0 0 / 0.12);
+  }
+
+  .jig .panel {
+    padding: var(--j-sp-500) var(--j-sp-200) var(--j-sp-200);
+    font-size: var(--j-ts-300);
+    line-height: 1.5;
+    color: var(--j-sec);
+    max-width: none;
+  }
+
+  .jig .panel b { color: var(--j-text); font-weight: 600; }
+
+  /* ---- overflow specimens ---- */
+
+  .jig .frame {
+    width: 100%;
+    max-width: 20rem;
+    background: var(--j-card);
+    border-radius: var(--j-rad);
+    padding: var(--j-sp-400);
+  }
+
+  .jig .strip.wrapping { flex-wrap: wrap; }
+
+  .jig .strip.scrolling {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    /* Fades the cropped edge, so it reads as "there is more" rather than
+       "the label is broken". ScrollArea already does this. */
+    mask-image: linear-gradient(to right, #000 calc(100% - 16px), transparent 100%);
+  }
+
+  .jig .strip.clipping { overflow: hidden; }
+
+  .jig .caption {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: var(--j-sp-400) 0 0;
+  }
+
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0019</p>
+    <h1>Tabs</h1>
+    <p class="standfirst">
+      Base UI's tabs behaviour brought over whole, on a public surface smaller than the
+      one it ships &mdash; plus a slot on either side of a tab's label, for an icon or a
+      count.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-10</li>
+      <li>4 decisions</li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      Jig has no tabs. Base UI does, and its behaviour is the model: roving tabindex,
+      arrow-key navigation, <code>role="tablist"</code> / <code>tab</code> /
+      <code>tabpanel</code> wired up with the <code>aria-controls</code> and
+      <code>aria-labelledby</code> pairing, and an indicator that tracks the active tab.
+      That is the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">APG tabs
+      pattern</a>, and none of it is worth rewriting.
+    </p>
+    <p>
+      What is worth reconsidering is the surface. Base UI's Tabs is five parts &mdash;
+      <code>Root</code>, <code>List</code>, <code>Tab</code>, <code>Panel</code>,
+      <code>Indicator</code> &mdash; and every one of them is a component the caller
+      places by hand. Jig has wrapped Base UI four times now and each time collapsed
+      something: <code>ToggleButtonGroup</code> keeps one flat component with no separate
+      item part (<code>packages/components/src/togglebuttongroup/</code>),
+      <code>Combobox</code> takes its options as an <code>items</code> array rather than
+      as children, and <code>Dialog</code> is a single component with props where Base UI
+      has six parts. Against that, <code>StructuredList</code> exports three flat
+      siblings &mdash; <code>StructuredList</code>, <code>StructuredListRow</code>,
+      <code>StructuredListCell</code> &mdash; because rows and cells genuinely are
+      caller-authored content.
+    </p>
+    <p>
+      Tabs sits between those two shapes, which is what makes the composition question
+      real rather than a matter of taste. The decisions below are: how many components
+      the caller places, how the active tab is marked, what a tab may hold besides its
+      label, and what happens when the tabs do not fit.
+    </p>
+
+    <h3>What the registry says</h3>
+    <p>
+      <code>packages/components/package.json</code> pins <code>@base-ui/react</code> at
+      <code>~1.7.0</code>; <code>1.7.0</code> is what is installed. Latest is
+      <code>1.8.0</code>, published 2026-09-04, on a steady roughly-monthly cadence
+      (<code>1.5.0</code> 2026-05-19, <code>1.6.0</code> 2026-06-18, <code>1.7.0</code>
+      2026-08-04). Not deprecated. Its only non-optional peers are React and React DOM;
+      <code>date-fns</code> and <code>@date-fns/tz</code> are marked optional in
+      <code>peerDependenciesMeta</code> and cost a consumer nothing. Tabs needs no
+      dependency Jig does not already carry. Figures from
+      <code>npm view @base-ui/react version deprecated peerDependenciesMeta time</code>,
+      run 2026-09-10. The tilde pin means this proposal targets 1.7.0's API; the parts
+      and props quoted below were read out of
+      <code>node_modules/@base-ui/react/tabs/*.d.ts</code>, not from memory.
+    </p>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule, an instruction already given, or Base UI's
+      own default, and is <em>not</em> up for debate in this document. Listing it is what
+      keeps the decision count honest.
+    </p>
+    <ul class="notes">
+      <li>
+        One size. No <code>size</code> prop ships; if one ever does it has to be
+        <code>sm | md | lg</code> matching <code>ButtonSize</code>.
+      </li>
+      <li>
+        <code>activateOnFocus</code> is fixed at Base UI's default, <code>false</code>:
+        arrow keys move focus, <kbd>Enter</kbd> or <kbd>Space</kbd> activates. Manual
+        activation is the APG's recommendation wherever a panel's content is not free to
+        render, and it is the safer default to be stuck with.
+      </li>
+      <li>
+        <code>loopFocus</code> is fixed at Base UI's default, <code>true</code>. This
+        diverges from <code>ToggleButtonGroup</code>, which exposes it &mdash; recorded
+        deliberately rather than by oversight. No prop until something needs one.
+      </li>
+      <li>
+        <code>orientation</code> <em>is</em> exposed, as
+        <code>'horizontal' | 'vertical'</code> defaulting to horizontal &mdash; same
+        shape, name and default as <code>ToggleButtonGroup</code>.
+      </li>
+      <li>
+        Each tab takes a required <code>value</code>, typed through a
+        <code>Value extends string</code> generic on the root, as
+        <code>ToggleButtonGroup</code> does. Base UI's <code>any | null</code> value and
+        its positional-index fallback (<code>defaultValue: 0</code>) are not carried over.
+      </li>
+      <li>
+        No <code>as</code> prop. Polymorphism stays on layout and typography components
+        plus <code>ListItem</code> (0014 D2); a tab is a <code>&lt;button&gt;</code> and a
+        panel is a <code>&lt;div&gt;</code>.
+      </li>
+      <li>
+        No spacing props &mdash; a tab strip takes its spacing from its parent &mdash; and
+        refs forward to the rendered element, typed, which
+        <code>refs.test.tsx</code> enforces.
+      </li>
+      <li>
+        A tab draws no border of its own, so focus is the shared ring from
+        <code>packages/components/src/focus-ring.ts</code>, not a border highlight
+        (0002 D4).
+      </li>
+      <li>
+        No new primitives. Spacing comes off the ratio ramp, radius off
+        <code>radius.400</code>, type through <code>textStyle()</code>; any tab-specific
+        colours extend the <code>color.button.*</code> state shape as a semantic set.
+      </li>
+      <li>
+        <code>keepMounted</code> and <code>renderBeforeHydration</code> stay unexposed at
+        their Base UI defaults. A hidden panel unmounts.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English.
+    </p>
+  </section>
+
+  <!-- ===================== D1 ===================== -->
+  <section class="decision" data-decision="composition" data-title="How the parts compose">
+    <p class="decision-id">D1 &middot; composition</p>
+    <h2>How the parts compose</h2>
+    <p>
+      Base UI asks the caller to place four elements to get a working tab set, five with
+      the indicator. Every option below renders the same DOM and the same ARIA, so the
+      first question is how much of it the caller writes by hand &mdash; and the second,
+      which this document originally missed and D1's outcome records, is what
+      <em>else</em> may live inside the root. A tab set is often not only tabs and
+      panels: a menu at the end of the strip, a persistent banner above the panels.
+      Inferring the list closes that door; naming it leaves it open.
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <pre class="tree"><b>div</b>  <i>&mdash; Tabs.Root</i>
+&#9500;&#9472; <b>div</b>   <i>role="tablist"</i>            <i>&mdash; Tabs.List</i>
+&#9474;  &#9500;&#9472; <b>button</b> <i>role="tab" aria-selected="true"  aria-controls="&hellip;-panel-overview" tabindex="0"</i>
+&#9474;  &#9500;&#9472; <b>button</b> <i>role="tab" aria-selected="false" aria-controls="&hellip;-panel-tokens"   tabindex="-1"</i>
+&#9474;  &#9492;&#9472; <b>span</b>  <i>&mdash; Tabs.Indicator</i>
+&#9492;&#9472; <b>div</b>   <i>role="tabpanel" aria-labelledby="&hellip;-tab-overview"</i></pre>
+      </div>
+      <figcaption>
+        What all three options render. The roving <code>tabindex</code>, the id pairing
+        and the single tab stop are Base UI's, unchanged, in every case &mdash; so this
+        decision costs nothing in behaviour or accessibility either way.
+      </figcaption>
+    </figure>
+
+    <div class="options">
+
+      <article class="option" data-option="three-part" data-label="Three parts, list inferred">
+        <div class="option-head">
+          <h3>Three parts, list inferred</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the call site</p>
+        <div class="specimen block">
+          <pre class="tree">&lt;<b>Tabs</b> defaultValue="usage"&gt;
+  &lt;<b>Tab</b> value="usage"&gt;Usage&lt;/<b>Tab</b>&gt;
+  &lt;<b>Tab</b> value="props"&gt;Props&lt;/<b>Tab</b>&gt;
+
+  &lt;<b>TabPanel</b> value="usage"&gt;&hellip;&lt;/<b>TabPanel</b>&gt;
+  &lt;<b>TabPanel</b> value="props"&gt;&hellip;&lt;/<b>TabPanel</b>&gt;
+&lt;/<b>Tabs</b>&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Two levels of nesting instead of three, and one fewer import.</li>
+          <li class="pro">The list cannot be forgotten, mis-nested, or given two children it should not have.</li>
+          <li class="con"><code>Tabs</code> has to partition its children by component identity. A <code>.map()</code> is fine (arrays flatten), but a <code>&lt;Tab&gt;</code> wrapped in a caller's own component is invisible to the split and lands in the wrong half.</li>
+          <li class="con">Nothing in the types says which children go where; the rule lives in the doc comment.</li>
+          <li class="con">Every child of <code>Tabs</code> has to be a <code>Tab</code> or a <code>TabPanel</code>. A menu beside the strip, or a banner between the strip and the panels, has nowhere to go.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="four-part" data-label="Four parts, mirroring Base UI">
+        <div class="option-head">
+          <h3>Four parts, mirroring Base UI</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the call site</p>
+        <div class="specimen block">
+          <pre class="tree">&lt;<b>Tabs</b> defaultValue="usage"&gt;
+  &lt;<b>TabList</b>&gt;
+    &lt;<b>Tab</b> value="usage"&gt;Usage&lt;/<b>Tab</b>&gt;
+    &lt;<b>Tab</b> value="props"&gt;Props&lt;/<b>Tab</b>&gt;
+  &lt;/<b>TabList</b>&gt;
+
+  &lt;<b>TabPanel</b> value="usage"&gt;&hellip;&lt;/<b>TabPanel</b>&gt;
+  &lt;<b>TabPanel</b> value="props"&gt;&hellip;&lt;/<b>TabPanel</b>&gt;
+&lt;/<b>Tabs</b>&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No child inspection anywhere; every wrapper is explicit and composes with anything.</li>
+          <li class="pro">Matches <code>StructuredList</code>'s flat-sibling export shape, and maps one-to-one onto Base UI's docs.</li>
+          <li class="pro"><code>TabList</code> is a place, not only a wrapper: anything that is neither a tab nor a panel composes as its sibling, and <code>Tabs</code> stays a behavioural wrapper with no styling of its own.</li>
+          <li class="con">The extra wrapper is repeated at every call site, and for the plainest tab set it carries no decision of its own.</li>
+          <li class="con">Four exports and four names to learn for the commonest possible case.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="items-array" data-label="One component, items array">
+        <div class="option-head">
+          <h3>One component, items array</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; the call site</p>
+        <div class="specimen block">
+          <pre class="tree">&lt;<b>Tabs</b>
+  defaultValue="usage"
+  items={[
+    { value: 'usage', label: 'Usage',
+      content: &lt;<b>Usage</b> /&gt; },
+    { value: 'props', label: 'Props',
+      content: &lt;<b>PropsTable</b> /&gt; },
+  ]}
+/&gt;</pre>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One import, one component; the value/label/content triple cannot fall out of sync.</li>
+          <li class="pro">Follows <code>Combobox</code>, which already takes its options as data.</li>
+          <li class="con">Puts arbitrary JSX inside a prop array &mdash; awkward to read, and worse to diff, once a panel is more than a line.</li>
+          <li class="con">Every future per-tab prop widens the item type instead of being a prop on a component.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-10</span>
+      <b>Four parts, mirroring Base UI.</b> Not the recommendation, and for a reason the
+      document had not weighed. Verbatim:
+      <p>&ldquo;I'm choosing this because it makes it clearer that other content could
+      theoretically exist alongside Tablist and TabPanels, for extra composability. An
+      extra menu, persistent messages, etc. Tabs should have no styling associated with
+      it, it is a behavioral wrapper.&rdquo;</p>
+      <p>
+        The basis changed, so the body above changed with it: the three-part option had
+        no con for the children it forbids, and this option's &ldquo;boilerplate&rdquo;
+        con overstated the case. Both are corrected. Two things follow that were not
+        decisions here and are now constraints on the build:
+      </p>
+      <ul>
+        <li>
+          <code>Tabs</code> renders Base UI's root and nothing else &mdash; no layout, no
+          spacing, no border. Every visual rule belongs to <code>TabList</code>,
+          <code>Tab</code> and <code>TabPanel</code>.
+        </li>
+        <li>
+          The sliding indicator from D2 is therefore <code>TabList</code>'s, not the
+          root's; the strip is the positioning context.
+        </li>
+        <li>
+          Children of <code>Tabs</code> other than <code>TabList</code> and
+          <code>TabPanel</code> render where they are written. Nothing filters them.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== D2 ===================== -->
+  <section class="decision" data-decision="active-marker" data-title="How the active tab is marked">
+    <p class="decision-id">D2 &middot; active-marker</p>
+    <h2>How the active tab is marked</h2>
+    <p>
+      Base UI ships <code>Tabs.Indicator</code>: a span that publishes the active tab's
+      measured position and size as CSS variables so a bar can be moved and resized to
+      match. It is real machinery &mdash; a resize observer, a pre-hydration script for
+      SSR &mdash; and it buys one thing, a bar that slides. The alternative is that the
+      active tab draws its own mark and nothing is measured at all.
+    </p>
+    <p>
+      In every option the indicator stays internal: it is not a part the caller places.
+      The strips below are live &mdash; click or tab into them.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="sliding-underline" data-label="Sliding underline">
+        <div class="option-head">
+          <h3>Sliding underline</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip sliding">
+                <label class="tab"><input type="radio" name="d2a" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d2a"><span>Props</span></label>
+                <label class="tab"><input type="radio" name="d2a"><span>API</span></label>
+                <span class="indicator"></span>
+              </div>
+              <p class="panel">The bar takes the active tab's <b>measured</b> width and offset, so it tracks labels of any length.</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The movement shows which tab you came from, which is the one thing a static mark cannot say.</li>
+          <li class="pro">Base UI does the measuring; the component only writes the CSS.</li>
+          <li class="con">A resize observer per strip, and a one-frame flash after SSR unless <code>renderBeforeHydration</code> is turned on &mdash; which the settled list currently leaves off.</li>
+          <li class="con">The bar is a positioned sibling, so the strip has to be a positioning context and cannot simply wrap.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="static-underline" data-label="Underline on the tab">
+        <div class="option-head">
+          <h3>Underline on the tab</h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip static">
+                <label class="tab"><input type="radio" name="d2b" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d2b"><span>Props</span></label>
+                <label class="tab"><input type="radio" name="d2b"><span>API</span></label>
+              </div>
+              <p class="panel">The mark is the active tab's own <b>::after</b>. Nothing is measured, nothing observes resize, and it is correct before hydration.</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No measurement, no observer, no hydration flash &mdash; the first paint is already right.</li>
+          <li class="pro">Wraps and scrolls without any extra thought, which D4 then gets for free.</li>
+          <li class="con">The mark jumps rather than travels; on a wide strip the eye loses the relationship between the two tabs.</li>
+          <li class="con">Drops a Base UI part the library maintains, so a later change of mind is a rewrite rather than a prop.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="segmented" data-label="Segmented fill">
+        <div class="option-head">
+          <h3>Segmented fill</h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip segmented">
+                <label class="tab"><input type="radio" name="d2c" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d2c"><span>Props</span></label>
+                <label class="tab"><input type="radio" name="d2c"><span>API</span></label>
+              </div>
+              <p class="panel">A raised card on a recessed track &mdash; the shape a <b>ToggleButtonGroup</b> already makes.</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Reads as one control, and needs no rule under the strip to sit on.</li>
+          <li class="pro">Reuses the ghost button's hover and active fills; no new colour work.</li>
+          <li class="con">Now nearly indistinguishable from <code>ToggleButtonGroup</code>, which is a different thing that does not swap a panel.</li>
+          <li class="con">Does not read as a page-level section switcher, which is the case that prompted this.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-10</span>
+      <b>Sliding underline.</b> Base UI's <code>Tabs.Indicator</code>, kept internal &mdash;
+      internal to <code>TabList</code> rather than to the root, which is what D1's outcome
+      settles. No note.
+    </div>
+  </section>
+
+  <!-- ===================== D3 ===================== -->
+  <section class="decision" data-decision="tab-content" data-title="What a tab holds besides its label">
+    <p class="decision-id">D3 &middot; tab-content</p>
+    <h2>What a tab holds besides its label</h2>
+    <p>
+      Two live precedents disagree. <code>Button</code> takes <code>icon</code> and
+      <code>iconPosition</code>, restricted to the curated <code>IconName</code> set and
+      sized by the button at <code>1.4em</code>. <code>ListItem</code> takes
+      <code>start</code> and <code>end</code> as open <code>ReactNode</code>s, because a
+      row's leading slot might hold an avatar or a swatch, not only an icon.
+    </p>
+    <p>
+      One thing does <em>not</em> carry over from <code>ListItem</code>: there,
+      <code>end</code> is the slot allowed to be interactive, because it sits outside the
+      row's anchor. A tab <em>is</em> the button, so both slots render inside it. Neither
+      may hold anything interactive, in any option below &mdash; a button inside a button
+      is invalid HTML and leaves one of the two unreachable.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="start-end" data-label="start / end slots">
+        <div class="option-head">
+          <h3><code>start</code> / <code>end</code> slots</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip static">
+                <label class="tab"><input type="radio" name="d3a" checked>
+                  <svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg>
+                  <span>Team</span></label>
+                <label class="tab"><input type="radio" name="d3a">
+                  <svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
+                  <span>Alerts</span><span class="pill">12</span></label>
+              </div>
+            </div>
+            <pre class="tree" style="margin-top:1rem">&lt;<b>Tab</b> value="alerts"
+     start={&lt;<b>Icon</b> icon="bell" /&gt;}
+     end={&lt;<b>Token</b>&gt;12&lt;/<b>Token</b>&gt;}&gt;
+  Alerts
+&lt;/<b>Tab</b>&gt;</pre>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Holds a <code>Token</code>, an avatar or a status dot, not only an icon &mdash; which is what was asked for.</li>
+          <li class="pro">Both ends available at once, and the names already mean this in <code>ListItem</code>.</li>
+          <li class="con">Open <code>ReactNode</code> cannot stop a caller putting a button in; the rule is a doc comment and a test, not a type.</li>
+          <li class="con">The icon case is wordier than <code>Button</code>'s, for the same result.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="icon-prop" data-label="icon / iconPosition">
+        <div class="option-head">
+          <h3><code>icon</code> / <code>iconPosition</code></h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip static">
+                <label class="tab"><input type="radio" name="d3b" checked>
+                  <svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg>
+                  <span>Team</span></label>
+                <label class="tab"><input type="radio" name="d3b">
+                  <svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"/></svg>
+                  <span>Alerts</span></label>
+              </div>
+            </div>
+            <pre class="tree" style="margin-top:1rem">&lt;<b>Tab</b> value="alerts" icon="bell"&gt;
+  Alerts
+&lt;/<b>Tab</b>&gt;</pre>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Shortest call site, and the curated <code>IconName</code> union makes a wrong icon a type error.</li>
+          <li class="pro">Sizing and spacing stay the parent's, exactly as <code>Button</code> already does it.</li>
+          <li class="con">No count, no avatar, no token &mdash; the case that prompted the ask is the one it cannot serve.</li>
+          <li class="con">One slot only: <code>iconPosition</code> chooses an end rather than filling both.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="both" data-label="Both, icon as sugar">
+        <div class="option-head">
+          <h3>Both, <code>icon</code> as sugar</h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="surface">
+              <div class="strip static">
+                <label class="tab"><input type="radio" name="d3c" checked>
+                  <svg class="ico" viewBox="0 0 256 256" aria-hidden="true"><path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"/></svg>
+                  <span>Team</span></label>
+                <label class="tab"><input type="radio" name="d3c">
+                  <span>Alerts</span><span class="pill">12</span></label>
+              </div>
+            </div>
+            <pre class="tree" style="margin-top:1rem">&lt;<b>Tab</b> value="team" icon="user"&gt;
+  Team
+&lt;/<b>Tab</b>&gt;
+
+&lt;<b>Tab</b> value="alerts"
+     end={&lt;<b>Token</b>&gt;12&lt;/<b>Token</b>&gt;}&gt;
+  Alerts
+&lt;/<b>Tab</b>&gt;</pre>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Short for the common case, open for the rest.</li>
+          <li class="con">Two ways to put an icon on the left, and a precedence rule between <code>icon</code> and <code>start</code> that has to be written down and tested.</li>
+          <li class="con">The largest surface of the three, on a component whose stated goal was a smaller one.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-10</span>
+      <b><code>start</code> / <code>end</code> slots.</b> Open <code>ReactNode</code>s on
+      both sides, both non-interactive, taking <code>ListItem</code>'s names without
+      <code>ListItem</code>'s rule about which end may hold a control. No note.
+    </div>
+  </section>
+
+  <!-- ===================== D4 ===================== -->
+  <section class="decision" data-decision="overflow" data-title="When the tabs do not fit">
+    <p class="decision-id">D4 &middot; overflow</p>
+    <h2>When the tabs do not fit</h2>
+    <p>
+      Base UI does not answer this &mdash; its list is a plain <code>div</code> with
+      <code>role="tablist"</code> and whatever the stylesheet says. So the component has
+      to. Each specimen below is the same seven tabs in a 20rem frame; the difference is
+      real, not illustrated.
+    </p>
+    <p>
+      Keyboard navigation is unaffected either way: arrow keys move focus, and the
+      browser scrolls a focused tab into view on its own.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="scroll" data-label="Scroll on one line">
+        <div class="option-head">
+          <h3>Scroll on one line</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; drag or shift-scroll</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="frame">
+              <div class="strip static scrolling">
+                <label class="tab"><input type="radio" name="d4a" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Tokens</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Changelog</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Usage</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Testing</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Themes</span></label>
+                <label class="tab"><input type="radio" name="d4a"><span>Support</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">The strip keeps one predictable height, so nothing below it moves as tabs are added.</li>
+          <li class="pro">Composes with <code>ScrollArea</code> (0007), which already owns the faded edge and the reserved scrollbar gutter.</li>
+          <li class="con">Tabs off-screen are easy to miss; the fade is the only signal.</li>
+          <li class="con">A sliding indicator has to travel inside the scroller, so D2's positioned bar needs the scroll offset handled.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="wrap" data-label="Wrap to a second row">
+        <div class="option-head">
+          <h3>Wrap to a second row</h3>
+        </div>
+
+        <p class="specimen-label">Specimen</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="frame">
+              <div class="strip static wrapping">
+                <label class="tab"><input type="radio" name="d4b" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Tokens</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Changelog</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Usage</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Testing</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Themes</span></label>
+                <label class="tab"><input type="radio" name="d4b"><span>Support</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Every tab stays visible and reachable with no gesture at all.</li>
+          <li class="pro">One CSS property, and it works before hydration.</li>
+          <li class="con">The strip's height depends on its width, so the panel below shifts as the viewport changes.</li>
+          <li class="con">The rule under the strip no longer reads as one edge; a wrapped row of tabs stops looking like a tab bar.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="caller" data-label="Leave it to the caller">
+        <div class="option-head">
+          <h3>Leave it to the caller</h3>
+        </div>
+
+        <p class="specimen-label">Specimen &mdash; overflow clipped</p>
+        <div class="specimen block">
+          <div class="jig">
+            <div class="frame">
+              <div class="strip static clipping">
+                <label class="tab"><input type="radio" name="d4c" checked><span>Overview</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Tokens</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Changelog</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Usage</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Testing</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Themes</span></label>
+                <label class="tab"><input type="radio" name="d4c"><span>Support</span></label>
+              </div>
+              <p class="caption">Four tabs unreachable, and nothing says so</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">No opinion to be wrong about, and no scroll machinery in the bundle.</li>
+          <li class="con">The default is a broken one: tabs that exist, are focusable, and cannot be seen or pointed at.</li>
+          <li class="con">Every consumer solves the same problem again, differently.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-10</span>
+      <b>Scroll on one line.</b> The strip scrolls horizontally rather than wrapping, over
+      <code>ScrollArea</code> (0007). The open item it carries: D2's indicator has to
+      travel inside the scroller, so the bar's offset is measured against the scrolled
+      content, not the viewport. No note.
+    </div>
+  </section>
+
+
+  <section>
+    <h2><span class="num">03</span>As built</h2>
+    <p>
+      Built 2026-09-10 against <code>@base-ui/react</code> 1.7.0. All four decisions were
+      implemented as accepted. <code>pnpm turbo typecheck test</code> passes: 231 tests,
+      22 files.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/components/src/tabs/tabs.tsx</code> &mdash; the four components.</li>
+      <li><code>packages/components/src/tabs/tabs.css.ts</code> &mdash; the strip, the indicator, the tab, the slots, the panel.</li>
+      <li><code>packages/components/src/tabs/tabs.test.tsx</code> &mdash; 12 tests.</li>
+      <li><code>packages/components/src/tabs/tabs.stories.tsx</code>, <code>index.ts</code>.</li>
+      <li>Changed: <code>src/index.ts</code> (exports), <code>src/api.types.test.tsx</code> and <code>src/refs.test.tsx</code> (the repo-wide guards).</li>
+    </ul>
+
+    <h3>What the proposal got wrong</h3>
+    <p>
+      Four decisions, four accepted options, no divergence &mdash; but the reasoning under
+      two of them did not survive contact with the code.
+    </p>
+    <ul class="notes">
+      <li>
+        <b>D4's ScrollArea claim does not hold.</b> The option's pro said the strip would
+        compose with <code>ScrollArea</code>, &ldquo;which already owns the faded edge and
+        the reserved scrollbar gutter&rdquo;. It owns neither on this axis: 0007 &sect;04
+        scoped horizontal overflow out, so the mask in
+        <code>scrollarea.css.ts</code> is <code>to bottom</code> and only the vertical bar
+        reserves a gutter. Wrapping the strip in it would have bought nothing and cost
+        something &mdash; Base UI puts a focusable viewport in the tab order when a scroll
+        area overflows, which is a second tab stop immediately before the tab list, in a
+        pattern whose whole point is one. <code>TabList</code> scrolls itself instead,
+        with a thin native scrollbar that appears only when there is somewhere to scroll.
+      </li>
+      <li>
+        <b>D4's open item was not real.</b> The outcome recorded that a sliding indicator
+        &ldquo;has to travel inside the scroller, so the bar's offset is measured against
+        the scrolled content&rdquo;. It needed no code: the indicator is a child of the
+        scroller and Base UI measures <code>--active-tab-left</code> against that same
+        element, so the bar scrolls with the tabs for free.
+      </li>
+      <li>
+        <b><code>onValueChange</code> had to admit <code>null</code>.</b> Under-specified
+        rather than wrong: Base UI reports the set as having nothing active when the
+        active tab is removed or disabled and no enabled tab can replace it. Typing the
+        callback as <code>(value: Value) =&gt; void</code> would have been a lie, so it
+        takes <code>Value | null</code> and controlled callers write
+        <code>(next) =&gt; next &amp;&amp; setValue(next)</code>.
+      </li>
+      <li>
+        <b>D3 did not anticipate that <code>end</code> joins the accessible name.</b> A
+        tab reading <code>&lt;Tab end={&lt;Token&gt;12&lt;/Token&gt;}&gt;Alerts&lt;/Tab&gt;</code>
+        was announced as &ldquo;Alerts12&rdquo;. Fixed with a whitespace text node before
+        the slot: it is not rendered as a flex item, so nothing moves on screen, and the
+        name becomes &ldquo;Alerts 12&rdquo;. Worth knowing that whatever goes in a slot
+        is <em>read out</em>, not decoration.
+      </li>
+      <li>
+        <b>A disabled tab is focusable.</b> Arrow keys land on it; it cannot be activated.
+        That is the composite-widget convention rather than an oversight &mdash; skipping
+        it would hide from a keyboard user that it exists &mdash; but nothing in the
+        document said so, and the first test written against it asserted the opposite.
+      </li>
+      <li>
+        <b><code>flex: none</code> on the tab is load-bearing for D4.</b> Without it the
+        tabs shrink to fit, nothing ever overflows, and the scroller never scrolls. It is
+        commented in <code>tabs.css.ts</code> because it does not look like a scrolling
+        concern.
+      </li>
+    </ul>
+
+    <h3>What the decisions got right</h3>
+    <p>
+      D1's late reversal paid for itself immediately: the
+      <em>AlongsideOtherContent</em> story &mdash; a button beside the strip, a message
+      above the panels &mdash; is three lines of JSX and needs nothing from the component,
+      which is exactly what the three-part shape would have made impossible. D2 and D3
+      built as described with no surprises.
+    </p>
+
+    <h3>Questions for a future proposal</h3>
+    <ul class="notes">
+      <li>
+        <b>Horizontal overflow in <code>ScrollArea</code>.</b> The mask and the reserved
+        gutter are vertical-only by 0007 &sect;04. If that is lifted, <code>TabList</code>
+        should compose with it rather than keep its own scroller.
+      </li>
+      <li>
+        <b>The indicator after SSR.</b> <code>renderBeforeHydration</code> is off, so the
+        bar lands one frame late. Turning it on means a script in the document head, which
+        is a cost this component should not take on a caller's behalf alone.
+      </li>
+      <li>
+        <b>A size ramp.</b> One size ships. A second has to be <code>sm | md | lg</code>
+        matching <code>ButtonSize</code>, and a tab strip has no shared control height to
+        derive from &mdash; the same open question 0002 D1 left behind.
+      </li>
+    </ul>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0019
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 4 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0019-tabs",
+  "status": "built",
+  "decided": "2026-09-10",
+  "built": "2026-09-10",
+  "decisions": [
+    {
+      "id": "composition",
+      "title": "How the parts compose",
+      "options": [
+        "three-part",
+        "four-part",
+        "items-array"
+      ],
+      "recommended": "three-part",
+      "outcome": "four-part",
+      "note": "I'm choosing this because it makes it clearer that other content could theoretically exist alongside Tablist and TabPanels, for extra composability. An extra menu, persistent messages, etc. Tabs should have no styling associated with it, it is a behavioral wrapper."
+    },
+    {
+      "id": "active-marker",
+      "title": "How the active tab is marked",
+      "options": [
+        "sliding-underline",
+        "static-underline",
+        "segmented"
+      ],
+      "recommended": "sliding-underline",
+      "outcome": "sliding-underline",
+      "note": null
+    },
+    {
+      "id": "tab-content",
+      "title": "What a tab holds besides its label",
+      "options": [
+        "start-end",
+        "icon-prop",
+        "both"
+      ],
+      "recommended": "start-end",
+      "outcome": "start-end",
+      "note": null
+    },
+    {
+      "id": "overflow",
+      "title": "When the tabs do not fit",
+      "options": [
+        "scroll",
+        "wrap",
+        "caller"
+      ],
+      "recommended": "scroll",
+      "outcome": "scroll",
+      "note": null
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists &mdash;
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>
+
+<script>
+  // The sliding indicator, measured the way Base UI's Tabs.Indicator measures:
+  // the checked tab's own offsetLeft and offsetWidth, written onto the strip as
+  // custom properties the bar reads. Transitions are armed only after the first
+  // placement, so the bar does not animate in from zero on load.
+  (function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.strip.sliding'), function (strip) {
+      var bar = strip.querySelector('.indicator');
+      if (!bar) return;
+
+      function place() {
+        var on = strip.querySelector('input:checked');
+        if (!on) return;
+        var tab = on.parentNode;
+        strip.style.setProperty('--x', tab.offsetLeft + 'px');
+        strip.style.setProperty('--w', tab.offsetWidth + 'px');
+      }
+
+      place();
+      requestAnimationFrame(function () { bar.classList.add('ready'); });
+      strip.addEventListener('change', place);
+      window.addEventListener('resize', place);
+    });
+  })();
+</script>

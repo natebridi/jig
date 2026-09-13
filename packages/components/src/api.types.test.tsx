@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, Tab, TabList, TabPanel, Tabs, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -148,6 +148,44 @@ describe('public API types', () => {
       <ListItem selectedIcon="not-an-icon">Tokens</ListItem>
       {/* @ts-expect-error spacing comes from the parent */}
       <ListItem mb="400">Tokens</ListItem>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps Tabs to the surface 0019 settled', () => {
+    <>
+      <Tabs defaultValue="usage" orientation="vertical">
+        <TabList aria-label="Docs">
+          <Tab value="usage" start={<span />} end={<span />}>Usage</Tab>
+        </TabList>
+        <TabPanel value="usage">x</TabPanel>
+      </Tabs>
+      {/* Nothing active is Base UI's own contract, not a state Jig adds. */}
+      <Tabs value={null}><TabList /></Tabs>
+      {/* @ts-expect-error not an orientation */}
+      <Tabs orientation="diagonal" />
+      {/* @ts-expect-error one size for now; a ramp would have to be sm | md | lg */}
+      <Tabs size="lg" />
+      {/* @ts-expect-error activation is manual, fixed at Base UI's default */}
+      <TabList activateOnFocus />
+      {/* @ts-expect-error focus loops, fixed at Base UI's default */}
+      <TabList loopFocus={false} />
+      {/* @ts-expect-error a hidden panel unmounts; there is no route to keeping it */}
+      <TabPanel value="usage" keepMounted>x</TabPanel>
+      {/* @ts-expect-error a tab has to say which panel it pairs with */}
+      <Tab>Usage</Tab>
+      {/* @ts-expect-error and so does a panel */}
+      <TabPanel>x</TabPanel>
+      {/* @ts-expect-error the indicator is the strip's; it is not a part you place */}
+      <TabList indicator={false} />
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Tabs mb="400" />
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Tabs as="section" />
+      {/* The callback has to take `null`: a set ends up with nothing active
+          when the active tab is removed or disabled and none can replace it. */}
+      {/* @ts-expect-error */}
+      <Tabs value="usage" onValueChange={(v: string) => v} />
     </>;
     expect(true).toBe(true);
   });

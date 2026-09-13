@@ -1,6 +1,6 @@
 import '@jig-ui/react/styles.css'
-import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, ListItem, SideNav, SideNavSection, StructuredList, StructuredListRow, StructuredListCell, Link, Combobox, Separator } from '@jig-ui/react'
-import { color, elevation, spacing } from '@jig-ui/react/tokens'
+import { Button, IconButton, Icon, Typography, Adorn, Stack, Box, Grid, Tooltip, CodeBlock, ToggleButton, ToggleButtonGroup, Input, Slider, Token, ScrollArea, Dialog, Collapsible, ListItem, SideNav, SideNavSection, StructuredList, StructuredListRow, StructuredListCell, Link, Combobox, Separator, Tabs, TabList, Tab, TabPanel } from '@jig-ui/react'
+import { color, elevation, radius, spacing } from '@jig-ui/react/tokens'
 import './debug.css'
 
 const Item = ({ children }: { children: React.ReactNode }) => (
@@ -29,6 +29,123 @@ export function App() {
         <div id='debug-mode' />
         <div id='debug-size' />
       </div>
+
+      <Grid as="main" py="700" px="500" style={{ maxWidth: '80rem', marginInline: 'auto' }} spacing="500">
+
+        <Stack span={{ xs: 24, md: 8, lg: 4 }} align="stretch">
+          <SideNav header={<Typography as="h1" with="display06">Jig</Typography>}>
+            <SideNavSection label="Foundations">
+              <ListItem selectedIcon="eye" href="#">Palette</ListItem>
+              <ListItem selectedIcon="eye" href="#">Spacing</ListItem>
+              <ListItem selectedIcon="eye" href="#" selected>Typography</ListItem>
+            </SideNavSection>
+            <SideNavSection label="Components">
+              <ListItem selectedIcon="eye" href="#">Structured List</ListItem>
+              <ListItem selectedIcon="eye" href="#">Button</ListItem>
+              <ListItem selectedIcon="eye" href="#">Input</ListItem>
+            </SideNavSection>
+          </SideNav>
+        </Stack>
+
+        <Stack span={{ xs: 24, md: 16, lg: 20 }} spacing="500" align="stretch">
+          <Typography as="h1" with="display03">Typography</Typography>
+          <Typography with="body01">Type is composed with <Adorn with="mono">&lt;Typography /&gt;</Adorn> for base type styles and <Adorn with="mono">&lt;Adorn /&gt;</Adorn> for selective overrides (eg bold, inline code).</Typography>
+          <Stack style={{ border: `1px solid ${color.surfaces.card}`, borderRadius: radius[400], containerType: 'inline-size' }} py="600" align="center">
+            <Stack spacing="400" style={{ maxWidth: '60cqi', width: 'stretch' }}>
+              <Typography with="display01">Display 01</Typography>
+              <Typography with="display02">Display 02</Typography>
+              <Typography with="display03">Display 03</Typography>
+              <Typography with="display04">Display 04</Typography>
+              <Typography with="display05">Display 05</Typography>
+              <Typography with="display06">Display 06</Typography>
+            </Stack>
+          </Stack>
+          <CodeBlock label="jsx">{`
+            import { Typography } from "@jig-ui/react"
+
+            <Typography as="h1" with="display01">Display 01</Typography>
+          `}</CodeBlock>
+          <StructuredList headers={['Prop', 'Description', 'Default']} columnWidths={['10cqi', 'auto', '10cqi']}>
+            <StructuredListRow>
+              <StructuredListCell with="code01">with</StructuredListCell>
+              <StructuredListCell>
+                <Typography with="code01" mb="400">
+                  display01 ... display06<br />
+                  heading01 ... heading06<br />
+                  body01, body02<br />
+                  caption01, caption02<br />
+                  code01
+                </Typography>
+                Type style
+              </StructuredListCell>
+              <StructuredListCell with="code01">body01</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">as</StructuredListCell>
+              <StructuredListCell>
+                <Typography with="code01" mb="400">
+                  h1 ... h6<br />
+                  div, span, p<br />
+                  blockquote, label, figcaption
+                </Typography>
+                Type style
+              </StructuredListCell>
+              <StructuredListCell with="code01">div</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">tone</StructuredListCell>
+              <StructuredListCell>
+                <Typography with="code01" mb="400">
+                  primary, secondary, inverse,<br />
+                  muted, accent, danger
+                </Typography>
+                Sets text color, along with hover state if inside a <Adorn with="mono">&lt;Link&gt;</Adorn>
+              </StructuredListCell>
+              <StructuredListCell with="code01">false</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell with="code01">balance</StructuredListCell>
+              <StructuredListCell>
+                Boolean; sets <Adorn with="mono">text-wrap: balance</Adorn>
+              </StructuredListCell>
+              <StructuredListCell with="code01">false</StructuredListCell>
+            </StructuredListRow>
+            <StructuredListRow>
+              <StructuredListCell>Spacing</StructuredListCell>
+              <StructuredListCell>
+                Standard responsive spacing props (eg m, p, mx, px)
+              </StructuredListCell>
+              <StructuredListCell with="code01">false</StructuredListCell>
+            </StructuredListRow>
+          </StructuredList>
+
+          <Tabs>
+            <TabList>
+              <Tab value='example'>Example</Tab>
+              <Tab value='code'>Code</Tab>
+            </TabList>
+            <TabPanel value='example'>
+              <Stack>
+                <Typography as="p" with="body01">
+                  This is <Adorn as="strong">important</Adorn> <Adorn as="code" with="mono">codeBlock01</Adorn> and this is{' '}
+                  <Adorn with="danger"><Adorn as="em">critical</Adorn></Adorn>.
+                </Typography>
+              </Stack>
+            </TabPanel>
+            <TabPanel value='code'>
+              <CodeBlock label="jsx">{`
+                <Typography as="p" with="body01">
+                  This is <Adorn as="strong">important</Adorn> <Adorn as="code" with="mono">codeBlock01</Adorn> and this is{' '}
+                  <Adorn with="danger"><Adorn as="em">critical</Adorn></Adorn>.
+                </Typography>
+              `}</CodeBlock>
+            </TabPanel>
+          </Tabs>
+
+        </Stack>
+
+
+      </Grid>
 
       <Stack px="500" py="800" spacing="800" align="stretch" style={{ maxWidth: '74rem', marginInline: 'auto' }}>
 
@@ -297,10 +414,7 @@ export function App() {
           <IconButton variant="primary" label="Trash" icon="trash" size="lg" />
         </Stack>
 
-        <Typography as="p" with="body01">
-          This is <Adorn as="strong">important</Adorn> <Adorn as="code" with="mono">codeBlock01</Adorn> and this is{' '}
-          <Adorn with="danger"><Adorn as="em">critical</Adorn></Adorn>.
-        </Typography>
+
 
       </Stack>
 
