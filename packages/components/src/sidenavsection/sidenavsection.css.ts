@@ -18,7 +18,7 @@ export const section = style({
  */
 export const list = style({
   listStyle: "none",
-  margin: 0,
+  margin: '0 0 var(--spacing-300) 0',
   padding: 0,
   display: "flex",
   flexDirection: "column",
@@ -35,11 +35,11 @@ export const list = style({
 export const heading = style({
   display: "block",
   fontFamily: type.family.sans,
-  fontSize: type.caption01.size,
-  fontWeight: type.caption01.weight,
-  lineHeight: type.caption01.lineHeight,
+  fontSize: type.caption02.size,
+  fontWeight: type.caption02.weight,
+  lineHeight: type.caption02.lineHeight,
   color: color.text.muted,
-  padding: `${spacing[300]} ${spacing[500]}`,
+  padding: `${spacing[300]} ${spacing[300]}`,
 });
 
 /**

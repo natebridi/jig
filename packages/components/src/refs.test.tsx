@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
-import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ListItem, ScrollArea, Separator, SideNav, SideNavSection, Stack, StructuredList, ToggleButton, Token, Typography } from './index';
+import { Adorn, Button, CodeBlock, Collapsible, Combobox, Dialog, Grid, Icon, IconButton, Link, ListItem, ScrollArea, Separator, SideNav, SideNavSection, Stack, StructuredList, TabList, Tabs, Textarea, ToggleButton, Token, Typography } from './index';
 
 /**
  * Refs are plain props under React 19, so there is no forwardRef wrapper to
@@ -34,6 +34,10 @@ describe('refs', () => {
       ['Link as button', createRef<HTMLAnchorElement>(), (r: never) => <Link ref={r} href="/x" variant="primary">x</Link>, 'A'],
       // The input, not the field wrapper — the element a caller would focus.
       ['Combobox', createRef<HTMLInputElement>(), (r: never) => <Combobox ref={r} label="l" items={[{ value: 'a', label: 'A' }]} />, 'INPUT'],
+      // The textarea, not the field wrapper, for the same reason — and it is
+      // the element `Field.Control`'s `render` swapped in, so this also
+      // asserts the ref survives that swap.
+      ['Textarea', createRef<HTMLTextAreaElement>(), (r: never) => <Textarea ref={r} label="l" />, 'TEXTAREA'],
       ['Separator', createRef<HTMLDivElement>(), (r: never) => <Separator ref={r} />, 'DIV'],
       // The root, not the trigger — the root is the element a caller sizes.
       ['Collapsible', createRef<HTMLDivElement>(), (r: never) => <Collapsible ref={r} label="l">x</Collapsible>, 'DIV'],
@@ -51,6 +55,10 @@ describe('refs', () => {
       ['ScrollArea', createRef<HTMLDivElement>(), (r: never) => <ScrollArea ref={r}>x</ScrollArea>, 'DIV'],
       // The panel — the visible frame — not Base UI's positioning popup.
       ['Dialog', createRef<HTMLDivElement>(), (r: never) => <Dialog ref={r} defaultOpen title="t">x</Dialog>, 'DIV'],
+      // The root, which draws nothing (0019 D1) but is still the element a
+      // caller lays out. The list, tab and panel refs need the surrounding
+      // structure, so they are asserted in tabs.test.tsx.
+      ['Tabs', createRef<HTMLDivElement>(), (r: never) => <Tabs ref={r}><TabList aria-label="l" /></Tabs>, 'DIV'],
     ] as const;
 
     for (const [name, ref, renderCase, tag] of cases) {

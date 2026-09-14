@@ -36,6 +36,8 @@ export type {
 } from './combobox';
 export { Input } from './input';
 export type { InputProps, InputSize } from './input';
+export { Textarea } from './textarea';
+export type { TextareaProps, TextareaSize } from './textarea';
 export { Token } from './token';
 export type { TokenProps, TokenColor, TokenSize } from './token';
 export { Collapsible } from './collapsible';
@@ -53,6 +55,8 @@ export type {
   StructuredListCellProps,
   StructuredListLayout,
 } from './structuredlist';
+export { Tabs, TabList, Tab, TabPanel } from './tabs';
+export type { TabsProps, TabListProps, TabProps, TabPanelProps, TabsOrientation } from './tabs';
 export { Dialog } from './dialog';
 export type { DialogProps, DialogSize, DialogClosePlacement } from './dialog';
 export { ScrollArea } from './scrollarea';

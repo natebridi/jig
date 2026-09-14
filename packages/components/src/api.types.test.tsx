@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Input, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, Tab, TabList, TabPanel, Tabs, Textarea, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -78,6 +78,41 @@ describe('public API types', () => {
     expect(true).toBe(true);
   });
 
+  it("keeps a field's leading icon in the curated set", () => {
+    <>
+      <Input label="Search" icon="magnifying-glass" />
+      <Textarea label="Note" icon="pencil-simple" />
+      {/* @ts-expect-error not an icon in the curated set */}
+      <Input label="Search" icon="not-an-icon" />
+      {/* @ts-expect-error the field sizes and places it; there is no ReactNode slot */}
+      <Textarea label="Note" icon={<span />} />
+      {/* @ts-expect-error leading edge only — 0020 settled that there is no iconPosition */}
+      <Input label="Search" icon="magnifying-glass" iconPosition="end" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps the inert native attributes off Textarea, so lines is the only way in', () => {
+    <>
+      <Textarea label="Note" lines={5} maxLines={12} size="lg" />
+      {/* @ts-expect-error `field-sizing: content` makes rows inert — 0020 D3 */}
+      <Textarea label="Note" rows={5} />
+      {/* @ts-expect-error and cols with it */}
+      <Textarea label="Note" cols={40} />
+      {/* @ts-expect-error the native size attribute would collide with the ramp */}
+      <Textarea label="Note" size={40} />
+      {/* @ts-expect-error not a size */}
+      <Textarea label="Note" size="xl" />
+      {/* @ts-expect-error resize is fixed to vertical — 0020 D4 */}
+      <Textarea label="Note" resize="none" />
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Textarea label="Note" mb="400" />
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Textarea label="Note" as="div" />
+    </>;
+    expect(true).toBe(true);
+  });
+
   it('keeps a Separator to its two props', () => {
     <>
       <Separator />
@@ -148,6 +183,44 @@ describe('public API types', () => {
       <ListItem selectedIcon="not-an-icon">Tokens</ListItem>
       {/* @ts-expect-error spacing comes from the parent */}
       <ListItem mb="400">Tokens</ListItem>
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps Tabs to the surface 0019 settled', () => {
+    <>
+      <Tabs defaultValue="usage" orientation="vertical">
+        <TabList aria-label="Docs">
+          <Tab value="usage" start={<span />} end={<span />}>Usage</Tab>
+        </TabList>
+        <TabPanel value="usage">x</TabPanel>
+      </Tabs>
+      {/* Nothing active is Base UI's own contract, not a state Jig adds. */}
+      <Tabs value={null}><TabList /></Tabs>
+      {/* @ts-expect-error not an orientation */}
+      <Tabs orientation="diagonal" />
+      {/* @ts-expect-error one size for now; a ramp would have to be sm | md | lg */}
+      <Tabs size="lg" />
+      {/* @ts-expect-error activation is manual, fixed at Base UI's default */}
+      <TabList activateOnFocus />
+      {/* @ts-expect-error focus loops, fixed at Base UI's default */}
+      <TabList loopFocus={false} />
+      {/* @ts-expect-error a hidden panel unmounts; there is no route to keeping it */}
+      <TabPanel value="usage" keepMounted>x</TabPanel>
+      {/* @ts-expect-error a tab has to say which panel it pairs with */}
+      <Tab>Usage</Tab>
+      {/* @ts-expect-error and so does a panel */}
+      <TabPanel>x</TabPanel>
+      {/* @ts-expect-error the indicator is the strip's; it is not a part you place */}
+      <TabList indicator={false} />
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Tabs mb="400" />
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Tabs as="section" />
+      {/* The callback has to take `null`: a set ends up with nothing active
+          when the active tab is removed or disabled and none can replace it. */}
+      {/* @ts-expect-error */}
+      <Tabs value="usage" onValueChange={(v: string) => v} />
     </>;
     expect(true).toBe(true);
   });

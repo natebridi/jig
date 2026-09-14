@@ -1,11 +1,15 @@
 import { Field } from '@base-ui/react/field';
 import type { CSSProperties, InputHTMLAttributes, ReactNode, Ref } from 'react';
+import { Icon, type IconName } from '../icon';
 import {
   control,
   description as descriptionClass,
   error as errorClass,
   field,
+  fieldIconSize,
+  glyph,
   label as labelClass,
+  slot,
 } from './input.css';
 
 export type InputSize = 'sm' | 'md' | 'lg';
@@ -32,6 +36,15 @@ export interface InputProps
    */
   error?: ReactNode;
   size?: InputSize;
+  /**
+   * A decorative icon on the leading edge of the control, from the curated set.
+   *
+   * Sized and positioned by the field rather than the caller, the way
+   * `Button` sizes its own icon. It is non-interactive and kept out of the
+   * accessibility tree &mdash; it labels the field visually, it does not
+   * replace `label`. Leading edge only; there is no `iconPosition`.
+   */
+  icon?: IconName;
   /**
    * Applied to the field wrapper, not the control.
    *
@@ -66,6 +79,10 @@ export interface InputProps
  * `className` and `style` land on the field wrapper, which is the element the
  * surrounding layout sees; every other prop reaches the `<input>`.
  *
+ * `icon` puts a decorative glyph on the leading edge. It is laid over the
+ * control rather than sharing a flex row with it, so the `<input>` stays the
+ * bordered box &mdash; 0020 D2.
+ *
  * @example
  * <Input
  *   label="Email"
@@ -80,12 +97,21 @@ export function Input({
   description,
   error,
   size = 'md',
+  icon,
   disabled,
   name,
   className,
   style,
   ...props
 }: InputProps) {
+  const controlElement = (
+    <Field.Control
+      {...props}
+      disabled={disabled}
+      className={control({ size, hasIcon: icon != null })}
+    />
+  );
+
   return (
     <Field.Root
       className={[field, className].filter(Boolean).join(' ')}
@@ -99,7 +125,16 @@ export function Input({
     >
       {label != null && <Field.Label className={labelClass}>{label}</Field.Label>}
 
-      <Field.Control {...props} disabled={disabled} className={control({ size })} />
+      {/* The slot only exists when there is an icon, so a field without one
+          renders exactly the DOM it did before this prop existed. */}
+      {icon != null ? (
+        <span className={slot}>
+          <Icon icon={icon} size={fieldIconSize} className={glyph({ size })} />
+          {controlElement}
+        </span>
+      ) : (
+        controlElement
+      )}
 
       {description != null && (
         <Field.Description className={descriptionClass}>{description}</Field.Description>
