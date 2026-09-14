@@ -70,6 +70,14 @@ export const list = styleVariants({
  * indicator is a child of the scroller and the offsets are measured against
  * it, the bar scrolls with the tabs for free — the open question 0019 D4
  * recorded turns out to need no code.
+ *
+ * Each reference carries a `0px` fallback, for the reason `combobox.css.ts`
+ * records: those four properties do not exist until Base UI has measured, and
+ * an unset variable invalidates the whole declaration rather than just that
+ * value. `width` would fall back to `auto` and `translate` to `none` — the bar
+ * happens to be invisible either way, but by accident. `0px` says so, and the
+ * packed-consumer test enforces that every runtime-set variable is spelled out
+ * this way.
  */
 const indicatorBase = style({
   position: "absolute",
@@ -93,8 +101,8 @@ export const indicator = styleVariants({
       insetBlockEnd: 0,
       insetInlineStart: 0,
       height: "2px",
-      width: "var(--active-tab-width)",
-      translate: "var(--active-tab-left) 0",
+      width: "var(--active-tab-width, 0px)",
+      translate: "var(--active-tab-left, 0px) 0",
     },
   ],
   vertical: [
@@ -103,8 +111,8 @@ export const indicator = styleVariants({
       insetInlineEnd: 0,
       insetBlockStart: 0,
       width: "2px",
-      height: "var(--active-tab-height)",
-      translate: "0 var(--active-tab-top)",
+      height: "var(--active-tab-height, 0px)",
+      translate: "0 var(--active-tab-top, 0px)",
     },
   ],
 });
