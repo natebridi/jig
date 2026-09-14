@@ -1,6 +1,6 @@
 import { createRef, type RefObject } from 'react';
 import { describe, expect, it } from 'vitest';
-import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, Tab, TabList, TabPanel, Tabs, ToggleButton, Token, Typography } from './index';
+import { Adorn, Box, Button, Collapsible, Combobox, Grid, IconButton, Input, Link, ListItem, Separator, SideNav, Stack, StructuredList, StructuredListCell, Tab, TabList, TabPanel, Tabs, Textarea, ToggleButton, Token, Typography } from './index';
 
 /**
  * Compile-only assertions about the public API. Nothing here runs anything
@@ -74,6 +74,41 @@ describe('public API types', () => {
       <Combobox label="Assignee" items={items} filter={null} />
       {/* @ts-expect-error and there is no route to the query either */}
       <Combobox label="Assignee" items={items} onInputValueChange={() => {}} />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it("keeps a field's leading icon in the curated set", () => {
+    <>
+      <Input label="Search" icon="magnifying-glass" />
+      <Textarea label="Note" icon="pencil-simple" />
+      {/* @ts-expect-error not an icon in the curated set */}
+      <Input label="Search" icon="not-an-icon" />
+      {/* @ts-expect-error the field sizes and places it; there is no ReactNode slot */}
+      <Textarea label="Note" icon={<span />} />
+      {/* @ts-expect-error leading edge only — 0020 settled that there is no iconPosition */}
+      <Input label="Search" icon="magnifying-glass" iconPosition="end" />
+    </>;
+    expect(true).toBe(true);
+  });
+
+  it('keeps the inert native attributes off Textarea, so lines is the only way in', () => {
+    <>
+      <Textarea label="Note" lines={5} maxLines={12} size="lg" />
+      {/* @ts-expect-error `field-sizing: content` makes rows inert — 0020 D3 */}
+      <Textarea label="Note" rows={5} />
+      {/* @ts-expect-error and cols with it */}
+      <Textarea label="Note" cols={40} />
+      {/* @ts-expect-error the native size attribute would collide with the ramp */}
+      <Textarea label="Note" size={40} />
+      {/* @ts-expect-error not a size */}
+      <Textarea label="Note" size="xl" />
+      {/* @ts-expect-error resize is fixed to vertical — 0020 D4 */}
+      <Textarea label="Note" resize="none" />
+      {/* @ts-expect-error spacing comes from the parent */}
+      <Textarea label="Note" mb="400" />
+      {/* @ts-expect-error polymorphism stays on layout and type components */}
+      <Textarea label="Note" as="div" />
     </>;
     expect(true).toBe(true);
   });

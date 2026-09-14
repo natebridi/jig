@@ -47,12 +47,26 @@ export const Disabled: Story = {
   args: { disabled: true, defaultValue: 'nate@example.com' },
 };
 
+/**
+ * A decorative glyph on the leading edge, from the curated set. The field sizes
+ * and places it; it is laid over the control rather than sharing a flex row
+ * with it, so the `<input>` stays the bordered box.
+ *
+ * It does not replace `label` — it is kept out of the accessibility tree.
+ */
+export const WithIcon: Story = {
+  args: { icon: 'magnifying-glass', label: 'Search', placeholder: 'Search issues' },
+};
+
 export const Sizes: Story = {
   render: (args) => (
     <Stack spacing="400">
       <Input {...args} size="sm" label="Small" />
       <Input {...args} size="md" label="Medium" />
       <Input {...args} size="lg" label="Large" />
+      <Input {...args} size="sm" icon="magnifying-glass" label="Small, with icon" />
+      <Input {...args} size="md" icon="magnifying-glass" label="Medium, with icon" />
+      <Input {...args} size="lg" icon="magnifying-glass" label="Large, with icon" />
     </Stack>
   ),
 };

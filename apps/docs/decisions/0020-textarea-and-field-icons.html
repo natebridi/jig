@@ -1,0 +1,2142 @@
+<title>0020 &middot; Textarea, and a leading icon for fields</title>
+
+<style>
+  :root {
+    --ground:      #FAFBFC;
+    --surface:     #FFFFFF;
+    --surface-2:   #F1F4F7;
+    --ink:         #161B22;
+    --ink-2:       #3D4754;
+    --muted:       #68727F;
+    --line:        #E1E7ED;
+    --line-2:      #C2CDD8;
+    --accent:      #0B6E7A;
+    --accent-wash: #E4F1F3;
+    --gate:        #8A5300;
+    --gate-wash:   #FAEFDD;
+    --ok:          #1D7A46;
+    --ok-wash:     #E2F3E9;
+    --no:          #9B2C2C;
+    --no-wash:     #FAEAEA;
+
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 68ch;
+    --gutter: clamp(1.25rem, 4vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0C1014;
+      --surface:     #141A21;
+      --surface-2:   #1B222B;
+      --ink:         #E9EEF4;
+      --ink-2:       #B8C3D0;
+      --muted:       #8B96A5;
+      --line:        #232B35;
+      --line-2:      #364150;
+      --accent:      #4FC3D1;
+      --accent-wash: #0F3138;
+      --gate:        #E3A952;
+      --gate-wash:   #2F230E;
+      --ok:          #5FD08A;
+      --ok-wash:     #0E2E1C;
+      --no:          #F08A8A;
+      --no-wash:     #33161A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0C1014;
+    --surface:     #141A21;
+    --surface-2:   #1B222B;
+    --ink:         #E9EEF4;
+    --ink-2:       #B8C3D0;
+    --muted:       #8B96A5;
+    --line:        #232B35;
+    --line-2:      #364150;
+    --accent:      #4FC3D1;
+    --accent-wash: #0F3138;
+    --gate:        #E3A952;
+    --gate-wash:   #2F230E;
+    --ok:          #5FD08A;
+    --ok-wash:     #0E2E1C;
+    --no:          #F08A8A;
+    --no-wash:     #33161A;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    /* Clears the fixed decision bar. */
+    padding-bottom: 5.5rem;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 7vw, 5rem) var(--gutter) 5rem;
+  }
+
+  /* ---- masthead ---- */
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.5vw, 3.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 660;
+    text-wrap: balance;
+    margin: 0 0 1rem;
+  }
+
+  .standfirst {
+    max-width: var(--measure);
+    font-size: 1.0625rem;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  .masthead {
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    align-items: center;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .status {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+  }
+
+  .status-proposed   { background: var(--gate-wash);   color: var(--gate);   border: 1px solid var(--gate); }
+  .status-decided    { background: var(--accent-wash); color: var(--accent); border: 1px solid var(--accent); }
+  .status-built      { background: var(--ok-wash);     color: var(--ok);     border: 1px solid var(--ok); }
+  .status-superseded { background: var(--surface-2);   color: var(--muted);  border: 1px solid var(--line-2); }
+
+  /* ---- sections ---- */
+
+  section { margin-top: 3.5rem; }
+
+  h2 {
+    font-size: 1.3rem;
+    letter-spacing: -0.015em;
+    font-weight: 640;
+    margin: 0 0 0.5rem;
+    text-wrap: balance;
+  }
+
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-right: 0.7em;
+    vertical-align: 0.12em;
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 620;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.35rem;
+  }
+
+  p { max-width: var(--measure); color: var(--ink-2); margin: 0 0 1rem; }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.36em;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* ---- settled-by-precedent list ---- */
+
+  .notes { max-width: var(--measure); margin: 1.5rem 0 0; padding: 0; list-style: none; }
+
+  .notes li {
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.7rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .notes li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    border-radius: 2px;
+    border: 1px solid var(--accent);
+  }
+
+  /* ---- decisions ---- */
+
+  .decision {
+    border-top: 1px solid var(--line);
+    padding-top: 2.5rem;
+  }
+
+  .decision-id {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  .options {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    margin-top: 1.75rem;
+  }
+
+  .option {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+
+  .option[data-state="accepted"] {
+    border-color: var(--ok);
+    box-shadow: inset 0 0 0 1px var(--ok);
+  }
+
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .rec {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+    padding: 0.15em 0.45em;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  /* Every option must SHOW the thing, not describe it. This frame is where the
+     rendered specimen goes — real markup, real tokens, no screenshots. */
+  .specimen {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 116px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  /* Evidence that belongs to the argument rather than to one option — a
+     measurement table, a diagram — sits in a figure in the prose. */
+  figure { margin: 2rem 0 0; padding: 0; }
+
+  .scroller {
+    overflow-x: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  figcaption {
+    max-width: var(--measure);
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  /* Specimen helpers. Generic building blocks so every document shows the same
+     kinds of evidence the same way — dependency trees, bucketed sets, and
+     small comparison tables all come up repeatedly. */
+
+  .specimen.block { display: block; }
+
+  .tree {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    white-space: pre;
+  }
+
+  .tree b   { color: var(--ink); font-weight: 600; }
+  .tree i   { color: var(--muted); font-style: normal; }
+  .tree .in { color: var(--ok); }
+  .tree .no { color: var(--no); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    padding: 0.25em 0.55em;
+    border-radius: 4px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .chip-a { border-color: var(--accent); background: var(--accent-wash); color: var(--accent); }
+  .chip-b { border-color: var(--line-2); background: var(--surface-2);   color: var(--muted); }
+
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.74rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    text-align: left;
+    padding: 0.4rem 0.8rem 0.4rem 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+
+  .spec-table thead th {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .specimen svg { display: block; width: 100%; height: auto; }
+  .specimen svg text { font-family: var(--mono); }
+
+  .specimen-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: -0.35rem 0 0.6rem;
+  }
+
+  .tradeoffs {
+    margin: 0 0 1.1rem;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .tradeoffs li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .tradeoffs li::before {
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    font-size: 0.8em;
+    top: 0.05em;
+  }
+
+  .tradeoffs li.pro::before { content: "+"; color: var(--ok); }
+  .tradeoffs li.con::before { content: "\2212"; color: var(--no); }
+
+  .opt-actions { margin-top: auto; }
+
+  button {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.55em 0.9em;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  }
+
+  button:hover { border-color: var(--ink-2); color: var(--ink); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .option[data-state="accepted"] .accept {
+    background: var(--ok-wash);
+    border-color: var(--ok);
+    color: var(--ok);
+  }
+
+  .decision-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .decision[data-state="rejected"] .reject {
+    background: var(--no-wash);
+    border-color: var(--no);
+    color: var(--no);
+  }
+
+  .decision[data-state="rejected"] .options { opacity: 0.45; }
+
+  .note {
+    display: block;
+    width: 100%;
+    max-width: var(--measure);
+    margin-top: 0.9rem;
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    resize: vertical;
+    min-height: 3.2rem;
+  }
+
+  .note:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  /* The recorded outcome, written into the file once a decision comes back.
+     Static markup on purpose — localStorage only exists on the machine that
+     clicked, so the durable record has to live in the document. */
+  .outcome {
+    max-width: var(--measure);
+    margin: 1.5rem 0 0;
+    padding: 0.9rem 1.1rem;
+    background: var(--accent-wash);
+    border: 1px solid var(--accent);
+    border-left-width: 3px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+
+  .outcome b { color: var(--ink); font-weight: 620; }
+
+  .outcome .tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+
+  .outcome p { max-width: none; margin: 0.6rem 0 0; color: var(--ink-2); }
+
+  /* What the build actually taught us, written back by `implement`. */
+  .outcome-built { background: var(--ok-wash); border-color: var(--ok); }
+  .outcome-built .tag { color: var(--ok); }
+
+  .outcome ul { margin: 0.6rem 0 0; padding-left: 1.1rem; }
+  .outcome li { margin-bottom: 0.5rem; }
+
+  /* ---- fixed decision bar ---- */
+
+  .bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.25rem;
+    padding: 0.85rem var(--gutter);
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line-2);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .bar-actions { display: flex; gap: 0.5rem; }
+
+  .bar .copy {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--ground);
+  }
+
+  .bar .copy:hover { color: var(--ground); filter: brightness(1.08); }
+
+  /* ---- output ---- */
+
+  #output[hidden] { display: none; }
+
+  #output textarea {
+    width: 100%;
+    min-height: 15rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: 1rem;
+    resize: vertical;
+  }
+
+  .copy-state {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    min-height: 1.2em;
+    margin: 0.6rem 0 0;
+  }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  /* ---- specimen helpers: the real Jig control tokens ----
+
+     Every value below is copied out of packages/styles/dist/tokens.css, light
+     arm and dark arm, so the specimens are the actual colours a field renders
+     in — and they follow this document's own theme rather than freezing one. */
+
+  .jig {
+    --c-bg:      oklch(100% 0 0);            /* control.base-bg      · white     */
+    --c-text:    oklch(31.3% 0.012 83);      /* control.text         · warm.600  */
+    --c-ph:      oklch(61.1% 0.009 83);      /* control.placeholder  · warm.400  */
+    --c-bd:      oklch(92.3% 0.006 83);      /* control.border       · warm.100  */
+    --c-hbd:     oklch(75.3% 0.008 83);      /* control.hover-border · warm.300  */
+    --c-abd:     oklch(31.3% 0.012 83);      /* control.active-border· warm.600  */
+    --c-ibd:     oklch(53.2% 0.211 25);      /* control.invalid-brdr · red.450   */
+    --c-dbg:     oklch(89.1% 0.007 83);      /* control.disabled-bg  · warm.150  */
+    --c-dtext:   oklch(75.3% 0.008 83);      /* control.disabled-text· warm.300  */
+    --c-label:   oklch(31.3% 0.012 83);      /* text.primary         · warm.600  */
+    --c-desc:    oklch(61.1% 0 0);           /* text.muted           · gray.400  */
+    --c-danger:  oklch(38.31% 0.1549 23.92); /* text.danger          · red.550   */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .jig {
+      --c-bg:     oklch(20.9% 0.013 83);      /* warm.700 */
+      --c-text:   oklch(92.3% 0.006 83);      /* warm.100 */
+      --c-ph:     oklch(75.3% 0.008 83);      /* warm.300 */
+      --c-bd:     oklch(31.3% 0.012 83);      /* warm.600 */
+      --c-hbd:    oklch(38.3% 0.011 83);      /* warm.550 */
+      --c-abd:    oklch(93.7% 0.006 83);      /* warm.50  */
+      --c-ibd:    oklch(45.41% 0.1839 24.43); /* red.500  */
+      --c-dbg:    oklch(26.1% 0.012 83);      /* warm.650 */
+      --c-dtext:  oklch(61.1% 0.009 83);      /* warm.400 */
+      --c-label:  oklch(92.3% 0 0);           /* gray.100 */
+      --c-desc:   oklch(75.3% 0 0);           /* gray.300 */
+      --c-danger: oklch(75.3% 0.148 26.7);    /* red.300  */
+    }
+  }
+
+  :root[data-theme="dark"] .jig {
+    --c-bg:     oklch(20.9% 0.013 83);
+    --c-text:   oklch(92.3% 0.006 83);
+    --c-ph:     oklch(75.3% 0.008 83);
+    --c-bd:     oklch(31.3% 0.012 83);
+    --c-hbd:    oklch(38.3% 0.011 83);
+    --c-abd:    oklch(93.7% 0.006 83);
+    --c-ibd:    oklch(45.41% 0.1839 24.43);
+    --c-dbg:    oklch(26.1% 0.012 83);
+    --c-dtext:  oklch(61.1% 0.009 83);
+    --c-label:  oklch(92.3% 0 0);
+    --c-desc:   oklch(75.3% 0 0);
+    --c-danger: oklch(75.3% 0.148 26.7);
+  }
+
+  /* A whole field: label, control, description. Sizes are the shipped ones —
+     size.control.md 2.41rem, spacing.400 0.72rem, type.scale.300 0.97rem,
+     radius.400 4.3px. */
+  .fld { width: 100%; max-width: 320px; text-align: left; font-family: var(--sans); }
+
+  .fld-label {
+    font-size: 0.79rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--c-label);
+    margin-bottom: 0.28rem;
+  }
+
+  .fld-desc {
+    font-size: 0.66rem;
+    line-height: 1.4;
+    color: var(--c-desc);
+    margin-top: 0.28rem;
+  }
+
+  .fld-err { color: var(--c-danger); }
+
+  /* The single-line control, drawn the way input.css.ts draws it. */
+  .ctl {
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 2.41rem;
+    padding: 0 0.72rem;
+    font-family: var(--sans);
+    font-size: 0.97rem;
+    line-height: 1;
+    color: var(--c-text);
+    background: var(--c-bg);
+    border: 1px solid var(--c-bd);
+    border-radius: 4.3px;
+  }
+
+  .ctl-sm { height: 1.69rem; font-size: 0.79rem; padding: 0 0.45rem; }
+  .ctl-lg { height: 2.65rem; font-size: 1.21rem; }
+  .ctl-ph { color: var(--c-ph); }
+
+  /* A live textarea. field-sizing is real here, so these grow as you type in a
+     browser that supports it. Block padding is the derived value from D5-A;
+     min-height is size.control.md + (lines - 1) x 1lh, which is the same
+     expression once the padding is derived. */
+  .ta {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    field-sizing: content;
+    font-family: var(--sans);
+    font-size: 0.97rem;
+    line-height: 1.4;
+    color: var(--c-text);
+    background: var(--c-bg);
+    border: 1px solid var(--c-bd);
+    border-radius: 4.3px;
+    padding: calc((2.41rem - 2px - 1lh) / 2) 0.72rem;
+    min-height: calc(2.41rem + 2 * 1lh);
+    resize: vertical;
+  }
+
+  .ta::placeholder { color: var(--c-ph); }
+  .ta:focus { border-color: var(--c-abd); outline: none; }
+  .ta-cap { max-height: calc(2.41rem + 5 * 1lh); }
+  .ta-fixed { resize: none; }
+  .ta-icon { padding-inline-start: calc(0.72rem + 1.15em + 0.45rem); }
+
+  /* Overlay icon slot. One offset expression serves both controls:
+     (size.control - iconSize) / 2 from the border-box top lands on the centre
+     of a single-line control AND on the centre of a textarea's first line box,
+     because the derived block padding makes those the same place. */
+  .ovl { position: relative; width: 100%; max-width: 320px; }
+
+  .specimen .ovl > svg.glyph {
+    position: absolute;
+    left: 0.72rem;
+    top: calc((2.41rem - 1.15em) / 2);
+    font-size: 0.97rem;
+    width: 1.15em;
+    height: 1.15em;
+    color: var(--c-ph);
+    fill: currentColor;
+    pointer-events: none;
+  }
+
+  /* Wrapper-owns-the-border slot, the shape Combobox already uses. */
+  .grp {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 320px;
+    font-family: var(--sans);
+    font-size: 0.97rem;
+    line-height: 1.4;
+    color: var(--c-text);
+    background: var(--c-bg);
+    border: 1px solid var(--c-bd);
+    border-radius: 4.3px;
+    padding: calc((2.41rem - 2px - 1lh) / 2) 0.72rem;
+  }
+
+  .grp:focus-within { border-color: var(--c-abd); }
+  .grp-one { align-items: center; height: 2.41rem; padding: 0 0.72rem; line-height: 1; }
+
+  .specimen .grp > svg.glyph {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    margin-top: calc((1lh - 1.15em) / 2);
+    color: var(--c-ph);
+    fill: currentColor;
+  }
+
+  .specimen .grp-one > svg.glyph { margin-top: 0; }
+
+  .grp > textarea,
+  .grp > input {
+    flex: 1 1 auto;
+    min-width: 0;
+    field-sizing: content;
+    border: none;
+    outline: none;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    resize: vertical;
+    min-height: calc(3 * 1lh);
+  }
+
+  .grp > input { field-sizing: auto; resize: none; min-height: 0; }
+  .grp > textarea::placeholder,
+  .grp > input::placeholder { color: var(--c-ph); }
+
+  /* A shared baseline rule, for showing two boxes that should agree in height. */
+  .row { display: flex; align-items: flex-start; gap: 0.6rem; width: 100%; max-width: 340px; }
+  .row > * { flex: 1 1 0; min-width: 0; }
+
+  .tick {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+
+  .tick.hit { color: var(--ok); }
+  .tick.miss { color: var(--no); }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Jig &middot; decision 0020</p>
+    <h1>Textarea, and a leading icon for fields</h1>
+    <p class="standfirst">
+      Jig has no multi-line field, and no field has ever carried an icon.
+      <a href="0002-text-input.html">0002</a> deferred both, by name, to a later
+      document &mdash; this is it. The two arrive together because the icon is the same
+      slot in both controls, and a Textarea that does not match Input is not worth
+      shipping.
+    </p>
+    <ul class="meta">
+      <li><span class="status status-built" id="doc-status">Built</span></li>
+      <li>2026-09-12</li>
+      <li>5 decisions</li>
+      <li>follows <a href="0002-text-input.html">0002</a>, <a href="0011-combobox.html">0011</a></li>
+    </ul>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>Context</h2>
+    <p>
+      <code>Input</code> shipped in <a href="0002-text-input.html">0002</a> and closed
+      with a list of things it would not settle. Two of them are this document:
+      <em>&ldquo;Textarea, and multi-line. Shares the colour set but not the height
+      ramp. Separate component, separate document.&rdquo;</em> and
+      <em>&ldquo;Adornments &mdash; icons or buttons inside the control &hellip; a
+      question for after this ships.&rdquo;</em>
+    </p>
+    <p>
+      Base UI has no textarea component at <code>~1.7.0</code> &mdash; the installed
+      package exposes <code>input</code>, <code>field</code>, <code>number-field</code>
+      and <code>otp-field</code>, and nothing multi-line. It does not need to.
+      <code>Field.Control</code> takes Base UI's standard <code>render</code> prop
+      (<code>BaseUIComponentProps</code> in
+      <code>internals/types.d.ts</code>), so <code>render={&lt;textarea /&gt;}</code>
+      swaps the element while keeping the <code>id</code>,
+      <code>aria-describedby</code> and validity wiring that
+      <code>Field.Root</code> hands out. The same <code>Field.Root</code> already
+      carries <code>data-invalid</code>, <code>data-disabled</code> and
+      <code>data-focused</code> on itself (<code>fieldValidityMapping</code> in
+      <code>internals/field-constants/constants.mjs</code>), which matters for where the
+      icon can live.
+    </p>
+
+    <h3>What <code>field-sizing: content</code> actually costs</h3>
+    <p>
+      The auto-growing textarea is now a CSS property rather than a
+      <code>scrollHeight</code> listener. It is <strong>Baseline newly available as of
+      16 June 2026</strong> &mdash; Chrome and Edge&nbsp;123 (March&nbsp;2024),
+      Safari&nbsp;26.2 (12&nbsp;December&nbsp;2025), Firefox&nbsp;152
+      (16&nbsp;June&nbsp;2026), per
+      <a href="https://web-platform-dx.github.io/web-features-explorer/features/field-sizing/">web-features</a>
+      and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing">MDN</a>.
+      That is three months old today, and newer than anything else Jig depends on. It is
+      still consistent with the standing baseline &mdash; overlays already use native CSS
+      anchor positioning and the Popover API with no fallback &mdash; but it is the
+      newest thing in the system, and worth naming as such rather than discovering later.
+    </p>
+    <p>
+      The property also has a trap that shapes three of the decisions below. Per MDN,
+      <strong><code>rows</code> and <code>cols</code> have no effect on a
+      <code>&lt;textarea&gt;</code> with <code>field-sizing: content</code></strong>. So
+      the obvious way to express &ldquo;show three lines&rdquo; stops working exactly
+      where the feature works, and an empty textarea sizes to its content &mdash; one
+      line. The floor has to come from <code>min-height</code>, which means arithmetic in
+      <code>lh</code> units (Chrome&nbsp;109, Safari&nbsp;16.4, Firefox&nbsp;120;
+      Baseline since November&nbsp;2023, so not the constraint).
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr><th>md textarea, line-height 1.4</th><th>empty</th><th>with 8 lines</th><th>behaviour</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>rows="3"</code>, no <code>field-sizing</code></td>
+              <td>81.57px</td><td>81.57px</td><td>scrolls</td>
+            </tr>
+            <tr>
+              <td><code>field-sizing</code> + <code>min-height: calc(3 * 1lh + 2*pad + 2px)</code></td>
+              <td>81.55px</td><td>190.20px</td><td>grows</td>
+            </tr>
+            <tr>
+              <td>&hellip; and <code>max-height: calc(6 * 1lh + 2*pad + 2px)</code></td>
+              <td>81.55px</td><td>146.71px</td><td>grows, then scrolls at 6</td>
+            </tr>
+            <tr>
+              <td><code>field-sizing</code> + <code>rows="3"</code>, no <code>min-height</code></td>
+              <td colspan="3"><i>one line &mdash; <code>rows</code> is inert (MDN), so the box sizes to empty content</i></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        Measured in Chrome&nbsp;151 at a 16px root, computed <code>1lh</code> =
+        21.728px. The <code>lh</code>-derived floor reproduces <code>rows="3"</code>
+        <strong>to within 0.02px</strong> &mdash; so nothing is lost by expressing the
+        line count in CSS instead of an attribute. Only the last row is not measured; it
+        follows from MDN's statement that <code>rows</code> is ignored.
+      </figcaption>
+    </figure>
+
+    <h3>The resize handle writes an inline height</h3>
+    <p>
+      <code>resize: vertical</code> and <code>field-sizing: content</code> are not
+      independent. Dragging the grip sets an inline <code>height</code> on the element,
+      and an explicit height re-imposes fixed sizing &mdash; MDN's own advice is to
+      &ldquo;avoid setting fixed <code>width</code> and <code>height</code>&rdquo; for
+      this reason. Measured, on the same md textarea:
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead><tr><th>Step</th><th>Rendered height</th><th>scrollHeight</th></tr></thead>
+          <tbody>
+            <tr><td>grown to 8 lines</td><td>190.20px</td><td>&mdash;</td></tr>
+            <tr><td>inline <code>height: 120px</code> set (what the grip writes)</td><td>120.00px</td><td>&mdash;</td></tr>
+            <tr><td>seven more lines typed</td><td>120.00px</td><td>340</td></tr>
+            <tr><td>inline height cleared</td><td>342.29px</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        Dragging the grip does not adjust the auto-growth &mdash; it <strong>ends
+        it</strong>, for the life of that element. Nothing in the platform resets the
+        inline height. That is D4. The one mitigation is free: <code>min-height</code>
+        and <code>max-height</code> clamp any specified height, so whatever envelope D3
+        sets also bounds the drag.
+      </figcaption>
+    </figure>
+
+    <h3>A one-line textarea does not match an Input by default</h3>
+    <p>
+      0002&nbsp;D1 tokenised <code>size.control.{sm,md,lg}</code> precisely so a bordered
+      control lines up with a Button beside it, and <a href="0006-token.html">0006</a>
+      had <code>Token</code> subtract from the same values rather than declare its own.
+      A textarea's height is not fixed, but its <em>block padding</em> still decides
+      where its first line of text sits &mdash; and whether a one-line box agrees with an
+      Input. Measured, comparing a real <code>&lt;input&gt;</code> at each size against a
+      one-line textarea at <code>line-height: 1.4</code>:
+    </p>
+
+    <figure>
+      <div class="scroller">
+        <table class="spec-table">
+          <thead>
+            <tr>
+              <th>Size</th><th>Input height</th>
+              <th>Padding off the spacing ramp</th><th>&Delta;</th>
+              <th>Padding derived</th><th>&Delta;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>sm</td><td>27.04px</td><td>spacing.200 &nbsp;<i>4.48px</i> &rarr; 28.65px</td><td class="miss">+1.61px</td><td>3.68px &rarr; 27.05px</td><td>+0.02px</td></tr>
+            <tr><td>md</td><td>38.55px</td><td>spacing.300 &nbsp;<i>7.20px</i> &rarr; 38.12px</td><td class="miss">&minus;0.44px</td><td>7.42px &rarr; 38.55px</td><td>0.00px</td></tr>
+            <tr><td>lg</td><td>42.40px</td><td>spacing.300 &nbsp;<i>7.20px</i> &rarr; 43.49px</td><td class="miss">+1.09px</td><td>6.65px &rarr; 42.40px</td><td>0.00px</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <figcaption>
+        The derived padding is
+        <code>calc((size.control.X &minus; 2px &minus; 1lh) / 2)</code>. It falls out of
+        the same subtraction <code>Token</code> already does. It has a second payoff:
+        once the padding is derived, the line-count floor collapses to
+        <code>min-height: calc(size.control.X + (lines &minus; 1) * 1lh)</code> &mdash;
+        <em>one control height, plus a line for each line after the first</em> &mdash;
+        and the icon offset becomes one expression that serves both controls. That is D5,
+        and D2 and D3 both lean on it.
+      </figcaption>
+    </figure>
+
+    <h3>Already settled by precedent</h3>
+    <p>
+      Everything here follows an existing rule and is <em>not</em> up for debate in this
+      document.
+    </p>
+    <ul class="notes">
+      <li><strong>Built on Base UI's <code>Field</code>, composed internally.</strong> 0001&nbsp;D2; 0002&nbsp;D2 made &ldquo;props on one component&rdquo; the standing rule &mdash; ease of use beats expressiveness at our layer, because the expressive layer already exists underneath.</li>
+      <li><strong>Validity comes from Base UI.</strong> <code>error</code> sets <code>Field.Root invalid</code> as <code>true | undefined</code>, never <code>false</code>; the stylesheet reads <code>[data-invalid]</code>. 0002&nbsp;D3, and the as-built note.</li>
+      <li><strong>Colours are <code>color.control.*</code>.</strong> The set is shared by every field-like control by design &mdash; no new semantic group. 0002&nbsp;D4.</li>
+      <li><strong>Focus highlights the border, not <code>focusRing</code>.</strong> A bordered control matches <code>:focus-visible</code> on click as well as on keyboard focus; spreading the ring would double-paint. 0002&nbsp;D4.</li>
+      <li><strong><code>label</code>, <code>description</code>, <code>error</code>, <code>disabled</code>, <code>name</code> behave exactly as on <code>Input</code></strong>, and <code>className</code> / <code>style</code> land on the field wrapper &mdash; it is the element the parent layout sees.</li>
+      <li><strong>Sizes are <code>sm | md | lg</code></strong>, matching <code>ButtonSize</code>, via a <code>recipe()</code>.</li>
+      <li><strong>Label, description and error styles are re-exported from <code>input.css.ts</code></strong>, the way <code>combobox.css.ts</code> already does. No shared field module is extracted here.</li>
+      <li><strong>The icon is <code>icon?: IconName</code> from the curated set, sized by the component, not the caller.</strong> <code>Button</code> set that shape (<code>buttonIconSize</code>); a field's icon is <code>1.15em</code>, the value <code>Combobox</code> and <code>Token</code> already use.</li>
+      <li><strong>The icon is decorative and non-interactive</strong> &mdash; <code>aria-hidden</code> (<code>Icon</code>'s default when no <code>label</code>) and <code>pointer-events: none</code>, so it never steals a click meant for the control. Leading edge only; no <code>iconPosition</code>.</li>
+      <li><strong>No <code>as</code> prop</strong>, so <code>&lt;Input as="textarea"&gt;</code> is not on the table. Polymorphism stays on layout, typography and <code>ListItem</code> (0014&nbsp;D2).</li>
+      <li><strong>No spacing props</strong>; width goes through <code>style</code> on the wrapper.</li>
+      <li><strong>Native-attribute collisions are omitted from the inherited props</strong>, as <code>size</code> already is on <code>Input</code>. For a textarea that means <code>rows</code> and <code>cols</code> &mdash; which <code>field-sizing</code> makes inert anyway.</li>
+      <li><strong><code>ref</code> forwards to the rendered element</strong> &mdash; <code>HTMLTextAreaElement</code> &mdash; enforced by <code>refs.test.tsx</code>.</li>
+      <li><strong>Horizontal sizing is unchanged.</strong> <code>width: 100%</code> stays on the control, so only the block axis is content-sized.</li>
+    </ul>
+
+    <p style="font-size:0.875rem;color:var(--muted);margin-top:1.5rem">
+      Specimens below are built from the real token values and follow this document's
+      light/dark theme. The textareas are live <code>&lt;textarea&gt;</code> elements
+      with real <code>field-sizing: content</code> &mdash; type in them. They render in
+      this document's system sans rather than Work Sans, so letterforms are indicative
+      only.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Decisions</h2>
+    <p>
+      Accept one option per decision, or reject the whole set and leave a note. Notes are
+      the refinement channel &mdash; partial acceptance goes there in plain English.
+    </p>
+  </section>
+
+  <!-- ============================= D1 ============================= -->
+  <section class="decision" data-decision="component-shape" data-title="One component or two">
+    <p class="decision-id">D1 &middot; component-shape</p>
+    <h2>One component or two</h2>
+    <p>
+      A multi-line field shares <code>Input</code>'s label, description, error, colour
+      set and size ramp, and differs in three props and one element. That is close enough
+      that a <code>multiline</code> flag on <code>Input</code> is a genuine option rather
+      than a straw man &mdash; and it is how several systems ship it. The cost lands in
+      the type surface: the element under the props changes, so
+      <code>InputHTMLAttributes</code>, the <code>ref</code> type, and the three
+      textarea-only props all have to correlate on one boolean.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="separate" data-label="A separate Textarea">
+        <div class="option-head">
+          <h3>A separate <code>Textarea</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Two components, two flat prop types</p>
+        <div class="specimen block jig">
+<pre class="tree">&lt;<b>Input</b> label="Subject" icon="pencil-simple" /&gt;
+
+&lt;<b>Textarea</b>
+  label="Release note"
+  icon="pencil-simple"
+  lines={3}
+  description="Markdown is fine."
+/&gt;
+
+<i>InputProps    extends Omit&lt;InputHTMLAttributes, 'size'&gt;
+TextareaProps extends Omit&lt;TextareaHTMLAttributes,
+                          'size' | 'rows' | 'cols'&gt;</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <div class="fld-label">Release note</div>
+            <div class="ovl">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
+              <textarea class="ta ta-icon" placeholder="What changed&hellip;"></textarea>
+            </div>
+            <div class="fld-desc">Markdown is fine.</div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Each prop type describes one element. No conditional props, no <code>ref</code> that changes shape with a boolean.</li>
+          <li class="pro">Autocomplete offers <code>lines</code> only where it means something, and never offers <code>type="email"</code> on a textarea.</li>
+          <li class="pro">One component per element is what every other Jig component does.</li>
+          <li class="con">Two entries in the barrel and two stories files, for a component that is largely <code>Input</code> with a different element.</li>
+          <li class="con">Shared chrome is duplicated by re-export rather than extracted, so a change to the field wrapper is a change in two files.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="multiline-flag" data-label="Input multiline">
+        <div class="option-head">
+          <h3><code>Input multiline</code></h3>
+        </div>
+
+        <p class="specimen-label">One component, a discriminated union</p>
+        <div class="specimen block jig">
+<pre class="tree">&lt;<b>Input</b> label="Subject" icon="pencil-simple" /&gt;
+
+&lt;<b>Input</b> <span class="in">multiline</span>
+  label="Release note"
+  icon="pencil-simple"
+  lines={3}
+/&gt;
+
+<i>type InputProps =
+  | ({ multiline?: false; ref?: Ref&lt;HTMLInputElement&gt; }
+      &amp; Omit&lt;InputHTMLAttributes, 'size'&gt;)
+  | ({ multiline: true; lines?: number; maxLines?: number;
+       ref?: Ref&lt;HTMLTextAreaElement&gt; }
+      &amp; Omit&lt;TextareaHTMLAttributes, 'size'|'rows'|'cols'&gt;)</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <div class="fld-label">Release note</div>
+            <div class="ovl">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg>
+              <textarea class="ta ta-icon" placeholder="What changed&hellip;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One import, one mental model, one stylesheet. The shared chrome cannot drift.</li>
+          <li class="pro">Switching a field from one line to many is a one-word change at the call site.</li>
+          <li class="con">The union is load-bearing and hostile to spread props: <code>&lt;Input {...props} /&gt;</code> where <code>props</code> is a variable no longer narrows, which is exactly how form libraries call it.</li>
+          <li class="con">Every future field-like control has to decide whether it also collapses into <code>Input</code>. <code>Combobox</code> already decided not to.</li>
+          <li class="con">It is a breaking change to a shipped component's exported type, not an addition.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-13</span>
+      <b>A separate <code>Textarea</code>.</b> Two components, two flat prop types.
+      <code>TextareaProps</code> extends
+      <code>Omit&lt;TextareaHTMLAttributes, 'size' | 'rows' | 'cols'&gt;</code> and its
+      <code>ref</code> is an <code>HTMLTextAreaElement</code>; <code>InputProps</code> is
+      unchanged apart from the new <code>icon</code>.
+      <p>
+        <code>Input</code>'s exported type therefore stays additive &mdash; the leading
+        icon is the only thing that changes about it, which is what keeps D2's
+        regression surface as small as it is.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D2 ============================= -->
+  <section class="decision" data-decision="icon-slot" data-title="Where the leading icon sits in the box">
+    <p class="decision-id">D2 &middot; icon-slot</p>
+    <h2>Where the leading icon sits in the box</h2>
+    <p>
+      This is the change to <code>Input</code>, and the Textarea inherits it. Today the
+      <code>&lt;input&gt;</code> <em>is</em> the bordered box: <code>input.css.ts</code>
+      puts the border, background, radius, height and all four state colours on the
+      control itself. <code>Combobox</code> could not do that &mdash; it has chips and a
+      caret in the box &mdash; so <code>combobox.css.ts</code> moved the border to a
+      wrapper and left the input bare. A non-interactive icon can go either way, and the
+      choice decides whether a shipped stylesheet gets restructured.
+    </p>
+    <p>
+      Both specimens are live and both have <code>resize: vertical</code>. Look at where
+      the grip sits.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="overlay" data-label="Overlaid icon, control keeps its border">
+        <div class="option-head">
+          <h3>Overlaid icon</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">The control is still the bordered box</p>
+        <div class="specimen block jig">
+<pre class="tree">&lt;<b>Field.Root</b> class=<i>field</i>&gt;
+  &lt;Field.Label /&gt;
+  &lt;<b>span</b> class=<i>slot</i>&gt;              <i>position: relative</i>
+    &lt;<b>Icon</b> class=<i>glyph</i> /&gt;         <i>position: absolute</i>
+    &lt;<b>Field.Control</b> class=<i>control</i>/&gt;  <i>border, lead padding</i>
+  &lt;/span&gt;
+&lt;/Field.Root&gt;</pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <div class="ovl">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+              <div class="ctl ctl-ph" style="padding-inline-start:calc(0.72rem + 1.15em + 0.45rem)">Search issues</div>
+            </div>
+            <div class="ovl" style="margin-top:0.6rem">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+              <textarea class="ta ta-icon" placeholder="Type &mdash; it grows"></textarea>
+            </div>
+            <p class="tick hit">grip sits in the real corner</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro"><code>input.css.ts</code>'s control recipe is untouched &mdash; border, hover, focus, <code>[data-invalid]</code>, <code>[data-disabled]</code> all keep working on the element they already target. The change is one new class and one padding variant.</li>
+          <li class="pro">The resize grip is on the bordered element, where a native textarea puts it. In the wrapper option it floats one padding step inside the border.</li>
+          <li class="pro">One offset expression, <code>calc((size.control.X &minus; 1.15em) / 2)</code>, centres the icon on a single-line control <em>and</em> on a textarea's first line &mdash; provided D5 derives the block padding.</li>
+          <li class="con">The leading padding is a <code>calc</code> that has to stay in step with the icon size; change one and you must change the other.</li>
+          <li class="con">Two field-like controls now build their box two different ways, which a reader has to notice.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="wrapper" data-label="Wrapper owns the border, Combobox pattern">
+        <div class="option-head">
+          <h3>Wrapper owns the border</h3>
+        </div>
+
+        <p class="specimen-label">The shape <code>Combobox</code> already ships</p>
+        <div class="specimen block jig">
+<pre class="tree">&lt;<b>Field.Root</b> class=<i>field</i>&gt;
+  &lt;Field.Label /&gt;
+  &lt;<b>span</b> class=<i>control</i>&gt;            <i>flex, border, padding</i>
+    &lt;<b>Icon</b> class=<i>glyph</i> /&gt;         <i>a flex item</i>
+    &lt;<b>Field.Control</b> class=<i>input</i>/&gt;    <i>border: none, padding: 0</i>
+  &lt;/span&gt;
+&lt;/Field.Root&gt;</pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <div class="grp grp-one">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+              <input type="text" placeholder="Search issues">
+            </div>
+            <div class="grp" style="margin-top:0.6rem">
+              <svg class="glyph" viewBox="0 0 256 256" aria-hidden="true"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg>
+              <textarea placeholder="Type &mdash; it grows"></textarea>
+            </div>
+            <p class="tick miss">grip floats inside the border</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Every field-like control builds its box the same way, and the icon is a real flex item &mdash; no <code>calc</code>, no overlap to reason about.</li>
+          <li class="pro">Trailing adornments, a clear button, a character count all drop straight in later.</li>
+          <li class="pro">The state colours can key off <code>Field.Root</code>'s own <code>data-invalid</code> / <code>data-disabled</code> / <code>data-focused</code>, so no <code>:has()</code> sniffing is needed.</li>
+          <li class="con">Restructures a shipped component: the <code>&lt;input&gt;</code> stops being the bordered element, and every rule in <code>input.css.ts</code>'s control recipe moves. That is the whole regression surface of 0002, re-opened for an icon.</li>
+          <li class="con">The resize grip renders inside the padding rather than on the border, which reads as a misalignment on every multi-line field.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-13</span>
+      <b>Overlaid icon; the control keeps its border.</b> A
+      <code>position: relative</code> slot wraps <code>Field.Control</code>, the
+      <code>Icon</code> is absolutely positioned inside it at
+      <code>calc((size.control.X &minus; 1.15em) / 2)</code>, and the control gains a
+      leading-padding variant of
+      <code>calc(spacing.X + 1.15em + gap)</code>.
+      <p>
+        <code>input.css.ts</code>'s control recipe is not restructured: border, hover,
+        <code>:focus</code>, <code>[data-invalid]</code> and <code>[data-disabled]</code>
+        keep targeting the element they already target.
+        <b>Jig now builds a field box two ways</b> &mdash; overlay here, wrapper in
+        <code>combobox.css.ts</code> &mdash; and that split is deliberate: a wrapper is
+        unavoidable where the box holds interactive children, and unnecessary where it
+        holds a decorative glyph. Whoever adds a trailing or interactive adornment
+        inherits that line and should re-read it before crossing it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D3 ============================= -->
+  <section class="decision" data-decision="growth-envelope" data-title="How far the box is allowed to grow">
+    <p class="decision-id">D3 &middot; growth-envelope</p>
+    <h2>How far the box is allowed to grow</h2>
+    <p>
+      <code>lines</code> defaults to 3 and becomes
+      <code>min-height</code>; that much is forced by the measurements above. The open
+      question is the other end. A field that grows without limit will, given a pasted
+      changelog, push the submit button below the fold &mdash; and the user cannot
+      shrink it back if D4 lands on <code>resize: none</code>. A cap turns unbounded
+      growth into a scroll, at the price of another prop.
+    </p>
+    <p>All three specimens are live. Paste a dozen lines into each.</p>
+
+    <div class="options">
+
+      <article class="option" data-option="floor-and-cap" data-label="lines plus maxLines">
+        <div class="option-head">
+          <h3><code>lines</code> + <code>maxLines</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>lines={3} maxLines={6}</code></p>
+        <div class="specimen block jig">
+<pre class="tree"><i>lines?: number     // default 3
+maxLines?: number  // no cap</i>
+
+H = size.control.X
+min-height: calc(H + (n-1)*1lh)
+max-height: calc(H + (m-1)*1lh)
+<i>// n = lines, m = maxLines</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta ta-cap" placeholder="Grows to six lines, then scrolls">One
+Two
+Three
+Four</textarea>
+            <p class="tick">floor 3 &middot; cap 6</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Both ends of the envelope are expressed in the same unit, by the same formula, and read the same way at the call site.</li>
+          <li class="pro">The cap also bounds a manual drag, because <code>max-height</code> clamps an inline height.</li>
+          <li class="pro">Unset by default, so nothing changes for a caller who does not want a cap.</li>
+          <li class="con">Two props where one might do, and a caller can set <code>maxLines</code> below <code>lines</code> &mdash; CSS resolves that in <code>min-height</code>'s favour, silently.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="floor-only" data-label="lines only, unbounded growth">
+        <div class="option-head">
+          <h3><code>lines</code> only</h3>
+        </div>
+
+        <p class="specimen-label"><code>lines={3}</code> &mdash; no cap</p>
+        <div class="specimen block jig">
+<pre class="tree"><i>lines?: number     // default 3</i>
+
+H = size.control.X
+min-height: calc(H + (n-1)*1lh)
+<i>// no max-height: the page
+// scrolls, not the field</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta" placeholder="Grows with no limit">One
+Two
+Three
+Four</textarea>
+            <p class="tick">floor 3 &middot; no cap</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One prop, one number, nothing to get wrong. The whole value is always visible &mdash; no nested scroll region, which is the better accessibility default.</li>
+          <li class="pro">Smallest API to extend later; <code>maxLines</code> can be added without breaking anyone.</li>
+          <li class="con">A long value walks the rest of the form off the screen, and the component offers no way to prevent it.</li>
+          <li class="con">Every consumer that needs a cap reaches for <code>style={{ maxHeight }}</code> and has to redo the <code>lh</code> arithmetic by hand.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="lines-range" data-label="lines takes a range">
+        <div class="option-head">
+          <h3><code>lines</code> takes a range</h3>
+        </div>
+
+        <p class="specimen-label"><code>lines={[3, 6]}</code></p>
+        <div class="specimen block jig">
+<pre class="tree"><i>lines?: number
+     | [min: number, max: number]
+
+// 3       -&gt; floor 3, no cap
+// [3, 6]  -&gt; floor 3, cap 6</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta ta-cap" placeholder="Same behaviour, one prop">One
+Two
+Three
+Four</textarea>
+            <p class="tick">floor 3 &middot; cap 6</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One prop holds one concept &mdash; the envelope &mdash; and the ordering makes an inverted range obvious at the call site.</li>
+          <li class="con">A tuple prop is a shape nothing else in Jig uses, and it reads worse in Storybook's controls and in autodocs than two numbers.</li>
+          <li class="con"><code>lines={[3, 6]}</code> allocates a new array every render, so a memoised consumer sees a changed prop on every pass.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-13</span>
+      <b><code>lines</code> + <code>maxLines</code>.</b> <code>lines</code> defaults to
+      3 and sets <code>min-height</code>; <code>maxLines</code> is undefined by default
+      and sets <code>max-height</code>. Both are
+      <code>calc(size.control.X + (n &minus; 1) * 1lh)</code>, which D5 makes exact.
+      <p>
+        The known sharp edge stands as argued: <code>maxLines</code> below
+        <code>lines</code> resolves in <code>min-height</code>'s favour, silently. Worth
+        a dev-time warning through <code>dev.ts</code> rather than a runtime clamp, so
+        the CSS stays the single source of the geometry.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D4 ============================= -->
+  <section class="decision" data-decision="resize-vs-grow" data-title="What the resize grip is allowed to do">
+    <p class="decision-id">D4 &middot; resize-vs-grow</p>
+    <h2>What the resize grip is allowed to do</h2>
+    <p>
+      Vertical resize and auto-growth are both wanted, and the platform does not let them
+      coexist: the grip writes an inline <code>height</code>, and from that moment the
+      box is fixed &mdash; measured above, 120.00px through seven more lines of typing,
+      and nothing ever clears it. So this is not a styling detail, it is a choice about
+      which of the two behaviours a field has after the first drag.
+    </p>
+    <p>
+      It is not as bad as it sounds: whatever envelope D3 sets clamps the drag too, so a
+      user can only pick a height <em>within</em> the range the component already allows.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="drag-wins" data-label="resize: vertical, drag wins">
+        <div class="option-head">
+          <h3><code>resize: vertical</code>, drag wins</h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label">Grow until someone says otherwise</p>
+        <div class="specimen block jig">
+<pre class="tree">resize: vertical;
+field-sizing: content;
+
+<i>// min-height / max-height
+// clamp the drag as well</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta ta-cap" placeholder="Type, then drag the grip">One
+Two
+Three</textarea>
+            <p class="tick">auto-grows &middot; drag to override</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Explicit user intent beats an automatic default &mdash; someone who drags a field to a height has said what they want.</li>
+          <li class="pro">No new prop, and the behaviour matches what people expect of a textarea on the web.</li>
+          <li class="pro">The drag is bounded by <code>lines</code> / <code>maxLines</code>, so it cannot escape the component's envelope.</li>
+          <li class="con">The auto-growth is silently gone afterwards, with no affordance to restore it.</li>
+          <li class="con">A stray one-pixel drag has the same effect as a deliberate resize.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="resize-prop" data-label="A resize prop">
+        <div class="option-head">
+          <h3>A <code>resize</code> prop</h3>
+        </div>
+
+        <p class="specimen-label"><code>resize?: 'vertical' | 'none'</code>, default <code>'vertical'</code></p>
+        <div class="specimen block jig">
+<pre class="tree"><i>resize?: 'vertical' | 'none'
+// default 'vertical'</i>
+
+&lt;<b>Textarea</b> label="Note" /&gt;
+&lt;<b>Textarea</b> &hellip; resize="none" /&gt;</pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta ta-cap" placeholder="resize='vertical'">Draggable</textarea>
+            <textarea class="ta ta-cap ta-fixed" style="margin-top:0.6rem" placeholder="resize='none'">Not draggable</textarea>
+            <p class="tick">same field, both settings</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A form that must not reflow can turn the grip off; everyone else gets the default the ask specified.</li>
+          <li class="pro">Purely additive &mdash; a caller who never passes it sees the recommended behaviour.</li>
+          <li class="con">A third sizing prop on a component that already has <code>lines</code> and <code>maxLines</code>, for a distinction most callers will never think about.</li>
+          <li class="con">Invites <code>resize="horizontal"</code> and <code>"both"</code> as follow-up requests, which the ask explicitly rules out.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="no-resize" data-label="resize: none, growth only">
+        <div class="option-head">
+          <h3><code>resize: none</code></h3>
+        </div>
+
+        <p class="specimen-label">The component owns the height, always</p>
+        <div class="specimen block jig">
+<pre class="tree">resize: none;
+field-sizing: content;
+
+<i>// growth is the only thing
+// that moves the height</i></pre>
+          <div class="fld" style="margin-top:1.1rem">
+            <textarea class="ta ta-cap ta-fixed" placeholder="No grip &mdash; it only grows">One
+Two
+Three</textarea>
+            <p class="tick">grows &middot; cannot be dragged</p>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">One height model, never two. The field is always exactly as tall as its content within the envelope, in every session and on every device.</li>
+          <li class="pro">Nothing can put the component into a state it cannot get out of.</li>
+          <li class="con">Removes an affordance people expect, and the ask asked for vertical resize.</li>
+          <li class="con">A touch user has no grip anyway, so this only takes something away from pointer users.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-13</span>
+      <b><code>resize: vertical</code>, fixed, with no prop &mdash; the drag wins.</b>
+      Auto-growth runs until someone drags the grip, at which point the inline height
+      the browser writes takes over permanently.
+      <p>
+        Accepted with the measured consequence in view: nothing restores the growth
+        afterwards. What makes it safe is that the drag cannot leave the envelope &mdash;
+        <code>min-height</code> and <code>max-height</code> from D3 clamp any specified
+        height &mdash; so the worst case is a field parked somewhere between
+        <code>lines</code> and <code>maxLines</code>. The stories should show that
+        explicitly, because it is the one behaviour of this component that a reader
+        cannot infer from the props.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================= D5 ============================= -->
+  <section class="decision" data-decision="block-padding" data-title="Where the first line of text sits">
+    <p class="decision-id">D5 &middot; block-padding</p>
+    <h2>Where the first line of text sits</h2>
+    <p>
+      <code>Input</code> declares a height and lets the browser centre one line inside
+      it. A textarea has no height to declare, so its block padding is what puts the
+      first line somewhere &mdash; and that decides whether a one-line Textarea agrees
+      with an Input beside it, and whether the icon offset from D2 is one expression or
+      two.
+    </p>
+    <p>
+      Each specimen puts a real <code>&lt;input&gt;</code> next to a one-line textarea at
+      <code>sm</code>, where the disagreement is largest.
+    </p>
+
+    <div class="options">
+
+      <article class="option" data-option="derived" data-label="Derived from size.control">
+        <div class="option-head">
+          <h3>Derived from <code>size.control</code></h3>
+          <span class="rec">Recommended</span>
+        </div>
+
+        <p class="specimen-label"><code>calc((size.control.X &minus; 2px &minus; 1lh) / 2)</code></p>
+        <div class="specimen block jig">
+<pre class="tree">sm  3.68px   md  7.42px   lg  6.65px
+<i>and then</i>
+min-height: calc(size.control.X + (lines - 1) * 1lh)
+icon top:   calc((size.control.X - 1.15em) / 2)</pre>
+          <div class="row" style="margin-top:1.1rem">
+            <div>
+              <div class="ctl ctl-sm">Input sm</div>
+              <p class="tick">27.04px</p>
+            </div>
+            <div>
+              <textarea class="ta ta-fixed" style="font-size:0.79rem;padding:calc((1.69rem - 2px - 1lh)/2) 0.45rem;min-height:1.69rem" rows="1">Textarea sm</textarea>
+              <p class="tick hit">27.05px &middot; &Delta; 0.02px</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">A one-line Textarea is a control height, exactly, at all three sizes &mdash; which is the whole point of 0002&nbsp;D1's derived ramp.</li>
+          <li class="pro">Collapses the line-count floor to <code>size.control.X + (lines &minus; 1) &times; 1lh</code>: one control, plus a line for each line after the first.</li>
+          <li class="pro">Same subtraction <code>Token</code> already does (0006&nbsp;D1), composed in the component layer rather than tokenised &mdash; the precedent for where it lives is set.</li>
+          <li class="con">A padding value that appears nowhere on the spacing ramp, and a reader cannot tell which step it is near without doing the arithmetic.</li>
+          <li class="con">It depends on <code>line-height</code>, so changing the textarea's line-height silently moves the padding.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+      <article class="option" data-option="ramp" data-label="Off the spacing ramp">
+        <div class="option-head">
+          <h3>Off the spacing ramp</h3>
+        </div>
+
+        <p class="specimen-label"><code>spacing.200 / spacing.300 / spacing.300</code></p>
+        <div class="specimen block jig">
+<pre class="tree">sm  4.48px   md  7.20px   lg  7.20px
+<i>height falls out of the box model, as Button's does</i>
+min-height: calc(lines * 1lh + 2 * padding + 2px)</pre>
+          <div class="row" style="margin-top:1.1rem">
+            <div>
+              <div class="ctl ctl-sm">Input sm</div>
+              <p class="tick">27.04px</p>
+            </div>
+            <div>
+              <textarea class="ta ta-fixed" style="font-size:0.79rem;padding:0.28rem 0.45rem;min-height:0" rows="1">Textarea sm</textarea>
+              <p class="tick miss">28.65px &middot; &Delta; +1.61px</p>
+            </div>
+          </div>
+        </div>
+
+        <ul class="tradeoffs">
+          <li class="pro">Every value in the stylesheet is a named spacing step, which is how the rest of the system reads.</li>
+          <li class="pro">Immune to a line-height change, and one fewer <code>calc</code> to hold in your head.</li>
+          <li class="con">A one-line Textarea misses the Input beside it by +1.61px at <code>sm</code> and +1.09px at <code>lg</code> &mdash; the exact failure 0002&nbsp;D1 derived the ramp to prevent.</li>
+          <li class="con">The icon needs its own offset per control, because the first line is no longer where a single-line control centres its text.</li>
+          <li class="con">The size ramp's own irregularity leaks through: md and lg share a padding step, so the two sizes miss by different amounts in different directions.</li>
+        </ul>
+
+        <div class="opt-actions">
+          <button type="button" class="accept">Accept</button>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="decision-foot">
+      <button type="button" class="reject">Reject all &mdash; none of these</button>
+    </div>
+    <textarea class="note" placeholder="Notes, refinements, partial acceptance&hellip;"></textarea>
+
+    <div class="outcome">
+      <span class="tag">Decided &middot; 2026-09-13</span>
+      <b>Derived from <code>size.control</code>:</b>
+      <code>padding-block: calc((size.control.X &minus; 2px &minus; 1lh) / 2)</code>,
+      with the inline padding staying Input's. A one-line Textarea is a control height at
+      all three sizes &mdash; measured 27.05 / 38.55 / 42.40px against Input's 27.04 /
+      38.55 / 42.40px.
+      <p>
+        This is the decision the other two lean on, and it is now load-bearing: it is
+        what collapses D3's floor to
+        <code>size.control.X + (lines &minus; 1) &times; 1lh</code> and what lets D2 use
+        one icon offset for both controls. Like <code>Token</code>'s subtraction in
+        0006&nbsp;D1, it is composed in the component layer rather than tokenised &mdash;
+        so <code>textarea.css.ts</code> joins <code>token.css.ts</code> as a file that
+        breaks if <code>size.control</code> moves, and it also breaks if the textarea's
+        <code>line-height</code> moves. Both dependencies belong in a comment at the
+        declaration.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>Deliberately not decided here</h2>
+    <ul class="notes">
+      <li>
+        <strong>Trailing and interactive adornments</strong> &mdash; a clear button, a
+        password reveal, a unit suffix. All of them are focusable or clickable, which
+        raises questions about tab order and hit targets that a decorative leading icon
+        does not. If D2 lands on the wrapper they become cheap; if it lands on the
+        overlay they need their own document either way.
+      </li>
+      <li>
+        <strong>A shared field module.</strong> With <code>Input</code>,
+        <code>Combobox</code> and now <code>Textarea</code> re-exporting
+        <code>field</code>, <code>label</code>, <code>description</code> and
+        <code>error</code> from <code>input/input.css.ts</code>, the case for extracting
+        them is stronger than it was at two consumers. It is still a refactor of shipped
+        code, and it should not ride along inside a new component.
+      </li>
+      <li>
+        <strong>Whether <code>Combobox</code> adopts the same icon slot.</strong> It has
+        the room and it is the same visual. It also has chips and a trigger, so its box
+        is the one place the wrapper is not optional.
+      </li>
+      <li>
+        <strong>Character counts, <code>maxLength</code> affordances and
+        autosize-on-paste animation.</strong> Behaviour on top of the control, not part
+        of it.
+      </li>
+      <li>
+        <strong>A JavaScript fallback for <code>field-sizing</code>.</strong> Not
+        proposed: the property is Baseline, and Jig's standing position is native CSS
+        with no fallback &mdash; overlays already rely on anchor positioning on the same
+        terms. Recorded here so that it is a decision rather than an oversight.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>As built</h2>
+    <p>
+      Built 2026-09-13. <code>pnpm turbo typecheck test</code> passes &mdash; 12 tasks,
+      251 tests, 18 of them new for <code>Textarea</code> &mdash; and the geometry the
+      document turns on was re-measured in Chrome&nbsp;151 against the shipped
+      components, not against the specimens.
+    </p>
+
+    <h3>Files</h3>
+    <ul class="notes">
+      <li><code>packages/components/src/textarea/</code> &mdash; new. <code>textarea.tsx</code>, <code>textarea.css.ts</code>, <code>textarea.stories.tsx</code>, <code>textarea.test.tsx</code>, <code>index.ts</code>.</li>
+      <li><code>packages/components/src/input/input.css.ts</code> &mdash; <code>fieldIconSize</code>, <code>slot</code>, <code>glyph</code>, and a <code>hasIcon</code> variant on the control recipe. The existing rules are untouched.</li>
+      <li><code>packages/components/src/input/input.tsx</code> &mdash; the <code>icon</code> prop, and the slot that only renders when there is one.</li>
+      <li><code>packages/components/src/index.ts</code>, <code>refs.test.tsx</code>, <code>api.types.test.tsx</code>, <code>input/input.stories.tsx</code> &mdash; export, guards, and a story for the icon across the ramp.</li>
+      <li>No token changes. The component composes <code>size.control.*</code>, <code>color.control.*</code>, <code>spacing</code>, <code>radius.400</code> and <code>type.body01.lineHeight</code> as they stand.</li>
+    </ul>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Measured against the shipped component &mdash; the proposal held</span>
+      <b>Every number D5 argued from reproduced exactly, in the real component rather
+      than a specimen.</b>
+      <p>
+        One-line <code>Textarea</code> against <code>Input</code>, at a 16px root:
+        <b>27.05 / 38.55 / 42.40px</b> against <b>27.04 / 38.55 / 42.40px</b> &mdash;
+        the same 0.02 / 0.00 / 0.00px deltas the proposal predicted. The derived block
+        padding computes to 3.68 / 7.42 / 6.65px, as tabled.
+      </p>
+      <p>
+        D2's single offset expression also holds where it mattered most, which the
+        specimens could not show: the glyph's centre sits on the first line box's centre
+        to within <b>0.01px</b>, and <b>stays there as the box grows from 82px to
+        234px</b>. On <code>Input</code> it centres to within 0.01px at all three sizes,
+        with the icon-to-text gap landing on <code>spacing.200</code> (4.49px) and
+        <code>spacing.300</code> (7.21px) exactly.
+      </p>
+      <p>
+        D4's mitigation is now measured rather than reasoned. On a field with
+        <code>lines={2} maxLines={5}</code>: an inline <code>height: 400px</code> &mdash;
+        what a long drag writes &mdash; renders at <b>125.43px</b>, the cap; an inline
+        <code>height: 10px</code> renders at <b>60.27px</b>, the floor. <b>The drag
+        genuinely cannot leave the envelope.</b>
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Found in the build &mdash; D1 is load-bearing for a reason the proposal did not give</span>
+      <b><code>Field.Control</code>'s props are typed for the <code>&lt;input&gt;</code>
+      it renders by default, and <code>render</code> does not re-type them.</b>
+      <p>
+        The proposal treated <code>render={&lt;textarea /&gt;}</code> as a clean element
+        swap. It is, at runtime &mdash; Base UI's state attributes survive it, and the
+        built component carries <code>data-invalid</code> on the
+        <code>&lt;textarea&gt;</code> exactly as Input does on its input. But the prop
+        type is <code>BaseUIComponentProps&lt;'input', State&gt;</code>, so every handler
+        on <code>TextareaProps</code> carries an <code>HTMLTextAreaElement</code> where
+        Base UI declares an <code>HTMLInputElement</code>, and <code>tsc</code> rejects
+        the spread outright:
+      </p>
+      <div class="scroller" style="margin:0.6rem 0 0">
+        <pre class="tree">Type 'ClipboardEventHandler&lt;HTMLTextAreaElement&gt;' is not
+assignable to type '(event: BaseUIEvent&lt;ClipboardEvent&lt;
+HTMLInputElement&gt;&gt;) =&gt; void'.</pre>
+      </div>
+      <p>
+        Resolved with one cast at that boundary,
+        <code>props as ComponentProps&lt;typeof Field.Control&gt;</code>, so the props
+        still travel through <code>Field.Control</code> and Field's own value tracking
+        (<code>filled</code>, <code>dirty</code>) keeps working. Putting them on the
+        render element instead would type cleanly and quietly bypass that.
+      </p>
+      <p>
+        <b>This is a fact about D1 the document did not have.</b> D1 was argued on the
+        consumer's type surface &mdash; spread props, narrowing, autocomplete. It turns
+        out a second, harder reason points the same way: one component covering both
+        elements would need this cast <em>and</em> a discriminated union on top of it,
+        with a single <code>ref</code> and a single set of handlers straddling two
+        element types. The recommendation was right; one of its strongest arguments was
+        not in the document.
+      </p>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Smaller gaps in the proposal</span>
+      <ul>
+        <li>
+          <b>The line count could not be a <code>createVar()</code>.</b>
+          <code>lines</code> and <code>maxLines</code> are runtime numbers, and assigning
+          a generated variable name inline needs
+          <code>@vanilla-extract/dynamic</code>, which the package does not have and
+          which 0001's posture argues against adding. The envelope therefore uses
+          hand-written custom properties &mdash; <code>--jig-textarea-height</code>,
+          <code>--jig-textarea-lines</code>, <code>--jig-textarea-max-height</code>
+          &mdash; following <code>Combobox</code>'s <code>--jig-combobox-min-width</code>.
+        </li>
+        <li>
+          <b>The two ends of the envelope are not symmetric, and cannot be.</b> The floor
+          is a count the stylesheet does the arithmetic on
+          (<code>calc(var(--jig-textarea-height) + (var(--jig-textarea-lines, 3) - 1) *
+          1lh)</code>). The cap cannot be, because <em>absence</em> of a cap has to reach
+          CSS as <code>max-height: none</code>, and no arithmetic produces
+          <code>none</code>. So the component hands over a whole value and the stylesheet
+          falls back: <code>max-height: var(--jig-textarea-max-height, none)</code>.
+          Relying on an unset variable to invalidate the declaration would have worked by
+          the same mechanism <code>combobox.css.ts</code> already warns about &mdash; and
+          for the same reason, it is not what shipped.
+        </li>
+        <li>
+          <b>The leading padding had to be a compound variant, not a
+          <code>hasIcon</code> style.</b> The size variants declare <code>padding</code>
+          as a shorthand and recipe variants are emitted in declaration order, so a
+          <code>paddingInlineStart</code> inside <code>hasIcon</code> is overwritten by
+          whichever size follows it. Compounds are emitted last. <code>Button</code>'s
+          <code>iconOnly</code> padding is compounded for exactly this reason; the
+          proposal presented it as a single padding variant.
+        </li>
+        <li>
+          <b>The growth cannot be tested in jsdom, and pretending otherwise would be
+          worse than not testing it.</b> jsdom implements neither
+          <code>field-sizing</code> nor <code>lh</code>, so a height assertion there
+          measures jsdom's zeroes. The suite asserts the custom properties that produce
+          the envelope; the geometry is asserted in the browser, and the numbers are in
+          this document.
+        </li>
+        <li>
+          <b>The <code>maxLines &lt; lines</code> warning went to <code>dev.ts</code> as
+          the outcome asked</b>, and is covered both ways &mdash; it fires when the
+          envelope is inverted and stays silent when it is not.
+        </li>
+      </ul>
+    </div>
+
+    <div class="outcome outcome-built">
+      <span class="tag">Worth its own proposal</span>
+      <ul>
+        <li>
+          <b>The field module, now at three consumers.</b> <code>textarea.css.ts</code>
+          re-exports <code>field</code>, <code>label</code>, <code>description</code> and
+          <code>error</code> from <code>input/input.css.ts</code>, joining
+          <code>combobox.css.ts</code> &mdash; and it now also re-exports
+          <code>slot</code>, <code>glyph</code> and <code>fieldIconSize</code>. That is
+          six names travelling by re-export from a file named after one component.
+          0020&nbsp;&sect;03 left extraction out of scope at two consumers; at three, with
+          the icon slot added, it is the next thing to do.
+        </li>
+        <li>
+          <b>Nothing in the system stops a decorative icon from being the only label.</b>
+          <code>icon</code> is <code>aria-hidden</code> and <code>label</code> is
+          optional, so <code>&lt;Input icon="magnifying-glass" /&gt;</code> type-checks
+          and renders a field with no accessible name at all &mdash; which was already
+          true before this change, and which the icon makes more tempting. A
+          <code>dev.ts</code> warning, or a type that requires one of
+          <code>label</code> / <code>aria-label</code>, is a small decision that would
+          cover every field-like control at once.
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="output" hidden>
+    <h2><span class="num">&mdash;</span>Decision record</h2>
+    <p>Paste this back into the chat.</p>
+    <textarea readonly></textarea>
+    <p class="copy-state" role="status"></p>
+  </section>
+
+  <footer>
+    Jig &middot; apps/docs/decisions &middot; 0020
+  </footer>
+
+</div>
+
+<div class="bar">
+  <span id="tally">0 of 5 decided</span>
+  <span class="bar-actions">
+    <button type="button" id="reset">Reset</button>
+    <button type="button" class="copy" id="copy">Copy decisions</button>
+  </span>
+</div>
+
+<script type="application/json" id="decision-record">
+{
+  "doc": "0020-textarea-and-field-icons",
+  "status": "built",
+  "decided": "2026-09-13",
+  "built": "2026-09-13",
+  "decisions": [
+    {
+      "id": "component-shape",
+      "title": "One component or two",
+      "options": [
+        "separate",
+        "multiline-flag"
+      ],
+      "recommended": "separate",
+      "outcome": "separate",
+      "note": null
+    },
+    {
+      "id": "icon-slot",
+      "title": "Where the leading icon sits in the box",
+      "options": [
+        "overlay",
+        "wrapper"
+      ],
+      "recommended": "overlay",
+      "outcome": "overlay",
+      "note": null
+    },
+    {
+      "id": "growth-envelope",
+      "title": "How far the box is allowed to grow",
+      "options": [
+        "floor-and-cap",
+        "floor-only",
+        "lines-range"
+      ],
+      "recommended": "floor-and-cap",
+      "outcome": "floor-and-cap",
+      "note": null
+    },
+    {
+      "id": "resize-vs-grow",
+      "title": "What the resize grip is allowed to do",
+      "options": [
+        "drag-wins",
+        "resize-prop",
+        "no-resize"
+      ],
+      "recommended": "drag-wins",
+      "outcome": "drag-wins",
+      "note": null
+    },
+    {
+      "id": "block-padding",
+      "title": "Where the first line of text sits",
+      "options": [
+        "derived",
+        "ramp"
+      ],
+      "recommended": "derived",
+      "outcome": "derived",
+      "note": null
+    }
+  ]
+}
+</script>
+
+<script>
+  (function () {
+    const record = JSON.parse(document.getElementById('decision-record').textContent);
+    const docId = record.doc;
+    const storeKey = 'jig-decision:' + docId;
+    const blocks = Array.from(document.querySelectorAll('.decision'));
+
+    const state = load();
+
+    // A revised decision keeps its id but replaces its options, so a verdict
+    // cast before the revision answered a question that no longer exists —
+    // including a rejection, which would otherwise leave the rebuilt block
+    // greyed out and counted as decided. Carrying the stamp in the stored
+    // entry clears it exactly once, on the first load after the revision.
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+      const stored = state[id];
+      if (!stored) return;
+
+      if ((stored.revised || '') !== stamp(id)) {
+        state[id] = blank(id);
+        return;
+      }
+
+      // Belt and braces: a choice naming an option no longer offered.
+      if (stored.choice && !block.querySelector('[data-option="' + stored.choice + '"]')) {
+        stored.choice = null;
+      }
+    });
+    save();
+
+    /** The revision stamp a decision currently carries, or '' if never revised. */
+    function stamp(id) {
+      const block = document.querySelector('.decision[data-decision="' + id + '"]');
+      return (block && block.dataset.revised) || '';
+    }
+
+    function blank(id) {
+      return { choice: null, rejected: false, note: '', revised: stamp(id) };
+    }
+
+    function load() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(storeKey, JSON.stringify(state));
+      } catch (e) {
+        /* Private browsing or a file:// origin with storage off. The document
+           still works for this session; only persistence across reloads is lost. */
+      }
+    }
+
+    function entry(id) {
+      if (!state[id]) state[id] = blank(id);
+      return state[id];
+    }
+
+    function paint() {
+      let decided = 0;
+
+      blocks.forEach(function (block) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+
+        block.dataset.state = e.rejected ? 'rejected' : '';
+
+        block.querySelectorAll('.option').forEach(function (opt) {
+          const chosen = !e.rejected && e.choice === opt.dataset.option;
+          opt.dataset.state = chosen ? 'accepted' : '';
+          const btn = opt.querySelector('.accept');
+          btn.textContent = chosen ? 'Accepted' : 'Accept';
+          btn.setAttribute('aria-pressed', String(chosen));
+        });
+
+        const note = block.querySelector('.note');
+        if (note && note.value !== e.note) note.value = e.note;
+
+        if (e.rejected || e.choice) decided++;
+      });
+
+      document.getElementById('tally').textContent =
+        decided + ' of ' + blocks.length + ' decided';
+    }
+
+    blocks.forEach(function (block) {
+      const id = block.dataset.decision;
+
+      block.querySelectorAll('.option').forEach(function (opt) {
+        opt.querySelector('.accept').addEventListener('click', function () {
+          const e = entry(id);
+          const already = !e.rejected && e.choice === opt.dataset.option;
+          e.choice = already ? null : opt.dataset.option;
+          e.rejected = false;
+          save();
+          paint();
+        });
+      });
+
+      const reject = block.querySelector('.reject');
+      if (reject) {
+        reject.addEventListener('click', function () {
+          const e = entry(id);
+          e.rejected = !e.rejected;
+          if (e.rejected) e.choice = null;
+          save();
+          paint();
+        });
+      }
+
+      const note = block.querySelector('.note');
+      if (note) {
+        note.addEventListener('input', function () {
+          entry(id).note = note.value;
+          save();
+        });
+      }
+    });
+
+    function render() {
+      const lines = [
+        'jig-decision-record v1',
+        'doc: ' + docId,
+        '--'
+      ];
+
+      blocks.forEach(function (block, i) {
+        const id = block.dataset.decision;
+        const e = entry(id);
+        const label = 'D' + (i + 1) + ' ' + id + ': ';
+
+        if (e.rejected) {
+          lines.push(label + 'REJECT');
+        } else if (e.choice) {
+          const opt = block.querySelector('[data-option="' + e.choice + '"]');
+          const name = opt ? opt.dataset.label : e.choice;
+          lines.push(label + 'ACCEPT ' + e.choice + '  (' + name + ')');
+        } else {
+          lines.push(label + 'OPEN');
+        }
+
+        if (e.note.trim()) {
+          e.note.trim().split('\n').forEach(function (line) {
+            lines.push('    note: ' + line);
+          });
+        }
+      });
+
+      return lines.join('\n');
+    }
+
+    const output = document.getElementById('output');
+    const field = output.querySelector('textarea');
+    const status = output.querySelector('.copy-state');
+
+    document.getElementById('copy').addEventListener('click', function () {
+      field.value = render();
+      output.hidden = false;
+      status.textContent = '';
+      field.focus();
+      field.select();
+
+      // Clipboard first; the already-selected textarea is the fallback if the
+      // origin is not permitted to write to it.
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(field.value).then(function () {
+          status.textContent = 'Copied to clipboard.';
+        }, function () {
+          status.textContent = 'Select the text above and copy it.';
+        });
+      } else {
+        status.textContent = 'Select the text above and copy it.';
+      }
+
+      // Last, so a browser without it cannot break the copy above.
+      if (output.scrollIntoView) {
+        output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    document.getElementById('reset').addEventListener('click', function () {
+      blocks.forEach(function (block) {
+        state[block.dataset.decision] = blank(block.dataset.decision);
+      });
+      save();
+      paint();
+      output.hidden = true;
+    });
+
+    paint();
+  })();
+</script>

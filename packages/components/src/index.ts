@@ -36,6 +36,8 @@ export type {
 } from './combobox';
 export { Input } from './input';
 export type { InputProps, InputSize } from './input';
+export { Textarea } from './textarea';
+export type { TextareaProps, TextareaSize } from './textarea';
 export { Token } from './token';
 export type { TokenProps, TokenColor, TokenSize } from './token';
 export { Collapsible } from './collapsible';
