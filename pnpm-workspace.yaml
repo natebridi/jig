@@ -1,4 +1,9 @@
 packages:
-    - "apps/*"
-    - "packages/*"
-    - "tooling/*"
+  - "apps/*"
+  - "packages/*"
+  - "tooling/*"
+# pnpm 11 requires every dependency that runs an install script to be named
+# here, and fails the install rather than silently skipping one. esbuild's
+# script links the platform binary Vite needs.
+allowBuilds:
+  esbuild: true
